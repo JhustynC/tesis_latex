@@ -1,0 +1,120 @@
+% !TEX root = ../main.tex
+\chapter{Marco teórico}
+\label{cap:marco-teorico}
+
+\section{Ingeniería de requisitos}
+
+La ingeniería de requisitos comprende los procesos mediante los cuales se descubren, analizan, documentan, validan y gestionan las necesidades y restricciones de un sistema. ISO/IEC/IEEE 29148:2018 organiza estas actividades y describe características de requisitos bien formados e ítems de información para su documentación \cite{iso29148}. La norma se utiliza en esta investigación como fundamento de diseño y evaluación, no como declaración de certificación.
+
+\subsection{Necesidad, requisito y artefacto}
+
+Una necesidad expresa una capacidad, problema, restricción o cualidad relevante para un interesado o para el entorno. Un requisito transforma una necesidad en una declaración suficientemente precisa para orientar la solución y permitir su verificación. En esta tesis se denomina \emph{artefacto} a cada salida estructurada: requisito funcional (RF), requisito no funcional (RNF) o historia de usuario (HU).
+
+La transformación no es una paráfrasis mecánica. Puede requerir separar una declaración compuesta, reunir evidencia complementaria, clasificar la información, declarar elementos faltantes y conservar la procedencia. El sistema no debe inventar actores, prioridades, umbrales, beneficios ni criterios de aceptación. Cuando la evidencia sea contradictoria o insuficiente, la decisión debe solicitarse al usuario o el artefacto debe marcarse para aclaración.
+
+\subsection{Requisitos funcionales y no funcionales}
+
+Los RF describen servicios, comportamientos o respuestas que el sistema debe proporcionar. Los RNF expresan cualidades, restricciones o condiciones bajo las cuales se prestan esas funciones. La clasificación depende del significado y del alcance, no únicamente de palabras clave.
+
+En ReqLab, ambos tipos incluyen identificador, título, descripción verificable, prioridad, estado, fragmentos fuente y relaciones con otros artefactos. En el RNF, la redacción debe expresar una propiedad de calidad o restricción susceptible de comprobación. Las alertas automáticas apoyan la revisión, pero la decisión final corresponde al analista.
+
+\subsection{Historias de usuario}
+
+Una historia de usuario representa una necesidad desde la perspectiva de un rol y suele adoptar la estructura ``Como [rol], quiero [objetivo], para [beneficio]''. Su calidad no depende únicamente de respetar la plantilla: debe evitar ambigüedad, conservar una finalidad respaldada y disponer de criterios de aceptación observables \cite{lucassen2016}.
+
+El prototipo comprueba su forma mínima y la existencia de criterios de aceptación. La corrección contextual y la utilidad de la historia se determinan posteriormente mediante revisión humana y juicio experto.
+
+\section{Fuentes textuales heterogéneas}
+
+Una fuente textual es una unidad documental con identidad y procedencia. La heterogeneidad se manifiesta en el tipo de archivo, género, propósito, autor, canal, temporalidad, vocabulario, estructura y grado de formalidad. El corpus puede contener correos copiados, entrevistas transcritas, conversaciones, notas, políticas y documentos narrativos sin una plantilla de requisitos.
+
+ReqLab admite PDF con texto seleccionable, DOCX, TXT y Markdown, además de texto pegado directamente en la interfaz. La extracción transforma el contenedor a texto; no presupone que el contenido ya esté clasificado como RF, RNF o HU. El OCR de imágenes y la transcripción automática de audio quedan fuera del alcance, por lo que un PDF escaneado o una grabación deben convertirse previamente en texto.
+
+\subsection{Fragmento y segmentación}
+
+Un fragmento es la unidad mínima recuperable y citable. Cada fragmento conserva un identificador estable dentro del proyecto, el identificador de su fuente, un encabezado derivado, el texto y su posición. Los identificadores son generados por el sistema, por lo que el usuario no debe incorporarlos en sus documentos.
+
+La segmentación busca equilibrar dos propiedades: unidades suficientemente pequeñas para una recuperación precisa y suficientemente completas para conservar sentido local. El procedimiento considera el tipo de fuente. Puede agrupar encabezados de correo, turnos de entrevista o conversación, secciones Markdown y párrafos; cuando una unidad excede el tamaño configurado aplica una ventana con solapamiento. El resultado permanece vinculado al documento original y puede visualizarse desde la interfaz.
+
+\section{Definición interactiva del proyecto}
+
+Las fuentes iniciales rara vez contienen todas las decisiones necesarias. La definición interactiva es una etapa de elicitación asistida en la cual el sistema recorre el corpus completo, construye una interpretación provisional e identifica información ausente, ambigua o contradictoria. A partir de ese análisis formula únicamente preguntas relevantes para el proyecto, en lugar de exigir un cuestionario fijo.
+
+El perfil provisional organiza dimensiones como problema, interesados, alcance, procesos, datos, reglas, restricciones y atributos de calidad. El usuario puede confirmar o corregir la interpretación y responder las decisiones pendientes. Las respuestas confirmadas se convierten en fragmentos identificados como \codigo{USR-DEF-*}. Esto permite utilizarlas como evidencia explícita sin confundirlas con los documentos originales. La definición no aprueba requisitos: reduce incertidumbre antes de generarlos y conserva la decisión humana.
+
+\section{Recuperación de información y RAG}
+
+RAG es un patrón en el cual un sistema recupera evidencia desde una colección externa y la incorpora al contexto de una tarea generativa \cite{lewis2020}. La separación entre recuperación y generación permite limitar el contexto, registrar qué evidencia fue suministrada y volver inspeccionable una parte de la procedencia.
+
+\subsection{Recuperación léxica}
+
+La recuperación léxica de ReqLab utiliza TF--IDF. Para un término \(t\) y un fragmento \(d\), el peso puede expresarse como:
+
+\begin{equation}
+  \mathrm{tfidf}(t,d)=\mathrm{tf}(t,d)
+  \left[\ln\left(\frac{N+1}{\mathrm{df}(t)+1}\right)+1\right],
+\end{equation}
+
+donde \(N\) es el número de fragmentos y \(\mathrm{df}(t)\) indica en cuántos fragmentos aparece el término. La similitud entre consulta y fragmento se obtiene mediante el coseno entre sus vectores.
+
+\subsection{Recuperación semántica e índice vectorial}
+
+La recuperación semántica representa consultas y fragmentos mediante \emph{embeddings}. Sentence-BERT propone representaciones de oraciones que pueden compararse mediante similitud coseno y utilizarse para búsqueda semántica \cite{reimers2019}. En el prototipo, los vectores se calculan localmente y se almacenan en un índice aislado por proyecto. La indexación es incremental: agregar o eliminar una fuente actualiza únicamente sus fragmentos. El nombre de la colección incorpora la configuración del modelo y sus prefijos para evitar mezclar vectores incompatibles.
+
+\subsection{Fusión híbrida y reranking}
+
+La búsqueda léxica favorece coincidencias terminológicas, mientras que la semántica puede recuperar expresiones conceptualmente próximas. ReqLab combina ambas listas mediante \emph{Reciprocal Rank Fusion} (RRF), técnica que integra posiciones producidas por varios recuperadores \cite{cormack2009}. Para un fragmento \(d\), su puntuación fusionada se expresa de forma general como:
+
+\begin{equation}
+  \mathrm{RRF}(d)=
+  w_l\frac{1}{c+r_l(d)}+
+  w_s\frac{1}{c+r_s(d)},
+\end{equation}
+
+donde \(r_l\) y \(r_s\) son sus posiciones en las listas léxica y semántica, \(w_l\) y \(w_s\) son pesos configurables y \(c\) amortigua las diferencias entre posiciones altas. Después de la fusión puede activarse un \emph{cross-encoder} para reordenar el conjunto candidato según la pareja consulta--fragmento. El reranking es opcional y su beneficio no se presupone; la configuración utilizada debe quedar registrada en cada ejecución.
+
+\section{Modelos de lenguaje y generación estructurada}
+
+Un LLM produce texto condicionado por instrucciones y contexto. En la arquitectura, el modelo interviene en tres tareas semánticas: interpretar el corpus y proponer aclaraciones, generar RF/RNF/HU, y preparar propuestas de revisión solicitadas por el usuario. La extracción, persistencia, cálculo de recuperación, comprobación de identificadores, detección heurística de duplicados y exportación se mantienen como operaciones deterministas.
+
+La salida del LLM se restringe mediante esquemas tipados. Los datos recibidos se validan antes de incorporarse al proyecto y, cuando incumplen el contrato, se realiza un número limitado de reintentos guiados por el error. Estas medidas reducen fallos de forma, pero no garantizan corrección semántica; por ello se conserva evidencia y revisión humana.
+
+La cantidad solicitada al modelo también requiere control. Un valor fijo puede inducir omisiones en corpus extensos o favorecer fragmentación y relleno en corpus pequeños; en cambio, una salida sin tope puede exceder la ventana de respuesta y producir estructuras incompletas. Por ello se distingue entre \emph{cantidad real de requisitos}, que no puede deducirse mecánicamente del número de fragmentos, y \emph{presupuesto de generación}, entendido como el máximo operativo de elementos que el agente puede proponer en una ejecución. El presupuesto no es una cuota: el agente debe producir menos artefactos cuando la evidencia no sustente más. La completitud continúa siendo una propiedad semántica evaluada por expertos.
+
+\section{Agentes y arquitectura multiagente}
+
+Un agente es un componente con responsabilidad delimitada, contrato de entrada y salida, instrucciones y herramientas. En esta tesis el término no implica autonomía general, negociación libre ni planificación emergente. ReqLab emplea agentes lógicos especializados coordinados de forma centralizada y secuencial: definición, generación de RF, generación de RNF, generación de HU, trazabilidad y consistencia, y revisión.
+
+La especialización se concreta en consultas de recuperación, instrucciones y esquemas propios. Los agentes generadores se ejecutan en el orden RF--RNF--HU; cada agente puede recibir los artefactos previamente generados como contexto para favorecer coherencia. Estos artefactos no se convierten en evidencia documental. La arquitectura tampoco depende de una biblioteca multiagente: el carácter multiagente surge de la separación explícita de roles, contratos y ejecuciones observables dentro de un orquestador.
+
+\section{Trazabilidad, relaciones y procedencia}
+
+La trazabilidad permite establecer relaciones entre información de origen y artefactos derivados. La procedencia a nivel de fragmento significa que cada artefacto declara uno o más identificadores que conducen al pasaje concreto que lo respalda \cite{mucha2024,guo2025}. ReqLab separa dos relaciones:
+
+\begin{itemize}
+  \item \codigo{source_fragments}: evidencia documental o decisiones confirmadas que sustentan el contenido; y
+  \item \codigo{related_artifacts}: vínculos entre RF, RNF y HU ya generados para expresar cobertura o dependencia.
+\end{itemize}
+
+La separación evita utilizar una salida del modelo como si fuera fuente primaria. También distingue existencia y pertinencia: una cita puede identificar un fragmento real y aun así no respaldar la afirmación. El prototipo verifica automáticamente la existencia; los expertos examinan la pertinencia.
+
+\section{Calidad y medición}
+
+La calidad de un requisito incluye propiedades como claridad, singularidad, verificabilidad, corrección, consistencia y trazabilidad \cite{iso29148}. La evaluación se divide en controles automáticos de forma, citas, relaciones, duplicación y campos obligatorios, y juicio experto sobre coherencia, completitud, pertinencia de la evidencia y calidad global.
+
+ISO/IEC/IEEE 15939:2017 orienta la definición de necesidades de información, medidas base, funciones de cálculo y criterios de interpretación \cite{iso15939}. Los umbrales heurísticos del prototipo son criterios configurables de esta investigación y no valores universales impuestos por la norma. La telemetría de latencia, tokens e intentos describe costo y reproducibilidad de la ejecución, pero no demuestra por sí sola calidad de los artefactos.
+
+\section{Modelo conceptual}
+
+El modelo conceptual actualizado se resume en la cadena:
+
+\begin{align}
+  \text{fuentes} &\rightarrow \text{fragmentos}
+  \rightarrow \text{definición confirmada}
+  \rightarrow \text{recuperación híbrida} \nonumber\\
+  &\rightarrow \text{artefactos}
+  \rightarrow \text{trazas, relaciones y alertas}
+  \rightarrow \text{revisión y evaluación}. \nonumber
+\end{align}
+
+El proyecto delimita el contexto; la ingesta genera unidades citables; la definición incorpora decisiones humanas; la recuperación selecciona evidencia; los agentes producen artefactos especializados; los controles registran incidencias; y el usuario revisa y exporta. Este modelo vincula el marco teórico con la arquitectura, el proceso y las variables metodológicas.

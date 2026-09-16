@@ -1,0 +1,116 @@
+% !TEX root = ../main.tex
+\chapter{Evaluación experimental y resultados}
+\label{cap:evaluacion}
+
+\section{Estado del capítulo}
+
+Este capítulo contiene la estructura que se utilizará para reportar el objetivo específico 4. No se incorporan todavía hallazgos ni conclusiones sobre la calidad del prototipo, porque las salidas preliminares no han sido evaluadas mediante el protocolo de expertos ni comparadas de manera controlada con M0.
+
+\section{Preparación del experimento}
+
+Antes de ejecutar el experimento final se registrarán:
+
+\begin{itemize}
+  \item versión y huella del corpus;
+  \item versión del código y pruebas superadas;
+  \item modelo, proveedor, fecha y parámetros;
+  \item procedimiento definitivo de M0;
+  \item rúbrica, evaluadores y reglas de anonimización; y
+  \item directorios de salida que se conservarán sin modificaciones.
+\end{itemize}
+
+\section{Resultados técnicos del prototipo}
+
+\pendiente{incorporar la matriz de pruebas de aceptación del objetivo 3, con resultado esperado, resultado observado y evidencia.}
+
+\begin{table}[H]
+  \centering
+  \caption{Plantilla para pruebas de aceptación}
+  \label{tab:resultados-pruebas}
+  \small
+  \begin{tabularx}{\textwidth}{p{1.4cm}p{4.0cm}p{3.7cm}p{1.8cm}Y}
+    \toprule
+    ID & Capacidad & Resultado esperado & Estado & Evidencia \\
+    \midrule
+    PA-01 & Gestión de proyectos & & & \\
+    PA-02 & Ingesta y vista previa de fuentes heterogéneas & & & \\
+    PA-03 & Definición adaptativa y confirmación & & & \\
+    PA-04 & Recuperación híbrida y generación RF/RNF/HU & & & \\
+    PA-05 & Trazabilidad, relaciones y consistencia & & & \\
+    PA-06 & Revisión manual y propuesta asistida & & & \\
+    PA-07 & Exportación JSON/DOCX & & & \\
+    PA-08 & Persistencia y despliegue reproducible & & & \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Resultados automáticos}
+
+\pendiente{calcular las medidas sobre las corridas congeladas de M0 y T1. No copiar valores de pruebas preliminares como resultados finales.}
+
+\begin{table}[H]
+  \centering
+  \caption{Plantilla de métricas automáticas}
+  \label{tab:metricas-automaticas}
+  \small
+  \begin{tabularx}{\textwidth}{Yp{2.5cm}p{2.5cm}Y}
+    \toprule
+    Medida & M0 & T1 & Interpretación \\
+    \midrule
+    Número de RF & & & \\
+    Número de RNF & & & \\
+    Número de HU & & & \\
+    Cobertura de trazabilidad & & & \\
+    Tasa de citas inválidas & & & \\
+    Conformidad estructural de HU & & & \\
+    Posibles duplicados & & & \\
+    Posibles duplicados cruzados & & & \\
+    Relaciones inexistentes & & & \\
+    Alertas de clasificación & & & \\
+    Tiempo total & & & \\
+    Tokens e intentos de generación & & & \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Resultados del juicio experto}
+
+\begin{table}[H]
+  \centering
+  \caption{Plantilla de evaluación experta}
+  \label{tab:juicio-experto}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.0cm}p{2.0cm}p{2.0cm}p{2.4cm}Y}
+    \toprule
+    Criterio & M0 & T1 & Acuerdo & Observaciones \\
+    \midrule
+    Coherencia & & & & \\
+    Completitud & & & & \\
+    Claridad & & & & \\
+    Verificabilidad & & & & \\
+    Consistencia & & & & \\
+    Pertinencia de la traza & & & & \\
+    Calidad global & & & & \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Análisis comparativo}
+
+\pendiente{describir diferencias por configuración, tipo de artefacto y criterio, acompañadas por datos y no solo por apreciaciones.}
+
+El análisis deberá separar tres preguntas: si el proceso funcionó técnicamente, si las salidas cumplen propiedades formales y si los artefactos son correctos y útiles según los expertos. Una mejora en trazabilidad no implica necesariamente mayor completitud; un texto bien formado puede contener información no respaldada; y una mayor cantidad de artefactos no equivale a mejor cobertura.
+
+\section{Análisis de errores}
+
+Los errores se clasificarán como omisión, invención, fusión incorrecta, separación excesiva, clasificación RF/RNF incorrecta, HU sin soporte suficiente, ambigüedad no señalada, duplicación y enlace no pertinente. Para cada categoría se reportará frecuencia, ejemplos anonimizados, etapa probable de origen y acción correctiva.
+
+\section{Discusión}
+
+\pendiente{relacionar los resultados con los antecedentes del Capítulo~\ref{cap:estado-arte}, responder PI1--PI4 y explicar costos, límites y transferibilidad.}
+
+La discusión no deberá afirmar que la arquitectura es la mejor en términos universales. El resultado defendible será determinar cómo se comportó la configuración seleccionada bajo el corpus, parámetros y criterios documentados.
+
+\section{Amenazas observadas}
+
+\pendiente{actualizar las amenazas metodológicas con los incidentes reales del experimento: disponibilidad de evaluadores, cambios de proveedor, discrepancias de rúbrica, tamaño del caso y participación del investigador.}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="950" viewBox="0 0 1800 950">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#3974a8"/></marker>
+    <style>.title{font:700 34px Arial;fill:#17324d}.sub{font:400 18px Arial;fill:#52687c}.band{fill:#f5f8fb;stroke:#bfd0de;stroke-width:2}.core{fill:#eef5ff;stroke:#3974a8;stroke-width:2.5}.control{fill:#fff7e8;stroke:#c58b24;stroke-width:2.5}.out{fill:#edf8f3;stroke:#3b8b6d;stroke-width:2.5}.n{font:700 16px Arial;fill:white}.circle{fill:#3974a8}.h{font:700 19px Arial;fill:#17324d}.t{font:400 15px Arial;fill:#334e63}.label{font:700 18px Arial;fill:#52687c}.line{stroke:#3974a8;stroke-width:2.6;fill:none;marker-end:url(#a)}</style>
+  </defs>
+  <rect width="1800" height="950" fill="white"/>
+  <text x="900" y="53" text-anchor="middle" class="title">Proceso de transformación de fuentes textuales</text>
+  <text x="900" y="83" text-anchor="middle" class="sub">Controles de entrada y salida alrededor de las seis etapas del objetivo específico 2</text>
+
+  <rect x="50" y="118" width="1700" height="190" rx="18" class="band"/><text x="78" y="152" class="label">Preparación de la entrada</text>
+  <rect x="180" y="182" width="360" height="92" rx="15" class="control"/><text x="360" y="215" text-anchor="middle" class="h">Ingesta y extracción</text><text x="360" y="242" text-anchor="middle" class="t">archivos heterogéneos o texto pegado</text>
+  <rect x="720" y="182" width="360" height="92" rx="15" class="control"/><text x="900" y="215" text-anchor="middle" class="h">Interpretación provisional</text><text x="900" y="242" text-anchor="middle" class="t">análisis completo y preguntas adaptativas</text>
+  <rect x="1260" y="182" width="360" height="92" rx="15" class="control"/><text x="1440" y="215" text-anchor="middle" class="h">Definición confirmada</text><text x="1440" y="242" text-anchor="middle" class="t">decisiones humanas como USR-DEF-*</text>
+  <path d="M540 228 H720" class="line"/><path d="M1080 228 H1260" class="line"/>
+
+  <rect x="50" y="338" width="1700" height="350" rx="18" class="band"/><text x="78" y="372" class="label">Transformación definida en el OE2</text>
+  <g transform="translate(95,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">1</text><text x="122" y="58" text-anchor="middle" class="h">Segmentación</text><text x="122" y="86" text-anchor="middle" class="t">unidades contextuales</text><text x="122" y="108" text-anchor="middle" class="t">e IDs generados</text></g>
+  <g transform="translate(370,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">2</text><text x="122" y="58" text-anchor="middle" class="h">Recuperación</text><text x="122" y="86" text-anchor="middle" class="t">TF–IDF + vectores</text><text x="122" y="108" text-anchor="middle" class="t">RRF y reranker opcional</text></g>
+  <g transform="translate(645,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">3</text><text x="122" y="58" text-anchor="middle" class="h">Generación</text><text x="122" y="86" text-anchor="middle" class="t">agentes RF → RNF → HU</text><text x="122" y="108" text-anchor="middle" class="t">salida tipada</text></g>
+  <g transform="translate(920,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">4</text><text x="122" y="58" text-anchor="middle" class="h">Trazabilidad</text><text x="122" y="86" text-anchor="middle" class="t">citas a fragmentos</text><text x="122" y="108" text-anchor="middle" class="t">y relaciones internas</text></g>
+  <g transform="translate(1195,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">5</text><text x="122" y="58" text-anchor="middle" class="h">Validación</text><text x="122" y="86" text-anchor="middle" class="t">forma, citas, relaciones</text><text x="122" y="108" text-anchor="middle" class="t">y criterios</text></g>
+  <g transform="translate(1470,420)"><rect width="245" height="140" rx="15" class="core"/><circle cx="28" cy="28" r="18" class="circle"/><text x="28" y="34" text-anchor="middle" class="n">6</text><text x="122" y="58" text-anchor="middle" class="h">Consistencia</text><text x="122" y="86" text-anchor="middle" class="t">duplicados y</text><text x="122" y="108" text-anchor="middle" class="t">clasificación dudosa</text></g>
+  <path d="M340 490 H370" class="line"/><path d="M615 490 H645" class="line"/><path d="M890 490 H920" class="line"/><path d="M1165 490 H1195" class="line"/><path d="M1440 490 H1470" class="line"/>
+  <path d="M1440 274 V324 H218 V420" class="line"/>
+
+  <rect x="50" y="718" width="1700" height="175" rx="18" class="band"/><text x="78" y="752" class="label">Control de la salida</text>
+  <rect x="230" y="785" width="390" height="78" rx="15" class="out"/><text x="425" y="815" text-anchor="middle" class="h">Revisión humana</text><text x="425" y="840" text-anchor="middle" class="t">editar · solicitar propuesta · aceptar o rechazar</text>
+  <rect x="710" y="785" width="380" height="78" rx="15" class="out"/><text x="900" y="815" text-anchor="middle" class="h">Versionado y evidencia</text><text x="900" y="840" text-anchor="middle" class="t">alertas · configuración · telemetría</text>
+  <rect x="1180" y="785" width="390" height="78" rx="15" class="out"/><text x="1375" y="815" text-anchor="middle" class="h">Exportación</text><text x="1375" y="840" text-anchor="middle" class="t">JSON y DOCX</text>
+  <path d="M1592 560 V700 H425 V785" class="line"/><path d="M620 824 H710" class="line"/><path d="M1090 824 H1180" class="line"/>
+</svg>

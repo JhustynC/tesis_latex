@@ -1,0 +1,186 @@
+% !TEX root = ../main.tex
+\chapter{Proceso de transformación de fuentes textuales}
+\label{cap:proceso}
+
+\section{Propósito y alcance}
+
+Este capítulo define cómo ReqLab transforma fuentes textuales no estructuradas en RF, RNF e historias de usuario. Especifica entradas, operaciones, salidas, controles y medidas para las seis etapas nombradas en el objetivo específico 2: segmentación, recuperación contextual, generación, trazabilidad, validación y verificación de consistencia. La ingesta y definición preparan la entrada; la revisión y exportación controlan la salida. Por tanto, estas actividades amplían la operación del prototipo sin modificar el objetivo aprobado.
+
+La estructura se apoya en ISO/IEC/IEEE 29148:2018 para la especificación, trazabilidad y verificación de requisitos \cite{iso29148}, y en ISO/IEC/IEEE 15939:2017 para definir medidas \cite{iso15939}. La adaptación no constituye certificación.
+
+\section{Condiciones de entrada}
+
+Una ejecución parte de un proyecto con nombre, descripción y dominio. El usuario carga PDF con texto seleccionable, DOCX, TXT o Markdown, o pega directamente un correo, entrevista, conversación, nota u otro texto. No se exige una estructura interna ni identificadores previos. Cada fuente conserva nombre, tipo declarado, huella SHA--256, estado y archivo original cuando corresponda.
+
+El proceso automatiza extracción, segmentación, recuperación, generación y controles. No aprueba requisitos ni elige por sí mismo entre reglas contradictorias. Los artefactos resultantes son propuestas revisables.
+
+\section{Flujo general}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{proceso_transformacion.png}
+  \caption{Flujo operativo de transformación y controles de entrada y salida.}
+  \label{fig:proceso-transformacion}
+\end{figure}
+
+\section{Controles previos}
+
+\subsection{Ingesta y extracción}
+
+La extracción convierte el contenedor en texto y rechaza formatos no admitidos, fuentes duplicadas o contenido no utilizable. La vista previa permite al usuario verificar el contenido interpretado y eliminar una fuente. Cualquier cambio invalida la definición y los resultados dependientes, evitando conservar artefactos como si provinieran del corpus vigente.
+
+\subsection{Definición interactiva}
+
+El agente de definición recorre todos los fragmentos documentales mediante análisis por lotes y una síntesis global. Produce un perfil provisional con evidencia y niveles de confianza, y formula preguntas solo para ausencias, baja confianza, contradicciones o decisiones que cambian el sistema. El usuario revisa el perfil y responde las aclaraciones obligatorias. Al confirmar, sus respuestas se persisten e indexan como fragmentos \codigo{USR-DEF-*}.
+
+La salida de este control es una interpretación confirmada que se entrega a los agentes de generación. Si cambian las fuentes, debe repetirse la definición. Esta regla evita utilizar respuestas pertenecientes a una versión anterior del corpus.
+
+\section{Etapas del objetivo específico 2}
+
+\subsection{Etapa 1: segmentación}
+
+\textbf{Objetivo.} Convertir el texto extraído en unidades recuperables y citables.
+
+\textbf{Entrada.} Texto de la fuente, código, nombre y tipo declarado.
+
+\textbf{Operación.} El segmentador identifica unidades naturales según el tipo: encabezados de correo, turnos de entrevista o conversación, secciones Markdown o párrafos. Las unidades extensas se dividen por tamaño con solapamiento.
+
+\textbf{Parámetros iniciales.} Tamaño máximo de 1,200 caracteres y solapamiento de 180. Son valores configurables que se congelarán antes del experimento.
+
+\textbf{Salida.} Fragmentos con ID generado, fuente, encabezado, posición y texto.
+
+\textbf{Control.} Debe existir al menos un fragmento utilizable y sus IDs deben ser únicos dentro del proyecto.
+
+\subsection{Etapa 2: recuperación contextual}
+
+\textbf{Objetivo.} Seleccionar evidencia pertinente para cada agente sin depender del orden de carga ni enviar indiscriminadamente todo el corpus.
+
+\textbf{Entrada.} Fragmentos documentales y de definición, metadatos del proyecto y consulta especializada del agente.
+
+\textbf{Operación.} Se ejecutan recuperación TF--IDF y búsqueda semántica mediante embeddings. Las posiciones se combinan con RRF usando pesos configurables; opcionalmente, un \emph{cross-encoder} reordena los candidatos.
+
+\textbf{Parámetros candidatos después de la calibración técnica.} \(w_l=0.45\), \(w_s=0.55\), \(top\_k=12\), embeddings \codigo{intfloat/multilingual-e5-base} y reranker desactivado. E5 Base se seleccionó por su orientación a recuperación multilingüe y una longitud de entrada compatible con los fragmentos del proyecto. El reranker MMARCO permanece implementado como opción configurable, pero la comparación inicial no mostró una mejora consistente de cobertura frente a la latencia añadida. La configuración utilizada definitivamente se congelará y almacenará en la ejecución experimental.
+
+\textbf{Salida.} Lista ordenada de IDs, puntuaciones o posiciones y texto suministrado al agente.
+
+\textbf{Control.} Los IDs recuperados deben pertenecer al proyecto; la colección vectorial se versiona por modelo y prefijos.
+
+\subsection{Etapa 3: generación estructurada}
+
+\textbf{Objetivo.} Producir propuestas de RF, RNF y HU respaldadas por evidencia.
+
+\textbf{Entrada.} Definición confirmada, evidencia recuperada, contrato tipado, reglas del \emph{prompt} y artefactos generados previamente.
+
+\textbf{Operación.} El orquestador invoca agentes especializados en el orden RF--RNF--HU. Cada agente dispone de una tarea y consulta propia. Los artefactos ya generados se utilizan como contexto de coherencia, pero nunca como citas documentales.
+
+\textbf{Configuración inicial.} Proveedor DeepSeek, modelo \codigo{deepseek-chat}, temperatura (0.1) y hasta tres intentos de validación. Antes de iniciar, el sistema calcula con \codigo{evidence-budget-v1} un intervalo independiente para RF, RNF y HU según las unidades de evidencia y los indicios generales de cada tipo. La interfaz precarga el valor sugerido y permite al usuario seleccionar un máximo dentro del intervalo. El valor se expresa como ``hasta \(n\)'': no obliga a completar una cuota y el agente debe devolver menos artefactos si carece de sustento.
+
+\textbf{Salida.} Objetos tipados con identificador, tipo, título, descripción, prioridad, estado, citas, criterios de aceptación y relaciones.
+
+\textbf{Control.} La respuesta debe satisfacer el esquema Pydantic y citar únicamente fragmentos permitidos. El \emph{prompt} enumera los identificadores de evidencia y relación admitidos mediante ejemplos construidos con datos reales de la recuperación, no con marcadores descriptivos. Si la respuesta supera el presupuesto, el exceso se descarta de forma determinista y el evento queda registrado, sin consumir reintentos para corregir solamente la cantidad. El método, sus entradas, la recomendación y la selección quedan almacenados. Agotados los intentos por JSON inválido o incumplimiento del contrato, la etapa falla de forma explícita y conserva el motivo específico del último rechazo.
+
+\subsection{Etapa 4: construcción de trazabilidad}
+
+\textbf{Objetivo.} Hacer inspeccionable la procedencia y la correspondencia interna.
+
+\textbf{Operación.} \codigo{source_fragments} enlaza el artefacto con documentos o decisiones confirmadas; \codigo{related_artifacts} enlaza RF, RNF y HU. Ambos espacios se validan por separado.
+
+\textbf{Regla mínima.} Todo artefacto debe declarar al menos un fragmento existente. Una relación interna debe apuntar a otro artefacto del mismo proyecto. La existencia no prueba pertinencia semántica.
+
+\textbf{Salida.} Evidencia visible por artefacto y relaciones navegables en revisión y exportación.
+
+\subsection{Etapa 5: validación estructural}
+
+\textbf{Objetivo.} Comprobar los contratos antes de la evaluación experta.
+
+\textbf{Operación.} Se identifican citas o relaciones ausentes e inexistentes, valores no permitidos, descripciones incompletas, HU sin estructura mínima y HU sin criterios de aceptación. Parte de estas restricciones se aplica al recibir la salida del LLM y parte se consolida en el reporte del proyecto.
+
+\textbf{Salida.} Resultado general y observaciones asociadas con cada artefacto. El informe no lo modifica automáticamente.
+
+\subsection{Etapa 6: verificación de consistencia}
+
+\textbf{Objetivo.} Señalar indicios de redundancia o clasificación inconsistente para revisión humana.
+
+\textbf{Operación.} Se calcula similitud de Jaccard entre artefactos del mismo tipo y, con un umbral separado, entre tipos distintos. También se aplican reglas conservadoras para detectar RNF con redacción funcional.
+
+\textbf{Parámetros iniciales.} Umbral de 0.72 para duplicados del mismo tipo y 0.55 para duplicados cruzados. Son heurísticas configurables y no reglas universales de calidad.
+
+\textbf{Salida.} Pares candidatos, puntuación, motivo y observaciones. Ninguna alerta fusiona, reclasifica o descarta un artefacto.
+
+\section{Control posterior: revisión y exportación}
+
+El usuario puede editar manualmente un artefacto, cambiar su clasificación o describir qué desea mejorar. En el segundo caso, el agente de revisión recupera evidencia y crea una propuesta separada. La versión vigente solo cambia si el usuario acepta; el rechazo también queda registrado. Las observaciones automáticas enlazan los elementos afectados con estas acciones, pero nunca realizan correcciones autónomas. Cada modificación genera una versión y actualiza la validación. Una reclasificación asigna un identificador coherente con el nuevo tipo y actualiza de forma versionada las relaciones que utilizaban el identificador anterior.
+
+La exportación produce JSON para análisis y DOCX para lectura o entrega. Ambos formatos incluyen artefactos y procedencia; el reporte técnico incorpora la configuración de la ejecución cuando está disponible.
+
+\section{Tratamiento de incidencias}
+
+\begin{table}[H]
+  \centering
+  \caption{Reglas de tratamiento de incidencias}
+  \label{tab:incidencias-proceso}
+  \small
+  \begin{tabularx}{\textwidth}{p{4.1cm}YY}
+    \toprule
+    Situación & Respuesta automática & Acción posterior \\
+    \midrule
+    Formato no admitido, extracción vacía o fuente duplicada & Rechazar la fuente e informar la causa. & Convertir, corregir o seleccionar otra fuente. \\
+    Cambio de fuente tras definición & Invalidar perfil confirmado y resultados dependientes. & Repetir análisis y confirmación. \\
+    Esquema LLM inválido & Reintentar con el error de validación hasta el máximo. & Corregir configuración o revisar proveedor si falla. \\
+    Cita o relación inválida & Rechazar durante validación tipada o registrar incidencia. & Regenerar o editar con evidencia válida. \\
+    Posible duplicado o clasificación dudosa & Emitir alerta sin modificar. & Revisar y decidir consolidación o clase. \\
+    Cambio de modelo vectorial & Usar una colección versionada compatible. & Reindexar en el nuevo espacio. \\
+    Error de proveedor & Finalizar la ejecución como fallida y conservar el mensaje. & Reintentar cuando el servicio esté disponible. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Registros de evidencia}
+
+\begin{table}[H]
+  \centering
+  \caption{Evidencia conservada por ReqLab}
+  \label{tab:salidas-corrida}
+  \small
+  \begin{tabularx}{\textwidth}{p{4.0cm}Y}
+    \toprule
+    Registro & Contenido \\
+    \midrule
+    Proyecto y fuentes & Metadatos, originales, tipo, huella, estado y fragmentos. \\
+    Definición & Perfil provisional, evidencia, preguntas, respuestas y confirmación. \\
+    Artefactos y versiones & RF, RNF, HU, citas, relaciones, cambios y origen de revisión. \\
+    Validación & Incidencias, duplicados, umbrales y observaciones por artefacto. \\
+    Ejecuciones & Fase, agente, estado, configuración, latencia, tokens, intentos y errores. \\
+    Exportaciones & Representación JSON o documento DOCX descargable. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Medidas de verificación}
+
+\begin{longtable}{p{4.0cm}p{5.8cm}p{4.8cm}}
+  \caption{Medidas definidas para verificar el proceso}
+  \label{tab:medidas-proceso}\\
+  \toprule
+  Necesidad & Medida & Criterio del proyecto \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Necesidad & Medida & Criterio del proyecto \\
+  \midrule
+  \endhead
+  Especificación del proceso & Etapas del OE2 con entrada, operación, salida y control / 6 \(\times 100\) & Debe documentarse el 100\,\% de las etapas. \\
+  Cobertura del análisis de definición & Fragmentos documentales analizados / fragmentos disponibles \(\times 100\) & Meta de 100\,\% según el registro de cobertura. \\
+  Cobertura de trazabilidad & Artefactos con al menos una cita válida / total \(\times 100\) & Meta operativa de 100\,\% antes de evaluación. \\
+  Integridad de citas & Artefactos con cita inválida / total \(\times 100\) & Meta de 0\,\%; cualquier caso requiere revisión. \\
+  Integridad de relaciones & Relaciones inexistentes / relaciones declaradas \(\times 100\) & Meta de 0\,\%. \\
+  Conformidad de HU & HU sin error de forma ni criterios / total de HU \(\times 100\) & Meta operativa de 100\,\%. \\
+  Reproducibilidad & Campos de configuración presentes / campos requeridos \(\times 100\) & Meta de 100\,\% en la corrida experimental. \\
+  \bottomrule
+\end{longtable}
+
+Los porcentajes son criterios de aceptación de esta investigación. Las normas orientan cómo definir y comunicar medidas, pero no establecen esos umbrales de forma universal.
+
+\section{Verificación del objetivo específico 2}
+
+El objetivo 2 se considera documentado cuando sus seis etapas disponen de propósito, entrada, operación, salida, control y tratamiento de errores; la definición previa y revisión posterior tienen límites claros; los contratos permiten seguir la procedencia; y las medidas pueden calcularse a partir de los registros. La especificación actual cubre esos elementos. Los valores obtenidos y hallazgos se incorporarán después de congelar y ejecutar el experimento.

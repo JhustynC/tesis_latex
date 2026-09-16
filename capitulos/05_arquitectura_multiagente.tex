@@ -1,0 +1,210 @@
+% !TEX root = ../main.tex
+\chapter{Diseño de la arquitectura multiagente}
+\label{cap:arquitectura}
+
+\section{Propósito y alcance}
+
+La arquitectura de ReqLab tiene como propósito transformar fuentes textuales no estructuradas en propuestas de RF, RNF e historias de usuario con evidencia verificable. Se adopta una coordinación centralizada y secuencial. Los agentes son unidades lógicas especializadas por responsabilidad, instrucciones, herramientas y contratos; no se afirma que posean autonomía general ni negociación libre.
+
+El diseño se documenta mediante elementos adaptados de ISO/IEC/IEEE 42010:2022 \cite{iso42010}: interesados y preocupaciones, contexto, vistas, relaciones, decisiones y correspondencias. La norma orienta la descripción, sin declarar certificación ni conformidad formal.
+
+\section{Interesados y preocupaciones}
+
+\begin{table}[H]
+  \centering
+  \caption{Interesados y preocupaciones arquitectónicas}
+  \label{tab:interesados-arquitectura}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.4cm}YY}
+    \toprule
+    Interesado & Preocupación & Respuesta del diseño \\
+    \midrule
+    Usuario o analista & Trabajar por proyectos, aportar fuentes reales, aclarar decisiones y revisar salidas. & Interfaz web por etapas, vista previa, definición adaptativa, revisión y exportación. \\
+    Experto evaluador & Inspeccionar evidencia y comparar productos de manera consistente. & Esquemas comunes, citas por fragmento, relaciones y reportes de validación. \\
+    Investigador & Reproducir una corrida y explicar las condiciones utilizadas. & Huellas de fuentes, versiones, parámetros, telemetría y registros de ejecución. \\
+    Tutora y tribunal & Verificar correspondencia entre objetivos, diseño e implementación. & Vistas arquitectónicas, contratos, decisiones y matriz de verificación. \\
+    Desarrollador & Mantener el núcleo independiente del dominio y sustituir componentes. & Capas separadas, configuración externa e interfaces para LLM, recuperación y persistencia. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Contexto y límites}
+
+ReqLab es una aplicación web local de un solo usuario. Recibe archivos PDF, DOCX, TXT o Markdown y texto pegado; conserva los originales; extrae y segmenta su contenido; conduce una definición interactiva; genera artefactos; y permite revisarlos y exportarlos. El servicio LLM externo se utiliza en las tareas semánticas. Los embeddings, la recuperación, la persistencia y los controles deterministas se ejecutan localmente.
+
+Quedan fuera del límite actual: OCR, transcripción automática de audio, autenticación, edición colaborativa multiusuario, aprobación automática de requisitos, resolución autónoma de conflictos, entrenamiento de modelos y comparación exhaustiva de arquitecturas o LLM. DeepSeek es el proveedor validado; otros servicios con interfaz semejante pueden requerir adaptación y no se consideran verificados por defecto.
+
+\section{Vista de capas y componentes}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{arquitectura_componentes.png}
+  \caption{Vista de capas, componentes y agentes de ReqLab.}
+  \label{fig:arquitectura-componentes}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \caption{Responsabilidades de los componentes principales}
+  \label{tab:componentes}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.7cm}p{4.1cm}Y}
+    \toprule
+    Componente & Responsabilidad & Resultado \\
+    \midrule
+    Interfaz Angular & Gestionar proyectos y etapas de fuentes, definición, generación y revisión. & Acciones del usuario y visualización de evidencia. \\
+    API FastAPI & Exponer casos de uso y validar solicitudes HTTP. & Contratos de entrada y respuesta. \\
+    Servicio de aplicación & Coordinar transacciones, agentes, progreso, errores y persistencia. & Flujo reproducible por proyecto. \\
+    Extracción y segmentación & Convertir fuentes y producir unidades citables según su tipo. & Catálogo de fragmentos. \\
+    Agente de definición & Interpretar todo el corpus por lotes, construir perfil y formular aclaraciones. & Perfil provisional, preguntas y decisiones confirmadas. \\
+    Recuperador híbrido & Combinar TF--IDF, embeddings y RRF; aplicar reranking opcional. & Evidencia ordenada por consulta especializada. \\
+    Agentes RF, RNF y HU & Generar cada tipo conforme a su contrato y contexto previo. & Artefactos estructurados con citas y relaciones. \\
+    Agente de trazabilidad y consistencia & Comprobar citas, relaciones, estructura, duplicados y clasificación. & Reporte y alertas por artefacto. \\
+    Agente de revisión & Proponer una versión sustentada sin sobrescribir la vigente. & Propuesta aceptable o rechazable por el usuario. \\
+    Persistencia & Guardar estado relacional, originales, vectores y exportaciones. & Historial auditable del proyecto. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Agentes, roles y herramientas}
+
+\begin{longtable}{p{3.0cm}p{4.0cm}p{3.8cm}p{3.0cm}}
+  \caption{Agentes lógicos de la arquitectura}
+  \label{tab:agentes-arquitectura}\\
+  \toprule
+  Agente & Entrada principal & Herramientas o reglas & Salida \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Agente & Entrada principal & Herramientas o reglas & Salida \\
+  \midrule
+  \endhead
+  Definición & Metadatos y todos los fragmentos documentales. & Análisis jerárquico por lotes, síntesis y esquema tipado. & Perfil provisional y preguntas trazables. \\
+  Generación RF & Perfil confirmado y evidencia recuperada. & Consulta funcional, contrato RF y LLM. & Capacidades observables. \\
+  Generación RNF & Perfil, evidencia y RF existentes. & Consulta de calidad, contrato RNF y LLM. & Restricciones y atributos verificables. \\
+  Generación HU & Perfil, evidencia y artefactos existentes. & Consulta de actores/valor, contrato HU y LLM. & Historias y criterios de aceptación. \\
+  Trazabilidad y consistencia & Artefactos y catálogo de fragmentos. & Reglas deterministas y umbrales configurables. & Validación, duplicados y relaciones inválidas. \\
+  Revisión & Artefacto vigente, instrucción y evidencia recuperada. & Contrato de revisión y LLM. & Propuesta de nueva versión. \\
+  \bottomrule
+\end{longtable}
+
+El recuperador y el servicio de extracción son herramientas compartidas, no agentes generativos adicionales. Esta delimitación evita inflar artificialmente el número de agentes y permite asociar cada intervención del LLM con un rol observable.
+
+\section{Vista de interacción}
+
+La interacción principal sigue una secuencia controlada:
+
+\begin{enumerate}
+  \item el usuario crea un proyecto y agrega fuentes por archivo o texto;
+  \item el servicio extrae, segmenta, persiste e indexa incrementalmente los fragmentos;
+  \item el agente de definición analiza el corpus completo mediante lotes y síntesis;
+  \item el usuario corrige el perfil, responde preguntas y confirma la definición;
+  \item las respuestas se convierten en fragmentos \codigo{USR-DEF-*} y se indexan;
+  \item el orquestador ejecuta secuencialmente los agentes RF, RNF y HU;
+  \item cada agente consulta al recuperador híbrido y recibe los artefactos previos como contexto generado;
+  \item los esquemas tipados validan cada respuesta antes de persistirla;
+  \item el agente de trazabilidad y consistencia crea alertas y validación por artefacto;
+  \item el usuario inspecciona fuentes, edita manualmente o solicita una propuesta de revisión; y
+  \item el proyecto se exporta a JSON o DOCX junto con su información de trazabilidad.
+\end{enumerate}
+
+Una fuente duplicada se detecta mediante su huella; una extracción vacía, esquema inválido o error de proveedor se informa explícitamente. Las alertas de contenido no se resuelven silenciosamente y una propuesta de revisión no sustituye al artefacto hasta que el usuario la acepte.
+
+\section{Vista de información y trazabilidad}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{trazabilidad_informacion.png}
+  \caption{Procedencia documental, relaciones entre artefactos y registro de ejecución.}
+  \label{fig:arquitectura-informacion}
+\end{figure}
+
+La procedencia comienza en una fuente original o en una respuesta de definición confirmada. La segmentación produce un fragmento estable; la recuperación registra su posición o puntuación; y el artefacto conserva el identificador en \codigo{source_fragments}. De forma separada, \codigo{related_artifacts} relaciona RF, RNF y HU. La ejecución almacena la configuración y telemetría necesarias para interpretar cómo se obtuvo la salida.
+
+\section{Contratos de información}
+
+\begin{longtable}{p{3.1cm}p{5.5cm}p{5.8cm}}
+  \caption{Contratos mínimos entre componentes}
+  \label{tab:contratos-arquitectura}\\
+  \toprule
+  Objeto & Campos mínimos & Restricción \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Objeto & Campos mínimos & Restricción \\
+  \midrule
+  \endhead
+  Project & id, name, description, domain, status, definition\_confirmed & El contexto pertenece a un único proyecto. \\
+  Source & source\_code, original\_name, source\_kind, hash, status & La huella no se repite dentro del proyecto. \\
+  Fragment & fragment\_id, source\_id, source\_file, heading, text, position & El ID es único y conserva procedencia. \\
+  Definition profile & dimensiones, valores, evidencia, confianza y confirmación & Las contradicciones no se resuelven sin respuesta del usuario. \\
+  Retrieved evidence & fragment\_id, posición o puntuación, consulta y método & El fragmento debe existir en el catálogo. \\
+  Artifact & artifact\_id, type, title, description, priority, source\_fragments, status, acceptance\_criteria, related\_artifacts & Tipo, prioridad, estado, citas y relaciones se validan contra el contexto permitido. \\
+  Validation report & incidencias, duplicados, relaciones inválidas, umbrales y evaluación por artefacto & Informa; no aprueba ni corrige automáticamente. \\
+  Run & fase, agente, estado, parámetros, métricas, inicio y fin & Conserva una instantánea de la configuración utilizada. \\
+  \bottomrule
+\end{longtable}
+
+\section{Persistencia}
+
+La persistencia se distribuye de acuerdo con la naturaleza de la información:
+
+\begin{itemize}
+  \item SQLite conserva proyectos, fuentes, fragmentos, preguntas, perfiles, artefactos, versiones, propuestas, validaciones y ejecuciones;
+  \item ChromaDB conserva los embeddings y el índice semántico separado por proyecto y versión de modelo; y
+  \item el sistema de archivos conserva documentos originales, caché local de modelos y exportaciones.
+\end{itemize}
+
+Esta combinación no introduce lógica de dominio. SQLite proporciona integridad transaccional e historial; ChromaDB permite recuperación vectorial; y los originales permanecen disponibles para vista previa y auditoría.
+
+\section{Decisiones arquitectónicas}
+
+\begin{table}[H]
+  \centering
+  \caption{Decisiones y justificación}
+  \label{tab:decisiones-arquitectura}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.7cm}YY}
+    \toprule
+    Decisión & Justificación & Consecuencia o límite \\
+    \midrule
+    Orquestación central secuencial & Facilita auditoría, control de estados y correspondencia con el proceso. & Menor autonomía y paralelismo. \\
+    Agentes lógicos especializados & Separa definición, RF, RNF, HU, control y revisión. & La especialización no demuestra por sí sola mayor calidad. \\
+    Definición antes de generar & Incorpora decisiones humanas que el corpus no permite inferir. & Añade una interacción obligatoria cuando existen vacíos relevantes. \\
+    Recuperación híbrida & Combina coincidencia terminológica y proximidad semántica. & Requiere modelos locales y parámetros que deben registrarse. \\
+    Reranker opcional & Permite una segunda evaluación de relevancia sin volverla requisito del MVP. & Aumenta latencia y debe evaluarse antes de atribuir beneficio. \\
+    Esquemas tipados y reintentos & Impiden persistir respuestas que violen contratos conocidos. & No garantizan corrección semántica. \\
+    Evidencia separada de relaciones & Evita tratar artefactos generados como fuentes documentales. & Requiere dos tipos de enlace explícitos. \\
+    Revisión con aprobación humana & Conserva control sobre cambios y versiones. & El flujo no es completamente autónomo. \\
+    Aplicación web y Docker & Facilitan demostración y repetición del entorno. & El MVP sigue siendo local y monousuario. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Correspondencia entre diseño e implementación}
+
+\begin{table}[H]
+  \centering
+  \caption{Correspondencia de arquitectura, código y verificación}
+  \label{tab:correspondencia-codigo}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.5cm}p{5.1cm}Y}
+    \toprule
+    Elemento & Implementación & Verificación \\
+    \midrule
+    Interfaz y API & \codigo{frontend/src/app} y \codigo{api/routers}. & Compilación Angular y pruebas de flujo HTTP. \\
+    Extracción & \codigo{documents.py}. & Formatos, fuente libre y segmentación por tipo. \\
+    Definición & \codigo{agents.py} y \codigo{services.py}. & Cobertura del corpus, preguntas dinámicas y confirmación. \\
+    Recuperación híbrida & \codigo{retrieval.py} y \codigo{vector_store.py}. & Prefijos, fusión, top--k, reranker e indexación incremental. \\
+    Generación especializada & Contratos de \codigo{agents.py}. & RF/RNF/HU, citas, relaciones y esquemas tipados. \\
+    Control y revisión & \codigo{validation.py} y \codigo{RevisionAgent}. & Incidencias, umbrales, propuesta, aceptación y versión. \\
+    Persistencia y exportación & \codigo{storage.py} y \codigo{exporters.py}. & Integridad, configuración de corrida y archivos JSON/DOCX. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Verificación del objetivo específico 1}
+
+El objetivo se verifica mediante una lista de comprobación que confirme interesados, propósito y límites; capas y componentes; agentes y responsabilidades; secuencia e interacción; contratos y flujos de información; persistencia; trazabilidad entre vistas; decisiones y consecuencias; y correspondencia con código y pruebas.
+
+El criterio del proyecto exige que todos los elementos aplicables estén documentados y que no existan contradicciones sin justificar entre las vistas. ISO/IEC/IEEE 42010 no impone un porcentaje universal. Con la especificación actual existe evidencia de diseño para el objetivo 1, sujeta a revisión académica y a mantener sincronizada la correspondencia cuando el prototipo cambie.

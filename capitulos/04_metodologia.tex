@@ -1,0 +1,252 @@
+% !TEX root = ../main.tex
+\chapter{Metodología}
+\label{cap:metodologia}
+
+\section{Enfoque y diseño de investigación}
+
+La investigación es aplicada y de desarrollo tecnológico, porque diseña e implementa un artefacto de software para atender un problema de ingeniería de requisitos. Adopta un enfoque mixto: emplea medidas automáticas para propiedades observables del proceso y una evaluación cualitativa--ordinal por expertos para valorar la calidad semántica.
+
+El diseño corresponde a un experimento comparativo controlado sobre un caso sintético. Las configuraciones reciben el mismo corpus, la misma definición confirmada y deben producir los mismos tipos de artefactos. La variable independiente es el procedimiento de producción ---manual o multiagente--- y las variables dependientes son coherencia, completitud, trazabilidad, calidad y esfuerzo. No se formula una hipótesis direccional; la arquitectura no necesita superar la línea base para que los objetivos sean cumplidos.
+
+\section{Preguntas de investigación}
+
+Las preguntas organizan el análisis y permiten vincular medidas con los objetivos:
+
+\begin{description}
+  \item[PI1.] ¿En qué medida el prototipo genera RF, RNF e historias de usuario coherentes, completos y verificables según el juicio de expertos?
+  \item[PI2.] ¿En qué medida los artefactos generados conservan enlaces válidos y pertinentes hacia los fragmentos de origen?
+  \item[PI3.] ¿Qué diferencias se observan entre el prototipo multiagente y la línea base manual en calidad, trazabilidad y esfuerzo de producción o revisión?
+  \item[PI4.] ¿Qué tipos de error, ambigüedad o inconsistencia permanecen y requieren intervención humana?
+\end{description}
+
+\section{Caso de estudio sintético}
+
+El caso representa la información disponible para proponer un sistema de gestión de solicitudes de mantenimiento del Conjunto Residencial Altavista. Fue construido sin datos personales reales y reproduce materiales que una organización puede entregar al inicio de un proyecto: correos, entrevista transcrita, conversación informal, notas parciales y política operativa. No contiene RF, RNF ni HU preclasificados.
+
+El corpus definitivo contiene ocho fuentes y, con la configuración de segmentación vigente durante su control de preparación, produjo 17 fragmentos y 13,775 caracteres extraídos. Estos conteos verifican integridad técnica del corpus, no constituyen resultados de calidad del experimento. Las fuentes incluyen deliberadamente repetición, expresiones informales, información distribuida, decisiones pendientes y contradicciones sobre cancelación, cierre, acceso y autorización de gastos.
+
+\begin{table}[H]
+  \centering
+  \caption{Composición del corpus sintético Altavista}
+  \label{tab:corpus-altavista}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.0cm}p{3.0cm}YY}
+    \toprule
+    Fuente & Forma & Aporte principal & Dificultad intencional \\
+    \midrule
+    Correo de administración & TXT, correo copiado & Problema, proceso, alcance y necesidades. & Identidad de arrendatarios sin resolver. \\
+    Entrevista de recepción & TXT, transcripción & Canales, emergencias, datos mínimos y operación. & Expresiones coloquiales y decisiones no confirmadas. \\
+    Conversación de mantenimiento & TXT, mensajes & Trabajo móvil, estados, materiales, auditoría y privacidad. & Contexto distribuido entre mensajes breves. \\
+    Notas del comité & Markdown & Alcance, exclusiones, reportes y decisiones pendientes. & Contradicciones explícitas. \\
+    Normas de atención & PDF textual & Clasificación, tiempos, acceso, privacidad y conservación. & Reglas condicionales. \\
+    Correo de residente & TXT, narrativo & Seguimiento, disponibilidad, autorización y privacidad. & Preferencia de acceso por validar. \\
+    Correo de proveedor & TXT, operativo & Asignación, cotización, cierre y permisos. & Propuestas no aprobadas. \\
+    Mensaje de presidencia & TXT, mensaje reenviado & Alcance inicial, auditoría y emergencias. & Seguridad como participante indirecto. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Unidades de análisis}
+
+La unidad de entrada es el fragmento textual identificado por ReqLab, incluido un fragmento de definición confirmada cuando corresponda. La unidad de salida es un artefacto individual RF, RNF o HU. Para la trazabilidad documental, la unidad es el enlace artefacto--fragmento; para la coherencia interna, también se estudia la relación artefacto--artefacto. En la evaluación de conjunto se consideran cobertura, consistencia, duplicación, tiempo y correcciones.
+
+\section{Configuraciones comparadas}
+
+\begin{table}[H]
+  \centering
+  \caption{Configuraciones principales del experimento}
+  \label{tab:configuraciones}
+  \small
+  \begin{tabularx}{\textwidth}{p{1.3cm}p{3.3cm}YY}
+    \toprule
+    Código & Función & Procedimiento & Evidencia generada \\
+    \midrule
+    M0 & Línea base manual & Un analista revisa el corpus y la definición confirmada, y produce RF, RNF, HU y trazas con la guía común, sin asistencia generativa. & Artefactos, trazas, tiempo, correcciones y observaciones. \\
+    T1 & Tratamiento multiagente & ReqLab procesa las mismas entradas mediante definición, RAG híbrido, agentes especializados, controles y revisión. & Artefactos, evidencia recuperada, trazas, relaciones, validación y metadatos de ejecución. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Los archivos manuales creados previamente con apoyo de IA no se utilizarán como M0. La línea base será producida o depurada mediante un procedimiento documentado sin asistencia generativa y con registro de tiempo. Un control de agente único con RAG (B1) y un conjunto adjudicado de referencia ---denominado en algunos textos \emph{Gold Standard}--- son extensiones opcionales. El experimento mínimo no depende de ellos, porque la calidad y la pertinencia semántica serán determinadas mediante juicio experto.
+
+\section{Variables y controles}
+
+\begin{table}[H]
+  \centering
+  \caption{Variables del estudio}
+  \label{tab:variables}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.0cm}p{3.5cm}Y}
+    \toprule
+    Tipo & Variable & Operacionalización \\
+    \midrule
+    Independiente & Procedimiento de producción & M0 o T1. \\
+    Dependiente & Coherencia & Ausencia de contradicción interna y correspondencia comprensible entre elementos. \\
+    Dependiente & Completitud & Cobertura de la información relevante identificada por los expertos. \\
+    Dependiente & Trazabilidad & Existencia y pertinencia de enlaces artefacto--fragmento. \\
+    Dependiente & Calidad & Claridad, singularidad, verificabilidad, corrección y conformidad estructural. \\
+    Dependiente & Esfuerzo & Tiempo de producción, revisión y cantidad de correcciones requeridas. \\
+    Control & Entrada & Mismo corpus, huellas de archivos, catálogo versionado de fragmentos, perfil confirmado y respuestas de definición. \\
+    Control & Reglas & Mismo esquema, guía de redacción, tipos de artefacto y rúbrica. \\
+    Control & T1 & Versión de código, modelo, \emph{prompts}, recuperación, segmentación y umbrales congelados. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Fases de la investigación}
+
+\begin{enumerate}
+  \item \textbf{Preparación:} revisar el corpus Altavista, confirmar que solo contiene fuentes de entrada y calcular sus huellas digitales.
+  \item \textbf{Diseño:} consolidar las vistas, agentes, contratos, decisiones y correspondencia de la arquitectura.
+  \item \textbf{Definición del proceso:} especificar segmentación, recuperación, generación, trazabilidad, validación y consistencia, junto con sus entradas, salidas y controles.
+  \item \textbf{Implementación:} completar y verificar el prototipo web, su API, persistencia y despliegue reproducible.
+  \item \textbf{Ejecución comparativa:} producir M0 y ejecutar T1 con el corpus y la definición confirmada congelados.
+  \item \textbf{Evaluación y análisis:} aplicar métricas automáticas, juicio experto, análisis de errores y amenazas a la validez.
+\end{enumerate}
+
+\section{Procedimiento experimental}
+
+\subsection{Preparación y congelamiento del catálogo común de evidencia}
+
+Antes de producir M0 o T1 se construirá un catálogo común de evidencia. Su propósito es proporcionar a ambos procedimientos las mismas unidades de referencia para la trazabilidad y permitir que los evaluadores localicen el pasaje que sustenta cada artefacto. El catálogo no constituye una interpretación del corpus, no contiene requisitos y no se considera una salida experimental.
+
+La construcción se realizará sobre un proyecto vacío y comprenderá únicamente la ingesta, extracción y segmentación determinista de las ocho fuentes. En esta actividad no intervendrán el LLM, la recuperación contextual, los agentes de generación ni el validador de artefactos. Primero se fijarán el orden de las fuentes, sus nombres, huellas SHA--256 y códigos \codigo{SRC-001}, \codigo{SRC-002}, etc. Luego se aplicará una configuración congelada de extracción, tamaño de fragmento y solapamiento. Cada unidad resultante recibirá un identificador de la forma \codigo{SRC-001-F001}.
+
+El catálogo se exportará en un formato tabular legible y contendrá, como mínimo:
+
+\begin{itemize}
+  \item identificador del fragmento;
+  \item código y nombre de la fuente original;
+  \item posición del fragmento dentro de la fuente;
+  \item encabezado derivado, cuando exista; y
+  \item texto completo de la unidad de evidencia.
+\end{itemize}
+
+Se comprobará que los identificadores sean únicos, que cada fragmento remita a una fuente registrada y que el texto extraído cubra el contenido utilizable de los documentos. El catálogo, las huellas de los archivos y los parámetros de segmentación se almacenarán como una versión del corpus experimental. Una vez iniciada la producción de M0 o T1 no se permitirá regenerar ni modificar estas unidades. Si cambia una fuente o la configuración de segmentación, se deberá crear una nueva versión y reiniciar el procedimiento comparativo.
+
+El responsable de M0 recibirá los ocho documentos originales y el catálogo. Los documentos originales serán el material principal de lectura; el catálogo se utilizará únicamente para localizar y declarar la evidencia. Por ejemplo, un requisito identificado manualmente podrá citar \codigo{SRC-002-F001} sin que el identificador sugiera cómo interpretar o redactar su contenido. ReqLab utilizará internamente los mismos registros e identificadores, de manera que las trazas de M0 y T1 sean verificables sobre unidades equivalentes.
+
+Después de la definición interactiva se añadirá un anexo de decisiones confirmadas. Cada respuesta aceptada conservará su identificador \codigo{USR-DEF-*}, la pregunta que la originó y la decisión registrada. Este anexo se entregará también al responsable de M0 y quedará disponible para T1. Por tanto, el paquete común de entrada estará compuesto por: documentos originales, catálogo congelado de fragmentos, metadatos iniciales del proyecto, perfil confirmado, anexo de decisiones \codigo{USR-DEF-*} y guía común de producción. Ninguna configuración dispondrá de información de negocio adicional.
+
+Los expertos evaluadores recibirán los documentos originales, el catálogo y el anexo de decisiones junto con las dos especificaciones anonimizadas. Esto les permitirá comprobar por separado la existencia de una cita y su pertinencia semántica: que un identificador exista no implica por sí solo que el pasaje respalde el artefacto.
+
+\begin{enumerate}
+  \item Congelar los ocho archivos del corpus, su orden, nombres, huellas y configuración de extracción y segmentación.
+  \item Cargar las fuentes en un proyecto vacío, ejecutar solamente la ingesta y segmentación, y exportar y verificar el catálogo común de fragmentos.
+  \item Ejecutar la definición interactiva sobre ese corpus, revisar la interpretación provisional y responder las aclaraciones.
+  \item Congelar el perfil confirmado, el anexo de fragmentos \codigo{USR-DEF-*} y el paquete común de entrada para M0 y T1.
+  \item Aprobar la guía común de RF, RNF, HU, trazabilidad y evaluación.
+  \item Ejecutar M0 sin asistencia generativa sobre el paquete común, registrando tiempo, decisiones, correcciones y trazas hacia el catálogo.
+  \item Congelar para T1 el código, proveedor, modelo, \emph{prompts}, parámetros de RAG, segmentación, validación y fecha.
+  \item Ejecutar T1 sobre el mismo paquete y conservar artefactos, fuentes citadas, relaciones, alertas, versiones y metadatos.
+  \item Normalizar la presentación, anonimizar el origen como salida A o B y aleatorizar el orden para reducir sesgo del evaluador.
+  \item Entregar a los expertos ambas salidas y el paquete de evidencia, y aplicar las medidas automáticas y la rúbrica.
+  \item Consolidar resultados, acuerdo entre evaluadores, errores y amenazas a la validez.
+\end{enumerate}
+
+La definición confirmada se mantiene igual para M0 y T1. Esta decisión evita que una configuración disponga de decisiones de negocio que la otra no recibió; la etapa se trata como condición controlada de entrada y, en T1, además se documenta su funcionamiento técnico.
+
+\section{Evaluación de los objetivos}
+
+\begin{longtable}{p{1.0cm}p{4.0cm}p{4.7cm}p{4.2cm}}
+  \caption{Estrategia de evaluación por objetivo específico}
+  \label{tab:evaluacion-objetivos}\\
+  \toprule
+  Obj. & Producto evaluado & Procedimiento & Evidencia de cumplimiento \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Obj. & Producto evaluado & Procedimiento & Evidencia de cumplimiento \\
+  \midrule
+  \endhead
+  OE1 & Arquitectura, agentes, roles, flujos, contratos y decisiones. & Lista de comprobación adaptada de ISO/IEC/IEEE 42010:2022 y correspondencia entre diseño, código y pruebas. & Vistas consistentes, responsabilidades cubiertas y revisión académica. \\
+  OE2 & Proceso de segmentación, recuperación, generación, trazabilidad, validación y consistencia. & Lista de comprobación basada en ISO/IEC/IEEE 29148:2018 y medidas definidas con ISO/IEC/IEEE 15939:2017. & Etapas con propósito, entradas, operaciones, salidas, controles y medidas. \\
+  OE3 & Prototipo funcional web. & Pruebas de aceptación sobre proyectos, ingesta heterogénea, definición, generación, revisión, trazabilidad y exportación. & Matriz de pruebas, registros reproducibles y corrida integral. \\
+  OE4 & Resultados de M0 y T1. & Métricas automáticas, rúbrica experta, comparación descriptiva y análisis de errores. & Tablas, acuerdo, discusión y amenazas a la validez. \\
+  \bottomrule
+\end{longtable}
+
+\section{Métricas automáticas}
+
+Las medidas automáticas verifican propiedades observables y no reemplazan la evaluación semántica:
+
+\begin{align}
+  C_{\mathrm{traza}} &=
+  \frac{\text{artefactos con al menos una cita válida}}
+       {\text{artefactos totales}}\times 100, \\
+  E_{\mathrm{cita}} &=
+  \frac{\text{artefactos con alguna cita inválida}}
+       {\text{artefactos totales}}\times 100, \\
+  C_{\mathrm{HU}} &=
+  \frac{\text{HU con formato y criterios válidos}}
+       {\text{HU totales}}\times 100.
+\end{align}
+
+También se registran relaciones inválidas, posibles duplicados del mismo tipo, duplicados cruzados, alertas de clasificación, número de artefactos, completitud de metadatos, latencia, tokens e intentos. La cobertura semántica del corpus, la pertinencia de las citas y la calidad global se determinan mediante expertos. Los umbrales automáticos se reportarán como heurísticos configurables, no como valores normativos.
+
+\section{Control del presupuesto de generación}
+
+Para evitar un límite fijo arbitrario, T1 calcula un presupuesto sugerido para cada tipo de artefacto \(t\in\{RF,RNF,HU\}\). Este valor limita la salida técnica del agente, pero no estima cuántos requisitos existen ni se utiliza como medida de completitud. Sean \(f_i\) los fragmentos confirmados del proyecto y \(\lvert f_i\rvert\) su longitud en caracteres. Las unidades de evidencia se definen como:
+
+\begin{equation}
+  U=\sum_{i=1}^{N}\max\left(1,\left\lceil\frac{\lvert f_i\rvert}{900}\right\rceil\right).
+\end{equation}
+
+Para cada tipo se calcula \(r_t=H_t/N\), donde \(H_t\) es el número de fragmentos que contiene al menos un indicio lingüístico general asociado con funcionalidad, atributo de calidad o actor y valor. La versión inicial del cálculo es:
+
+\begin{align}
+  s_t &= \operatorname{clamp}\!\left(
+    \operatorname{round}\!\left(2\sqrt{U}\,(0.75+0.50r_t)\right),1,24
+  \right), \\
+  m_t &= \operatorname{clamp}\!\left(
+    \max\!\left(s_t+2,\left\lceil1.5s_t\right\rceil\right),3,30
+  \right),
+\end{align}
+
+donde \(s_t\) es el valor sugerido y \(m_t\) el máximo seleccionable. La raíz cuadrada introduce crecimiento sublineal para que un corpus mayor amplíe el presupuesto sin aumentar la salida de forma proporcional; \(r_t\) ajusta moderadamente cada tipo y los topes protegen el contrato JSON y la ventana de respuesta. La interfaz ofrece el intervalo \([1,m_t]\), precarga \(s_t\) y conserva la decisión humana.
+
+Los coeficientes y topes constituyen una heurística de ingeniería versionada como \codigo{evidence-budget-v1}; no proceden de ISO/IEC/IEEE 29148 ni representan valores normativos. Se comprobarán con una corrida piloto separada de la evaluación final y se congelarán antes de observar las calificaciones de expertos. En cada ejecución se almacenarán \(U\), \(H_t\), \(r_t\), \(s_t\), \(m_t\), la versión del método, el valor seleccionado y si la salida alcanzó ese máximo. Para la comparación final se fijará el presupuesto antes de generar T1 y no se reajustará con base en los resultados. Si una corrida piloto satura el presupuesto, se ajustará antes de congelarlo; la saturación en la corrida final se reportará como posible limitación de cobertura. Los expertos evaluarán omisiones, redundancia y completitud, lo cual permite juzgar las consecuencias de la heurística sin confundir cantidad con calidad.
+
+\section{Juicio de expertos}
+
+Se prevé la participación de dos o más evaluadores con experiencia en ingeniería de requisitos o análisis de software. Siempre que la disponibilidad lo permita, serán personas distintas de quienes produzcan M0 y no conocerán el origen manual o multiagente de las salidas durante la calificación inicial. Cada artefacto se valorará con una rúbrica ordinal sobre coherencia, completitud, claridad, verificabilidad, consistencia y pertinencia de la trazabilidad. Los evaluadores recibirán definiciones, ejemplos, el corpus, el catálogo común y el anexo de decisiones confirmadas; trabajarán primero de forma independiente y conservarán sus calificaciones originales aun cuando luego se discutan discrepancias.
+
+Para dos evaluadores se calculará kappa de Cohen o kappa ponderado según la escala. Si participan más evaluadores o existen datos faltantes podrá utilizarse alfa de Krippendorff. Si la disponibilidad permite un solo evaluador, los resultados se reportarán como juicio experto individual y la ausencia de medida de acuerdo se declarará como limitación.
+
+\section{Plan de análisis}
+
+Se presentarán resultados por configuración y tipo de artefacto. M0 y T1 se compararán mediante estadísticos descriptivos, distribución de calificaciones, trazabilidad y esfuerzo. No se crearán repeticiones artificiales de M0 si participa un único analista. Cuando existan observaciones pareadas suficientes, podrá utilizarse una prueba no paramétrica o de permutación acompañada por tamaño de efecto; el análisis no dependerá solamente de un valor \(p\).
+
+El análisis cualitativo clasificará errores como omisión, invención, fusión incorrecta, separación excesiva, clasificación errónea, historia sin actor o beneficio respaldado, sobreespecificación, enlace demasiado general, contradicción no señalada y duplicación.
+
+\section{Validez, ética y reproducibilidad}
+
+\begin{table}[H]
+  \centering
+  \caption{Amenazas principales y acciones de mitigación}
+  \label{tab:amenazas}
+  \small
+  \begin{tabularx}{\textwidth}{p{3.1cm}YY}
+    \toprule
+    Amenaza & Riesgo & Mitigación \\
+    \midrule
+    Validez interna & Ajustar parámetros o presupuestos después de observar los resultados finales. & Congelar corpus, definición, código, modelo, presupuestos, parámetros y \emph{prompts}. \\
+    Validez de constructo & Confundir estructura válida con corrección semántica. & Separar controles automáticos de juicio experto. \\
+    Validez de conclusión & Pocos evaluadores o ejecuciones. & Reportar datos crudos, acuerdo y límites; evitar inferencias no sustentadas. \\
+    Validez externa & Un solo caso sintético y un solo idioma. & Acotar conclusiones y conservar materiales de replicación. \\
+    Dependencia tecnológica & Cambios en el servicio LLM. & Registrar proveedor, modelo, fecha, temperatura, parámetros y respuestas. \\
+    Sesgo del investigador & Participación del tesista en M0 o evaluación. & Separar producción y revisión cuando sea posible, anonimizar y declarar solapamientos. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+El corpus es ficticio y no contiene datos confidenciales. Se conservarán las huellas de las fuentes, respuestas de definición, versión del código, configuración, resultados y rúbricas. El servicio externo procesará únicamente contenido sintético.
+
+\section{Diagrama metodológico}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{metodologia_integral.png}
+  \caption{Fases metodológicas y relación entre diseño, implementación y evaluación.}
+  \label{fig:metodologia}
+\end{figure}

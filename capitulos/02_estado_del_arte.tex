@@ -1,0 +1,115 @@
+% !TEX root = ../main.tex
+\chapter{Estado del arte}
+\label{cap:estado-arte}
+
+\section{Alcance y procedimiento de revisión}
+
+Se realizó una revisión estructurada del corpus bibliográfico disponible para la tesis. Fueron abiertos y clasificados 47 documentos, con lectura profunda de los trabajos directamente comparables y lectura dirigida de las fuentes de apoyo. La revisión consideró combinaciones de los términos \emph{requirements engineering}, \emph{large language model}, \emph{multi-agent}, RAG, \emph{traceability}, \emph{provenance}, \emph{unstructured documents} y \emph{user stories}.
+
+La búsqueda priorizó artículos revisados por pares, capítulos académicos, normas y páginas oficiales. Los preprints se conservaron cuando no se identificó una versión publicada. Este procedimiento permite construir un estado del arte trazable, pero no se presenta como una nueva revisión sistemática exhaustiva de todas las bases. En consecuencia, se evitan afirmaciones absolutas de prioridad y se conserva un protocolo para actualizar la búsqueda antes de la entrega final.
+
+\begin{table}[H]
+  \centering
+  \caption{Criterios aplicados en la revisión del estado del arte}
+  \label{tab:criterios-revision}
+  \small
+  \begin{tabularx}{\textwidth}{>{\bfseries}p{0.24\textwidth}Y}
+    \toprule
+    Elemento & Definición aplicada \\
+    \midrule
+    Pregunta & ¿Qué entradas, salidas, arquitecturas, mecanismos de recuperación, trazas, líneas base y métricas utilizan los estudios cercanos? \\
+    Ventana & NLP y trazabilidad desde 2015; LLM y agentes desde 2020; fundamentos sin límite temporal cuando son necesarios. \\
+    Inclusión & Estudios con método y resultados verificables que extraen, generan, transforman, validan o enlazan artefactos de requisitos. \\
+    Exclusión & Generación de código sin tarea de requisitos, ensayos sin evaluación, duplicados y versiones preliminares cuando existe versión publicada. \\
+    Campos & Entrada, salida, técnica, agentes, RAG, trazabilidad, evaluación, reproducibilidad, limitaciones y relación con la tesis. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Ingeniería de requisitos y fuentes heterogéneas}
+
+La ingeniería de requisitos comprende actividades de obtención, análisis, especificación, validación y gestión de necesidades y requisitos \cite{iso29148,sommerville2011}. En la práctica, la información inicial puede estar distribuida en entrevistas, reuniones, correos, formularios, políticas, incidencias y documentos legados. Los estudios industriales muestran diversidad de técnicas, roles y problemas de comunicación; sus resultados también dependen del contexto organizacional \cite{wagner2019,palomares2021}.
+
+La heterogeneidad relevante para esta tesis no se limita al formato del archivo. Se operacionaliza mediante diferencias de género documental, propósito, autor, temporalidad, vocabulario y nivel de detalle. La diversidad puede producir contradicciones, pero también aporta evidencias complementarias. El desafío consiste en normalizar las necesidades sin eliminar el vínculo con su procedencia.
+
+\section{Trazabilidad previa a la especificación}
+
+La literatura diferencia la trazabilidad posterior a la especificación ---por ejemplo, requisito a diseño, código o prueba--- de la trazabilidad previa. Esta última vincula los requisitos con fuentes como entrevistas, minutas y sistemas legados. La revisión de Mucha, Kaufmann y Riehle muestra que la trazabilidad previa ha recibido menos atención y enfrenta barreras de esfuerzo, mantenimiento y percepción de utilidad \cite{mucha2024}.
+
+Los modelos preentrenados han ampliado la recuperación semántica de enlaces y el procesamiento de lenguaje natural ofrece técnicas para localizar relaciones entre artefactos \cite{guo2025}. Sin embargo, enlazar dos artefactos existentes no equivale a conservar evidencia mientras se genera uno nuevo. Esta diferencia sustenta la procedencia a nivel de fragmento adoptada en la tesis.
+
+\section{Modelos de lenguaje en ingeniería de requisitos}
+
+Los LLM se han aplicado a elicitación asistida, extracción, clasificación, reformulación, verificación y generación de especificaciones. Las revisiones recientes señalan diversidad de entradas, estrategias de \emph{prompting} y métricas, junto con problemas recurrentes de reproducibilidad, alucinación, evaluación e integración humana \cite{hemmat2025,cheng2026}.
+
+El potencial generativo no elimina la necesidad de controles. Norheim et al.\ agrupan dificultades de conocimiento, completitud, procedimiento, entrada, \emph{prompting}, evaluación y formato \cite{norheim2024}. Asimismo, el rendimiento puede disminuir cuando la evidencia relevante se encuentra en posiciones intermedias de contextos extensos \cite{liu2024}. Esto justifica segmentar, recuperar y verificar, sin atribuir a RAG una capacidad automática de resolver información faltante.
+
+\section{Recuperación aumentada y trazabilidad}
+
+RAG combina la memoria paramétrica del modelo generativo con una memoria externa recuperable. El enfoque fundacional condiciona la generación a pasajes seleccionados y hace posible inspeccionar qué información fue recuperada \cite{lewis2020}. En esta tesis, el índice contiene fragmentos de las fuentes del proyecto y, después de la confirmación humana, fragmentos diferenciados de la definición. Las salidas generadas no se incorporan como evidencia documental.
+
+Ali, Naganathan y Bork combinan RAG y LLM para recuperar enlaces entre requisitos y código \cite{ali2024}. QUARE emplea recuperación de cláusulas normativas para verificar modelos de objetivos \cite{quare2026}. Ambos antecedentes muestran que RAG puede apoyar trazabilidad o fundamentación, aunque sus objetos de recuperación difieren de la evidencia documental del proyecto considerada aquí.
+
+\section{Arquitecturas multiagente aplicadas a requisitos}
+
+Una arquitectura multiagente distribuye responsabilidades entre roles y define cómo intercambian artefactos, revisan resultados y controlan la ejecución. MetaGPT ejemplifica el empleo de roles y procedimientos operativos para producir artefactos intermedios \cite{metagpt2024}. No obstante, dividir una tarea no demuestra por sí mismo una ventaja; la arquitectura debe justificarse y evaluarse.
+
+\subsection{MARE}
+
+MARE organiza actividades de elicitación, modelado, verificación y especificación mediante agentes y un espacio compartido de artefactos. Incluye líneas base y una ablación frente a un LLM individual \cite{mare2024}. Su entrada habitual es una idea breve de proyecto; no evalúa la transformación de un paquete documental heterogéneo ni enlaces a fragmentos fuente.
+
+\subsection{Generación y priorización de historias de usuario}
+
+Sami et al.\ emplean roles de Product Owner, QA, Developer y Manager para generar, revisar y priorizar historias de usuario desde una descripción de proyecto \cite{sami2024}. El trabajo respalda la viabilidad de una cadena multiagente, aunque su alcance preliminar no incorpora una evaluación de procedencia documental.
+
+\subsection{iReDev}
+
+iReDev utiliza seis agentes dirigidos por conocimiento, un repositorio de artefactos y puntos de colaboración humana para producir requisitos, modelos y una especificación \cite{iredev2025}. Su registro de qué agente originó un artefacto representa trazabilidad del proceso, pero no identifica el documento y fragmento que respaldan el contenido.
+
+\subsection{Debate multiagente}
+
+Oriol et al.\ aplican participantes y un juez a la clasificación de requisitos funcionales y no funcionales. El debate puede mejorar el desempeño frente a un agente individual, aunque también incrementa tokens y costo \cite{oriol2025}. Este resultado respalda la revisión especializada, pero no demuestra que más agentes mejoren toda tarea de generación.
+
+\subsection{ReqNet}
+
+ReqNet compara múltiples \emph{pipelines} para clasificar oraciones de documentos no estructurados como requisito o no requisito \cite{reqnet2026}. Es relevante para la identificación de información, pero no normaliza necesidades en RF, RNF e historias de usuario ni produce trazabilidad generativa.
+
+\subsection{Generación desde títulos de incidencias}
+
+Paiva, Canedo y Rocha Filho generan requisitos desde títulos de incidencias y evalúan propiedades lingüísticas con apoyo humano \cite{paiva2026}. El estudio distingue acertadamente la buena forma de la corrección contextual: una declaración clara puede seguir siendo incorrecta o incompleta para el dominio.
+
+\subsection{QUARE y TraceLLM}
+
+QUARE coordina agentes especializados y un orquestador, negocia atributos de calidad y emplea RAG normativo \cite{quare2026}. TraceLLM, por su parte, diseña y evalúa \emph{prompts} para recuperar enlaces entre artefactos existentes en varios \emph{benchmarks} \cite{tracellm2026}. El primero recupera normativa y el segundo aborda trazabilidad posterior; ninguno evalúa exactamente la conservación de procedencia durante la generación de RF, RNF e historias desde múltiples fuentes del mismo proyecto.
+
+\section{Comparación de antecedentes directos}
+
+\begin{landscape}
+\begin{longtable}{p{2.7cm}p{3.6cm}p{3.7cm}p{4.0cm}p{4.3cm}}
+  \caption{Comparación de trabajos directamente relacionados}
+  \label{tab:comparacion-antecedentes}\\
+  \toprule
+  Trabajo & Entrada y salida & Arquitectura & Evaluación & Diferencia respecto de la tesis \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Trabajo & Entrada y salida & Arquitectura & Evaluación & Diferencia respecto de la tesis \\
+  \midrule
+  \endhead
+  MARE \cite{mare2024} & Idea breve a modelos y especificación & Cinco agentes; sin RAG documental & Métricas, evaluación humana y líneas base & No procesa corpus heterogéneo ni enlaza fragmentos fuente. \\
+  Sami et al.\ \cite{sami2024} & Descripción a historias y prioridad & Cuatro roles; sin RAG & Un proyecto, similitud, tiempo y clasificación & Estudio preliminar sin procedencia documental. \\
+  iReDev \cite{iredev2025} & Descripción a requisitos, modelos y SRS & Seis agentes y colaboración humana & Diez casos y métricas automáticas & Registra agente de origen, no evidencia documental. \\
+  Debate \cite{oriol2025} & Requisitos existentes a clase RF/RNF & Dos participantes y juez & F1 y comparación con agente único & Clasifica; no genera ni conserva procedencia. \\
+  ReqNet \cite{reqnet2026} & Documentos a requisito/no requisito & Múltiples \emph{pipelines}; sin agentes & Conjuntos públicos, precisión, recall y F1 & No produce RF, RNF, HU ni enlaces. \\
+  Issue titles \cite{paiva2026} & Título de incidencia a requisito & LLM con estrategias de \emph{prompting} & Calidad lingüística y revisión humana & Entrada mínima; la corrección contextual requiere más evidencia. \\
+  QUARE \cite{quare2026} & Descripción a modelos KAOS & Agentes y RAG normativo & Casos, semillas y comparadores & Recupera normas, no fragmentos de las fuentes del proyecto. \\
+  TraceLLM \cite{tracellm2026} & Artefactos existentes a enlaces & \emph{Prompting} con varios LLM & \emph{Benchmarks}, precisión, recall, F1 y F2 & Trazabilidad posterior; no genera requisitos. \\
+  \bottomrule
+\end{longtable}
+\end{landscape}
+
+\section{Brecha y posicionamiento}
+
+La combinación general de LLM, RAG, agentes y validación ya aparece en la literatura. Por ello, la contribución no se formula como la simple unión de tecnologías. La brecha operacional se concentra en un flujo que: procesa géneros textuales heterogéneos de un mismo proyecto; genera RF, RNF e historias de usuario; conserva enlaces verificables artefacto--fragmento; registra alertas sin ocultar contradicciones; y compara el resultado con producción manual bajo un caso controlado.
+
+La arquitectura propuesta se presenta como una opción adecuada al problema y no como la mejor arquitectura universal. La tesis deberá demostrar que fue especificada, implementada y evaluada de forma reproducible, incluso si los resultados finales no muestran superioridad sobre la línea base.

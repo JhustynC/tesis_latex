@@ -1,0 +1,38 @@
+% !TEX root = ../main.tex
+\chapter{Conclusiones y trabajo futuro}
+\label{cap:conclusiones}
+
+\section{Conclusiones}
+
+\pendiente{redactar las conclusiones definitivas después de completar la corrida experimental y el juicio de expertos. Cada conclusión deberá responder a un objetivo y estar respaldada por resultados del Capítulo~\ref{cap:evaluacion}.}
+
+En el estado actual puede afirmarse que los objetivos aprobados conservan correspondencia con el desarrollo: la arquitectura define agentes, roles, flujos y mecanismos de interacción; el proceso especifica las etapas exigidas; y existe un prototipo web funcional que materializa ambas especificaciones. Todavía no corresponde concluir que los artefactos generados poseen mayor calidad que los manuales, porque esa afirmación depende de M0, T1 y la valoración experta.
+
+La evolución desde el prototipo inicial no representa un cambio de problema ni de objetivos. La definición interactiva controla incertidumbres antes de generar; la recuperación híbrida implementa con mayor precisión el mecanismo RAG; y la interfaz, persistencia y revisión convierten el diseño en un prototipo utilizable. Estas decisiones deberán evaluarse como parte de la configuración seleccionada y no presentarse como superioridad universal.
+
+\section{Cumplimiento de objetivos}
+
+\begin{table}[H]
+  \centering
+  \caption{Estado actual de los objetivos específicos}
+  \label{tab:estado-objetivos}
+  \small
+  \begin{tabularx}{\textwidth}{p{1.3cm}p{3.2cm}Yp{3.2cm}}
+    \toprule
+    Obj. & Estado & Evidencia disponible & Pendiente para cierre \\
+    \midrule
+    OE1 & Diseño actualizado & Vistas, agentes, contratos, decisiones, persistencia y correspondencia con código. & Revisión académica y ajustes solicitados. \\
+    OE2 & Proceso actualizado & Seis etapas del objetivo, controles de entrada/salida, incidencias y medidas. & Mantener consistencia con la versión congelada. \\
+    OE3 & Implementación funcional; cierre pendiente & Aplicación Angular, API, persistencia, RAG híbrido, agentes, pruebas y exportación. & Matriz de aceptación, Docker y corrida integral conservada. \\
+    OE4 & Protocolo definido; ejecución pendiente & Variables, M0/T1, métricas, rúbrica y plantillas. & Producir M0, ejecutar T1, evaluar y discutir resultados. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Limitaciones}
+
+Las limitaciones previsibles incluyen un único caso sintético en español, un único proveedor LLM validado, parámetros de recuperación seleccionados sin comparar todas las alternativas, dependencia de embeddings locales, cantidad limitada de expertos y posible participación del tesista en M0. El prototipo no incorpora OCR, transcripción de audio, autenticación ni colaboración multiusuario. La versión final distinguirá las limitaciones previstas de las observadas durante el experimento.
+
+\section{Trabajo futuro}
+
+Las extensiones que no deben comprometer el alcance mínimo incluyen comparar recuperadores, activar y evaluar el reranker, probar otros LLM, incorporar un control de agente único con RAG, construir un conjunto adjudicado de referencia, añadir OCR y transcripción, incorporar autenticación y replicar el estudio con proyectos reales. Solo se reportarán como trabajo realizado si se implementan y evalúan dentro del cronograma.

@@ -1,0 +1,54 @@
+% !TEX root = ../main.tex
+\chapter{Introducción}
+\label{cap:introduccion}
+
+\section{Contexto}
+
+La ingeniería de requisitos constituye una actividad esencial del desarrollo de software porque permite identificar, analizar, documentar y validar las necesidades que deberá satisfacer una solución. Los errores introducidos en esta etapa pueden propagarse hacia el diseño, la implementación y las pruebas, ocasionando retrabajo, aumento de costos e inconsistencias funcionales \cite{sommerville2011}.
+
+En proyectos pequeños y medianos, la información necesaria para definir el sistema suele encontrarse distribuida en entrevistas, reuniones, correos electrónicos, notas, procedimientos y reglas de negocio. Estas fuentes cumplen propósitos diferentes, emplean vocabularios distintos y presentan niveles desiguales de detalle. Por ello, antes de convertirse en requisitos, pueden contener redundancias, omisiones, contradicciones y expresiones ambiguas \cite{wagner2019,palomares2021}.
+
+Los modelos extensos de lenguaje han comenzado a utilizarse para apoyar tareas de obtención, clasificación, reformulación y generación de requisitos. Sin embargo, su capacidad generativa no garantiza que una salida sea correcta para un proyecto concreto. Entre los problemas reportados se encuentran la introducción de información no respaldada, la sensibilidad a la forma del \emph{prompt}, las dificultades con contextos extensos y la falta de mecanismos claros para justificar cada salida \cite{norheim2024,liu2024}.
+
+La recuperación aumentada por generación (\emph{Retrieval-Augmented Generation}, RAG) permite seleccionar fragmentos pertinentes desde una memoria externa y suministrarlos como contexto al modelo \cite{lewis2020}. Por otra parte, una arquitectura multiagente permite separar responsabilidades como ingesta, recuperación, generación, trazabilidad y verificación. La combinación de ambos enfoques ofrece una alternativa para organizar el procesamiento, pero no debe suponerse superior sin evaluación. La tesis estudia una arquitectura concreta y acotada, adecuada al problema y al plazo disponible.
+
+\section{Planteamiento del problema}
+
+La transformación manual de fuentes textuales heterogéneas en artefactos de ingeniería de requisitos demanda que el analista localice información relevante, distinga necesidades de contexto, consolide declaraciones equivalentes, detecte contradicciones y redacte productos verificables. Además, debe conservar el vínculo entre cada artefacto y las fuentes que lo originaron. Esta procedencia previa a la especificación recibe menos atención que la trazabilidad entre requisitos ya escritos y artefactos posteriores del desarrollo \cite{mucha2024}.
+
+Las soluciones recientes basadas en LLM muestran resultados prometedores, pero buena parte de los trabajos cercanos parte de una descripción breve del proyecto, genera un único tipo de artefacto o evalúa enlaces entre artefactos que ya existen. Permanece insuficientemente evaluado un flujo reproducible que procese múltiples géneros textuales de un mismo proyecto, genere requisitos funcionales, requisitos no funcionales e historias de usuario, y conserve evidencia verificable a nivel de fragmento.
+
+En consecuencia, el problema abordado se formula de la siguiente manera: ¿cómo diseñar e implementar una arquitectura multiagente que transforme fuentes textuales heterogéneas en artefactos estructurados de requisitos y mantenga trazabilidad verificable hacia sus fragmentos de origen?
+
+\section{Justificación}
+
+La propuesta tiene relevancia práctica porque busca reducir el esfuerzo de organización inicial sin sustituir la revisión del analista. Los productos generados se consideran propuestas inspeccionables: cada requisito o historia debe incluir identificadores de fragmentos fuente, y las inconsistencias deben registrarse como alertas en lugar de resolverse silenciosamente.
+
+La relevancia académica se encuentra en la definición explícita del proceso y en su evaluación. La tesis no pretende demostrar que una arquitectura sea la mejor de manera universal ni comparar múltiples modelos de lenguaje. Se selecciona una arquitectura orientada por separación de responsabilidades, trazabilidad, reproducibilidad y viabilidad. Su desempeño será evaluado en un caso sintético controlado y comparado con una línea base manual mediante métricas automáticas y juicio de expertos.
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+Desarrollar una arquitectura multiagente para la generación estructurada de requisitos funcionales, requisitos no funcionales e historias de usuario a partir de fuentes textuales heterogéneas y no estructuradas, incorporando mecanismos de recuperación contextual y trazabilidad entre los artefactos generados y sus fuentes originales.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+  \item Diseñar la arquitectura multiagente del sistema, definiendo los agentes, roles, flujos de información y mecanismos de interacción necesarios para el procesamiento estructurado de información textual no estructurada.
+  \item Definir el proceso de transformación de fuentes textuales en requisitos funcionales, requisitos no funcionales e historias de usuario, especificando etapas de segmentación, recuperación contextual, generación, trazabilidad, validación y verificación de consistencia.
+  \item Implementar un prototipo funcional basado en la arquitectura propuesta, capaz de procesar documentos textuales y entrevistas transcritas mediante mecanismos de recuperación aumentada de información (RAG) y generación asistida por múltiples agentes.
+  \item Evaluar el desempeño del prototipo mediante un experimento comparativo frente a una línea base de generación manual de requisitos, analizando criterios de coherencia, completitud, trazabilidad y calidad de los artefactos generados mediante métricas automáticas y juicio de expertos.
+\end{enumerate}
+
+\section{Alcance y delimitaciones}
+
+El núcleo de la tesis comprende el diseño de la arquitectura, la definición del proceso, la implementación de un prototipo web y su evaluación frente a una línea base manual. El prototipo admite archivos PDF con texto seleccionable, DOCX, TXT y Markdown, además de fuentes pegadas como texto libre. No exige encabezados ni una plantilla documental previa: los identificadores y fragmentos de trazabilidad se generan durante la ingesta. La transcripción de audio y el reconocimiento óptico de caracteres quedan fuera del alcance actual.
+
+La arquitectura es genérica respecto del dominio. El caso sintético de evaluación representa la gestión de solicitudes de mantenimiento del Conjunto Residencial Altavista, pero sus actores, reglas y decisiones no se encuentran codificados en el núcleo. Cada proyecto obtiene su contexto únicamente de los metadatos declarados por el usuario, sus fuentes y las respuestas confirmadas durante la etapa de definición.
+
+La evaluación principal compara el tratamiento multiagente con la producción manual usando el mismo corpus, la misma definición confirmada del proyecto y la misma guía de artefactos. Un agente único con RAG y un conjunto adjudicado de referencia podrán incorporarse como extensiones si el cronograma y la disponibilidad de evaluadores lo permiten; no constituyen condiciones necesarias para cumplir los objetivos aprobados. La calidad final será determinada mediante evidencia automática y juicio experto, sin formular una hipótesis direccional que obligue al sistema a superar la línea base.
+
+\section{Estructura del documento}
+
+El Capítulo~\ref{cap:estado-arte} presenta los antecedentes. El Capítulo~\ref{cap:marco-teorico} define los conceptos centrales. El Capítulo~\ref{cap:metodologia} describe el diseño metodológico. Los capítulos~\ref{cap:arquitectura} y~\ref{cap:proceso} desarrollan los objetivos específicos 1 y 2. El Capítulo~\ref{cap:implementacion} documenta el prototipo, mientras que el Capítulo~\ref{cap:evaluacion} reunirá el experimento y sus resultados. Finalmente, el Capítulo~\ref{cap:conclusiones} presentará conclusiones, limitaciones y trabajo futuro.

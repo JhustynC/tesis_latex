@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="900" viewBox="0 0 1800 900">
+  <defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#3974a8"/></marker><style>.title{font:700 34px Arial;fill:#17324d}.sub{font:400 18px Arial;fill:#52687c}.box{fill:#eef5ff;stroke:#3974a8;stroke-width:2.5}.human{fill:#fff7e8;stroke:#c58b24;stroke-width:2.5}.green{fill:#edf8f3;stroke:#3b8b6d;stroke-width:2.5}.gray{fill:#f5f8fb;stroke:#aebfcd;stroke-width:2.2}.h{font:700 19px Arial;fill:#17324d}.t{font:400 15px Arial;fill:#334e63}.tag{font:700 15px Arial;fill:#3974a8}.line{stroke:#3974a8;stroke-width:2.7;fill:none;marker-end:url(#a)}.dash{stroke:#7b8fa1;stroke-width:2.4;stroke-dasharray:9 7;fill:none;marker-end:url(#a)}</style></defs>
+  <rect width="1800" height="900" fill="white"/><text x="900" y="54" text-anchor="middle" class="title">Modelo de trazabilidad y procedencia</text><text x="900" y="84" text-anchor="middle" class="sub">La evidencia documental, las relaciones internas y la ejecución se conservan por separado</text>
+
+  <text x="85" y="151" class="tag">EVIDENCIA DE ORIGEN</text>
+  <rect x="85" y="175" width="275" height="120" rx="16" class="box"/><text x="222" y="211" text-anchor="middle" class="h">Fuente original</text><text x="222" y="239" text-anchor="middle" class="t">PDF · DOCX · TXT · MD</text><text x="222" y="263" text-anchor="middle" class="t">o texto pegado</text>
+  <rect x="85" y="355" width="275" height="120" rx="16" class="human"/><text x="222" y="391" text-anchor="middle" class="h">Decisión confirmada</text><text x="222" y="419" text-anchor="middle" class="t">respuesta humana</text><text x="222" y="443" text-anchor="middle" class="t">USR-DEF-*</text>
+  <rect x="480" y="265" width="285" height="120" rx="16" class="box"/><text x="622" y="301" text-anchor="middle" class="h">Fragmento citable</text><text x="622" y="329" text-anchor="middle" class="t">ID · fuente · posición</text><text x="622" y="353" text-anchor="middle" class="t">encabezado · texto</text>
+  <path d="M360 235 H420 V305 H480" class="line"/><path d="M360 415 H420 V345 H480" class="line"/>
+
+  <rect x="880" y="265" width="300" height="120" rx="16" class="gray"/><text x="1030" y="301" text-anchor="middle" class="h">Evidencia recuperada</text><text x="1030" y="329" text-anchor="middle" class="t">consulta · posición/puntuación</text><text x="1030" y="353" text-anchor="middle" class="t">método y top-k</text>
+  <path d="M765 325 H880" class="line"/>
+  <rect x="1320" y="265" width="330" height="120" rx="16" class="green"/><text x="1485" y="301" text-anchor="middle" class="h">Artefacto RF / RNF / HU</text><text x="1485" y="329" text-anchor="middle" class="t">source_fragments</text><text x="1485" y="353" text-anchor="middle" class="t">cita verificable al origen</text>
+  <path d="M1180 325 H1320" class="line"/>
+
+  <text x="85" y="570" class="tag">RELACIONES Y AUDITORÍA</text>
+  <rect x="250" y="605" width="330" height="115" rx="16" class="green"/><text x="415" y="641" text-anchor="middle" class="h">Otro artefacto</text><text x="415" y="669" text-anchor="middle" class="t">RF, RNF o HU existente</text><text x="415" y="693" text-anchor="middle" class="t">related_artifacts</text>
+  <rect x="735" y="605" width="330" height="115" rx="16" class="human"/><text x="900" y="641" text-anchor="middle" class="h">Validación y revisión</text><text x="900" y="669" text-anchor="middle" class="t">existencia · pertinencia humana</text><text x="900" y="693" text-anchor="middle" class="t">alertas y versiones</text>
+  <rect x="1220" y="605" width="330" height="115" rx="16" class="gray"/><text x="1385" y="641" text-anchor="middle" class="h">Registro de ejecución</text><text x="1385" y="669" text-anchor="middle" class="t">configuración · modelo · prompts</text><text x="1385" y="693" text-anchor="middle" class="t">latencia · tokens · intentos</text>
+  <path d="M1320 365 H1240 V662 H1065" class="dash"/><path d="M580 662 H735" class="line"/><path d="M1385 605 V500 H1485 V385" class="dash"/>
+
+  <rect x="245" y="790" width="1310" height="58" rx="14" class="gray"/><text x="900" y="826" text-anchor="middle" class="t">Una relación entre artefactos favorece coherencia; no sustituye la evidencia documental que sustenta su contenido.</text>
+</svg>

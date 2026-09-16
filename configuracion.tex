@@ -1,0 +1,63 @@
+% !TEX root = main.tex
+% Codificación, idioma y tipografía
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% Márgenes solicitados para la plantilla.
+% Ajustar únicamente si la universidad entrega medidas institucionales distintas.
+\usepackage[
+  letterpaper,
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3.0cm,
+  right=2.5cm,
+  headheight=15pt
+]{geometry}
+
+% Interlineado y párrafos
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+
+% Figuras, tablas y fórmulas
+\usepackage{graphicx}
+\graphicspath{{figuras/}}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage{float}
+\usepackage{pdflscape}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% Enlaces y referencias internas
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Diseño de una arquitectura multiagente para la generación estructurada de artefactos de ingeniería de requisitos},
+  pdfauthor={Carvajal Arias, Jhustyn Christopher},
+  pdfsubject={Trabajo de titulación},
+  pdfkeywords={ingeniería de requisitos, sistemas multiagente, RAG, trazabilidad}
+}
+
+% Ajustes generales
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\renewcommand{\bibname}{Referencias}
+\renewcommand{\contentsname}{Índice general}
+\renewcommand{\listfigurename}{Índice de figuras}
+\renewcommand{\listtablename}{Índice de tablas}
+\captionsetup{font=small,labelfont=bf}
+\setlist[itemize]{topsep=3pt,itemsep=2pt,parsep=0pt}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,parsep=0pt}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\codigo}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\pendiente}[1]{\textcolor{red!70!black}{[Pendiente: #1]}}

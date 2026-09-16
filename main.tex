@@ -1,0 +1,49 @@
+\documentclass[12pt,letterpaper,oneside]{report}
+
+\input{configuracion}
+\input{datos_tesis}
+
+\begin{document}
+
+\pagenumbering{roman}
+\input{portada}
+
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{capitulos/01_introduccion}
+\include{capitulos/02_estado_del_arte}
+\include{capitulos/03_marco_teorico}
+\include{capitulos/04_metodologia}
+\include{capitulos/05_arquitectura_multiagente}
+\include{capitulos/06_proceso_transformacion}
+\include{capitulos/07_implementacion}
+\include{capitulos/08_evaluacion_resultados}
+\include{capitulos/09_conclusiones}
+
+\appendix
+\include{anexos/anexo_a_materiales}
+
+\input{referencias/referencias}
+
+\end{document}
+Seguridad será el punto inicial de recepción y coordinación de las emergencias, pero no será responsable de gestionar todo el ciclo del caso.
+
+Su función será:
+
+recibir el aviso de emergencia;
+contactar inmediatamente al responsable de turno;
+registrar o permitir que posteriormente se registre el evento en el sistema, incluyendo hora del aviso y responsable contactado;
+dejar constancia de que la situación fue derivada para atención.
+
+Una vez controlado el riesgo y creado el caso de mantenimiento, los cambios posteriores de estado, asignación, trabajo realizado y cierre serán responsabilidad de administración y del personal de mantenimiento correspondiente.
+
+Las normas establecen que la persona debe comunicarse primero con Seguridad, que Seguridad contacta al responsable de turno y que el registro digital puede completarse cuando el riesgo esté controlado. No establecen que Seguridad deba actualizar todo el ciclo de estados.
