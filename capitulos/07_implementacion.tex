@@ -74,9 +74,9 @@ Las fuentes pueden cargarse como archivos o registrarse pegando texto con un tí
 
 \section{Etapa de definición}
 
-\codigo{ProjectDefinitionAgent} evita asumir que la información importante se encuentra en los primeros fragmentos. Divide el corpus completo en lotes, extrae hallazgos y dudas trazables, consolida los resúmenes y construye un perfil provisional. Solo formula preguntas para dimensiones ausentes o de baja confianza, contradicciones y decisiones relevantes.
+\codigo{ProjectDefinitionAgent} evita asumir que la información importante se encuentra en los primeros fragmentos. Divide el corpus completo en lotes configurables de 18\,000 caracteres y utiliza hasta tres trabajadores para analizarlos en paralelo. Después consolida localmente las coincidencias textuales por dimensión, reúne sus citas y conserva por separado las formulaciones distintas. Con esa entrada construye un perfil provisional y formula preguntas para dimensiones ausentes o de baja confianza, contradicciones y decisiones relevantes.
 
-El usuario puede revisar la interpretación antes de confirmar. Las respuestas obligatorias resueltas se almacenan en SQLite y se convierten en fragmentos \codigo{USR-DEF-*}, los cuales ingresan al índice. Si se modifica una fuente, la confirmación se invalida. Si se reconfirma una definición después de haber generado artefactos, Angular presenta una advertencia explícita: al aceptar, se eliminan los artefactos, versiones, observaciones y ejecuciones de generación anteriores, mientras se conservan fuentes y respuestas. El backend exige el indicador \codigo{reset\_generation} cuando detecta resultados existentes, por lo que esta regla no depende únicamente de la interfaz. Esta implementación conecta la elicitación humana con la generación sin presentar inferencias del LLM como hechos confirmados ni mezclar salidas de definiciones distintas.
+El usuario puede revisar la interpretación antes de confirmar. Las respuestas obligatorias resueltas se almacenan en SQLite y se convierten en fragmentos \codigo{USR-DEF-*}, los cuales ingresan al índice. La API admite campos de definición extensos con un límite de seguridad de 20\,000 caracteres, de modo que una interpretación obtenida de un corpus amplio no sea rechazada al confirmarse. Si se modifica una fuente, la confirmación se invalida. Si se reconfirma una definición después de haber generado artefactos, Angular presenta una advertencia explícita: al aceptar, se eliminan los artefactos, versiones, observaciones y ejecuciones de generación anteriores, mientras se conservan fuentes y respuestas. El backend exige el indicador \codigo{reset\_generation} cuando detecta resultados existentes, por lo que esta regla no depende únicamente de la interfaz. Esta implementación conecta la elicitación humana con la generación sin presentar inferencias del LLM como hechos confirmados ni mezclar salidas de definiciones distintas.
 
 \section{Recuperación híbrida}
 
@@ -90,13 +90,13 @@ El servicio ejecuta tres instancias de \codigo{SpecializedGenerationAgent} en se
 
 Antes de esa ejecución, \codigo{generation\_budget.py} recorre todos los fragmentos confirmados y calcula mínimos, sugerencias y máximos independientes. El endpoint \codigo{GET /generation/recommendations} expone el cálculo a Angular. La pantalla de generación muestra tres controles deslizantes ---RF, RNF y HU---, informa el volumen analizado y rotula cada selección como un máximo. \codigo{POST /generation} recibe los tres valores; el campo anterior \codigo{limit\_per\_type} se conserva para compatibilidad con clientes previos. El orquestador aplica el valor correspondiente a cada agente y almacena tanto la recomendación como la selección en los parámetros de la corrida.
 
-La respuesta se valida con modelos Pydantic. Se controlan tipo, prioridad, estado, criterios, citas y relaciones permitidas. El ejemplo JSON se construye con identificadores realmente autorizados para evitar que el LLM copie marcadores inválidos. Cuando la respuesta incumple el esquema, el cliente puede reintentar hasta el máximo configurado usando el error como retroalimentación. Si todos los intentos fallan, la telemetría y el mensaje de la corrida incluyen una síntesis segura del último error de validación. No existe una llamada posterior que omita la validación.
+La respuesta se valida con modelos Pydantic. Se controlan tipo, prioridad, procedencia de prioridad, estado, criterios, citas y relaciones permitidas. El contrato añade patrón EARS y criterios de verificación para RF y RNF; para RNF incorpora categoría, métrica, unidad, umbral y método de verificación. Los campos no sustentados se conservan vacíos y el estado puede indicar que se requiere aclaración. Una prioridad sin procedencia explícita se transforma en \emph{No definida}, en lugar de asumir un nivel medio. El ejemplo JSON se construye con identificadores realmente autorizados para evitar que el LLM copie marcadores inválidos. Cuando la respuesta incumple el esquema, el cliente puede reintentar hasta el máximo configurado usando el error como retroalimentación. Si todos los intentos fallan, la telemetría y el mensaje de la corrida incluyen una síntesis segura del último error de validación. No existe una llamada posterior que omita la validación.
 
 \section{Validación, revisión y exportación}
 
-\codigo{TraceabilityConsistencyAgent} verifica citas y relaciones, conformidad de HU, indicios de clasificación y duplicación. Los posibles duplicados se separan entre pares del mismo tipo y pares cruzados. Cada observación se asocia con los artefactos correspondientes y la interfaz la presenta como alerta, no como corrección automática.
+\codigo{TraceabilityConsistencyAgent} verifica citas y relaciones, conformidad EARS de RF, criterios de verificación, completitud de medición de RNF, procedencia de prioridad, conformidad de HU, indicios de clasificación y duplicación. Los posibles duplicados se separan entre pares del mismo tipo y pares cruzados. Cada observación se asocia con los artefactos correspondientes y la interfaz la presenta como alerta, no como corrección automática.
 
-El usuario puede abrir cada observación y localizar directamente el artefacto implicado. Desde el panel de revisión puede modificar la redacción y la clasificación, cambiar su estado o solicitar a \codigo{RevisionAgent} una propuesta sustentada. La propuesta se conserva aparte y puede aceptarse o rechazarse. Una reclasificación modifica el prefijo legible, actualiza referencias internas y crea versiones tanto para el artefacto como para las relaciones afectadas. Cada cambio recalcula la validación. Finalmente, el proyecto puede exportarse como JSON o DOCX con sus citas, relaciones y datos de ejecución disponibles.
+El usuario puede abrir cada observación y localizar directamente el artefacto implicado. Desde el panel de revisión puede modificar redacción, clasificación, prioridad, patrón EARS, criterios de verificación, campos de medición de RNF y criterios de aceptación, cambiar el estado o solicitar a \codigo{RevisionAgent} una propuesta sustentada. La propuesta se conserva aparte y puede aceptarse o rechazarse. Una reclasificación modifica el prefijo legible, actualiza referencias internas y crea versiones tanto para el artefacto como para las relaciones afectadas. Cada cambio recalcula la validación. Finalmente, el proyecto puede exportarse como JSON o DOCX; la salida documental incluye fichas por tipo y una matriz de trazabilidad con extractos de evidencia.
 
 \section{Observabilidad y reproducibilidad}
 
@@ -106,7 +106,7 @@ La telemetría permite auditar costos y comparar ejecuciones, pero no se interpr
 
 \section{Pruebas implementadas}
 
-En el estado documentado, la suite contiene 31 pruebas automatizadas y finaliza correctamente. Estas pruebas no consumen el proveedor externo; utilizan dobles controlados para comprobar contratos y flujo.
+En el estado documentado, la suite contiene 63 pruebas automatizadas y finaliza correctamente. Estas pruebas no consumen el proveedor externo; utilizan dobles controlados para comprobar contratos y flujo. Entre ellas se comprueba que una prioridad ausente no se convierta silenciosamente en media y que el validador detecte incumplimientos EARS, criterios de verificación ausentes y campos de medición pendientes.
 
 \begin{table}[H]
   \centering
@@ -120,7 +120,7 @@ En el estado documentado, la suite contiene 31 pruebas automatizadas y finaliza 
     Proyectos y fuentes & Creación, archivo, eliminación, vista previa, duplicados e invalidación. \\
     Segmentación & Transmisión del tipo de fuente y conservación de unidades contextuales. \\
     Recuperación & Prefijos de consulta/pasaje, \(top\_k\), composición del reranker e índice incremental. \\
-    Definición & Análisis del corpus, preguntas, respuestas y fragmentos confirmados. \\
+    Definición & Cobertura de todos los fragmentos por lotes, consolidación local con conservación de citas, preguntas, respuestas y fragmentos confirmados. \\
     Generación & Orden de agentes, esquemas, presupuestos independientes, diagnóstico de reintentos, relaciones y ausencia de bypass de validación. \\
     Telemetría & Latencia, intentos y agregación sin duplicar consumos. \\
     Validación y revisión & Citas, relaciones, duplicados, reinicio explícito, edición, reclasificación, propuesta y decisión de cambio. \\

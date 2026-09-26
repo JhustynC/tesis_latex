@@ -139,7 +139,7 @@ La procedencia comienza en una fuente original o en una respuesta de definición
   Fragment & fragment\_id, source\_id, source\_file, heading, text, position & El ID es único y conserva procedencia. \\
   Definition profile & dimensiones, valores, evidencia, confianza y confirmación & Las contradicciones no se resuelven sin respuesta del usuario. \\
   Retrieved evidence & fragment\_id, posición o puntuación, consulta y método & El fragmento debe existir en el catálogo. \\
-  Artifact & artifact\_id, type, title, description, priority, source\_fragments, status, acceptance\_criteria, related\_artifacts & Tipo, prioridad, estado, citas y relaciones se validan contra el contexto permitido. \\
+  Artifact & artifact\_id, type, title, description, priority, priority\_source, source\_fragments, status, verification\_criteria, acceptance\_criteria, related\_artifacts y campos propios del tipo & Tipo, prioridad, procedencia, patrón EARS, criterios, citas y relaciones se validan; los datos ausentes permanecen explícitamente pendientes. \\
   Validation report & incidencias, duplicados, relaciones inválidas, umbrales y evaluación por artefacto & Informa; no aprueba ni corrige automáticamente. \\
   Run & fase, agente, estado, parámetros, métricas, inicio y fin & Conserva una instantánea de la configuración utilizada. \\
   \bottomrule
@@ -171,6 +171,7 @@ Esta combinación no introduce lógica de dominio. SQLite proporciona integridad
     Orquestación central secuencial & Facilita auditoría, control de estados y correspondencia con el proceso. & Menor autonomía y paralelismo. \\
     Agentes lógicos especializados & Separa definición, RF, RNF, HU, control y revisión. & La especialización no demuestra por sí sola mayor calidad. \\
     Definición antes de generar & Incorpora decisiones humanas que el corpus no permite inferir. & Añade una interacción obligatoria cuando existen vacíos relevantes. \\
+    Consolidación determinista en definición & Une únicamente hallazgos textualmente equivalentes de una misma dimensión y acumula sus citas, sin delegar esta operación al LLM. & Puede conservar paráfrasis repetidas, pero evita fusionar por error decisiones o contradicciones diferentes. \\
     Recuperación híbrida & Combina coincidencia terminológica y proximidad semántica. & Requiere modelos locales y parámetros que deben registrarse. \\
     Reranker opcional & Permite una segunda evaluación de relevancia sin volverla requisito del MVP. & Aumenta latencia y debe evaluarse antes de atribuir beneficio. \\
     Esquemas tipados y reintentos & Impiden persistir respuestas que violen contratos conocidos. & No garantizan corrección semántica. \\

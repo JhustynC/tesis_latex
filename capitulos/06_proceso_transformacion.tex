@@ -31,7 +31,11 @@ La extracción convierte el contenedor en texto y rechaza formatos no admitidos,
 
 \subsection{Definición interactiva}
 
-El agente de definición recorre todos los fragmentos documentales mediante análisis por lotes y una síntesis global. Produce un perfil provisional con evidencia y niveles de confianza, y formula preguntas solo para ausencias, baja confianza, contradicciones o decisiones que cambian el sistema. El usuario revisa el perfil y responde las aclaraciones obligatorias. Al confirmar, sus respuestas se persisten e indexan como fragmentos \codigo{USR-DEF-*}.
+El agente de definición recorre todos los fragmentos documentales. Para no enviar el corpus completo en una sola solicitud, agrupa los fragmentos en lotes de hasta 18\,000 caracteres y procesa hasta tres lotes en paralelo. Cada lote produce hallazgos e incertidumbres clasificados por dimensión y acompañados por sus identificadores de evidencia.
+
+Antes de la síntesis global se ejecuta una consolidación local y determinista. El procedimiento normaliza mayúsculas, puntuación y espacios, y solo fusiona textos equivalentes pertenecientes a la misma dimensión; cuando encuentra una coincidencia, conserva un único hallazgo y reúne sus citas. Las formulaciones diferentes y las contradicciones permanecen separadas. Esta estrategia es deliberadamente conservadora: reduce repeticiones exactas sin introducir otra decisión generativa ni arriesgar la pérdida de evidencia. La integración semántica posterior corresponde al LLM de síntesis, que construye el perfil provisional y formula preguntas únicamente para ausencias, baja confianza, contradicciones o decisiones relevantes.
+
+El usuario revisa el perfil y responde las aclaraciones obligatorias. Al confirmar, sus respuestas se persisten e indexan como fragmentos \codigo{USR-DEF-*}.
 
 La salida de este control es una interpretación confirmada que se entrega a los agentes de generación. Si cambian las fuentes, debe repetirse la definición. Esta regla evita utilizar respuestas pertenecientes a una versión anterior del corpus.
 
@@ -73,11 +77,11 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Operación.} El orquestador invoca agentes especializados en el orden RF--RNF--HU. Cada agente dispone de una tarea y consulta propia. Los artefactos ya generados se utilizan como contexto de coherencia, pero nunca como citas documentales.
 
-\textbf{Configuración inicial.} Proveedor DeepSeek, modelo \codigo{deepseek-chat}, temperatura (0.1) y hasta tres intentos de validación. Antes de iniciar, el sistema calcula con \codigo{evidence-budget-v1} un intervalo independiente para RF, RNF y HU según las unidades de evidencia y los indicios generales de cada tipo. La interfaz precarga el valor sugerido y permite al usuario seleccionar un máximo dentro del intervalo. El valor se expresa como ``hasta \(n\)'': no obliga a completar una cuota y el agente debe devolver menos artefactos si carece de sustento.
+\textbf{Configuración inicial.} Proveedor DeepSeek, modelo DeepSeek-V4.1-Flash mediante el identificador de API \codigo{deepseek-flash}, modo de razonamiento desactivado explícitamente, temperatura 0.1, límite de salida de 12\,000 tokens y hasta tres intentos de validación. Esta configuración busca una salida JSON controlada y reproducible; además, cada ejecución registra el modelo servido, la huella del sistema y el consumo de tokens cuando la API proporciona esos datos. Antes de iniciar, el sistema calcula con \codigo{evidence-budget-v1} un intervalo independiente para RF, RNF y HU según las unidades de evidencia y los indicios generales de cada tipo. La interfaz precarga el valor sugerido y permite al usuario seleccionar un máximo dentro del intervalo. El valor se expresa como ``hasta \(n\)'': no obliga a completar una cuota y el agente debe devolver menos artefactos si carece de sustento.
 
-\textbf{Salida.} Objetos tipados con identificador, tipo, título, descripción, prioridad, estado, citas, criterios de aceptación y relaciones.
+\textbf{Salida.} Objetos tipados con identificador, tipo, título, enunciado, prioridad y su procedencia, estado, citas, relaciones y campos de verificación. Los RF declaran el patrón EARS y criterios de verificación; los RNF añaden categoría de calidad, métrica, unidad, umbral y método de verificación cuando constan en la evidencia; las HU conservan el patrón rol--objetivo--beneficio y criterios de aceptación.
 
-\textbf{Control.} La respuesta debe satisfacer el esquema Pydantic y citar únicamente fragmentos permitidos. El \emph{prompt} enumera los identificadores de evidencia y relación admitidos mediante ejemplos construidos con datos reales de la recuperación, no con marcadores descriptivos. Si la respuesta supera el presupuesto, el exceso se descarta de forma determinista y el evento queda registrado, sin consumir reintentos para corregir solamente la cantidad. El método, sus entradas, la recomendación y la selección quedan almacenados. Agotados los intentos por JSON inválido o incumplimiento del contrato, la etapa falla de forma explícita y conserva el motivo específico del último rechazo.
+\textbf{Control.} La respuesta debe satisfacer el esquema Pydantic y citar únicamente fragmentos permitidos. Una prioridad sin procedencia explícita se normaliza como \emph{No definida}; no se completa con un valor medio por defecto. El \emph{prompt} enumera los identificadores de evidencia y relación admitidos mediante ejemplos construidos con datos reales de la recuperación, no con marcadores descriptivos. Si la respuesta supera el presupuesto, el exceso se descarta de forma determinista y el evento queda registrado, sin consumir reintentos para corregir solamente la cantidad. El método, sus entradas, la recomendación y la selección quedan almacenados. Agotados los intentos por JSON inválido o incumplimiento del contrato, la etapa falla de forma explícita y conserva el motivo específico del último rechazo.
 
 \subsection{Etapa 4: construcción de trazabilidad}
 
@@ -93,7 +97,7 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Objetivo.} Comprobar los contratos antes de la evaluación experta.
 
-\textbf{Operación.} Se identifican citas o relaciones ausentes e inexistentes, valores no permitidos, descripciones incompletas, HU sin estructura mínima y HU sin criterios de aceptación. Parte de estas restricciones se aplica al recibir la salida del LLM y parte se consolida en el reporte del proyecto.
+\textbf{Operación.} Se identifican citas o relaciones ausentes e inexistentes, valores no permitidos, RF que no cumplen el patrón EARS declarado, RF o RNF sin criterio de verificación, RNF con datos de medición pendientes, prioridades sin procedencia, HU sin estructura mínima y HU sin criterios de aceptación. Parte de estas restricciones se aplica al recibir la salida del LLM y parte se consolida en el reporte del proyecto. Las ausencias producen observaciones para revisión y no provocan que el sistema invente información.
 
 \textbf{Salida.} Resultado general y observaciones asociadas con cada artefacto. El informe no lo modifica automáticamente.
 
@@ -111,7 +115,7 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 El usuario puede editar manualmente un artefacto, cambiar su clasificación o describir qué desea mejorar. En el segundo caso, el agente de revisión recupera evidencia y crea una propuesta separada. La versión vigente solo cambia si el usuario acepta; el rechazo también queda registrado. Las observaciones automáticas enlazan los elementos afectados con estas acciones, pero nunca realizan correcciones autónomas. Cada modificación genera una versión y actualiza la validación. Una reclasificación asigna un identificador coherente con el nuevo tipo y actualiza de forma versionada las relaciones que utilizaban el identificador anterior.
 
-La exportación produce JSON para análisis y DOCX para lectura o entrega. Ambos formatos incluyen artefactos y procedencia; el reporte técnico incorpora la configuración de la ejecución cuando está disponible.
+La exportación produce JSON para análisis y DOCX para lectura o entrega. El DOCX presenta una ficha diferente para RF, RNF y HU, explicita datos pendientes e incluye una matriz artefacto--fragmento con fuente y extracto de evidencia. Ambos formatos conservan procedencia, relaciones y versión; el reporte técnico incorpora la configuración de la ejecución cuando está disponible.
 
 \section{Tratamiento de incidencias}
 
