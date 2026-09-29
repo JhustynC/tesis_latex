@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 736" role="img" aria-labelledby="trazabilidad_informacion-title trazabilidad_informacion-desc"><title id="trazabilidad_informacion-title">Información, procedencia y trazabilidad</title><desc id="trazabilidad_informacion-desc">Tres pasos ordenados: documentos y decisiones confirmadas producen fragmentos citables; la recuperación aporta evidencia para RF, RNF y HU, que guardan citas y vínculos internos distintos; un control automático verifica enlaces, el analista juzga pertinencia y versiones y corridas conservan el historial.</desc><defs><style>@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap");</style><marker id="trazabilidad_informacion-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"></polygon></marker><marker id="trazabilidad_informacion-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"></polygon></marker><marker id="trazabilidad_informacion-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"></polygon></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"></rect>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 808" role="img" aria-labelledby="trazabilidad_informacion-title trazabilidad_informacion-desc"><title id="trazabilidad_informacion-title">Información, procedencia y trazabilidad</title><desc id="trazabilidad_informacion-desc">Tres pasos ordenados: documentos y decisiones confirmadas producen fragmentos citables; la recuperación aporta evidencia para RF, RNF y HU, que guardan citas y vínculos internos distintos; un control automático verifica enlaces, el analista juzga pertinencia y versiones y corridas conservan el historial.</desc><defs><style>@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap");</style><marker id="trazabilidad_informacion-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"></polygon></marker><marker id="trazabilidad_informacion-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"></polygon></marker><marker id="trazabilidad_informacion-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"></polygon></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"></rect>
 <text x="40" y="48" font-family="'Instrument Serif', serif" font-size="28" font-weight="400" fill="#2d3142" text-anchor="start">Información, procedencia y trazabilidad</text>
 <text x="40" y="74" font-family="'Geist', sans-serif" font-size="12" font-weight="400" fill="#4f5d75" text-anchor="start">Lectura: de arriba abajo; cada flecha nombra la acción que transforma o vincula la información</text>
 <rect x="40" y="100" width="880" height="174" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"></rect>
 <g aria-hidden="true" transform="translate(56 110) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M5 13v-8a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"></path><path d="M9 13h6"></path><path d="M9 17h6"></path></g>
 <text x="83" y="124" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">01  PREPARAR EVIDENCIA</text>
 <text x="904" y="124" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">dos orígenes, un catálogo citable</text>
-<rect x="40" y="290" width="880" height="174" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"></rect>
-<g aria-hidden="true" transform="translate(56 300) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4"></path><path d="M12 2v2"></path><path d="M9 12v9"></path><path d="M15 12v9"></path><path d="M5 16l4 -2"></path><path d="M15 14l4 2"></path><path d="M9 18h6"></path><path d="M10 8v.01"></path><path d="M14 8v.01"></path></g>
-<text x="83" y="314" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">02  CREAR ARTEFACTOS</text>
-<text x="904" y="314" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">RF · RNF · HU</text>
-<rect x="40" y="480" width="880" height="174" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"></rect>
-<g aria-hidden="true" transform="translate(56 490) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l2 2v16h-12v-16z"></path><path d="M9 11l2 2l4 -4"></path><path d="M9 17h6"></path></g>
-<text x="83" y="504" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">03  VERIFICAR Y REGISTRAR</text>
-<text x="904" y="504" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">control automático más juicio experto</text>
-<path data-from="documentos" data-to="fragmentos" d="M292 167 L417 167 Q425 167 425 175 L425 177 Q425 185 433 185 L622 185" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path data-from="decision" data-to="fragmentos" d="M292 233 L417 233 Q425 233 425 225 L425 223 Q425 215 433 215 L622 215" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path d="M474 274 V287" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path data-from="recuperados" data-to="artefactos" d="M292 384 L362 384" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path data-from="artefactos" data-to="relaciones" d="M598 384 L668 384" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path d="M474 464 V477" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path data-from="verificar" data-to="experto" d="M292 574 L362 574" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<path data-from="experto" data-to="registro" d="M598 574 L668 574" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
-<g class="node" data-node="documentos" data-x="56" data-y="140" data-w="236" data-h="54"><rect x="56" y="140" width="236" height="54" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
-<g class="node" data-node="decision" data-x="56" data-y="206" data-w="236" data-h="54"><rect x="56" y="206" width="236" height="54" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<rect x="40" y="326" width="880" height="174" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"></rect>
+<g aria-hidden="true" transform="translate(56 336) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4"></path><path d="M12 2v2"></path><path d="M9 12v9"></path><path d="M15 12v9"></path><path d="M5 16l4 -2"></path><path d="M15 14l4 2"></path><path d="M9 18h6"></path><path d="M10 8v.01"></path><path d="M14 8v.01"></path></g>
+<text x="83" y="350" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">02  CREAR ARTEFACTOS</text>
+<text x="904" y="350" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">RF · RNF · HU</text>
+<rect x="40" y="552" width="880" height="174" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"></rect>
+<g aria-hidden="true" transform="translate(56 562) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l2 2v16h-12v-16z"></path><path d="M9 11l2 2l4 -4"></path><path d="M9 17h6"></path></g>
+<text x="83" y="576" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">03  VERIFICAR Y REGISTRAR</text>
+<text x="904" y="576" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">control automático más juicio experto</text>
+<path data-from="documentos" data-to="fragmentos" d="M266 167 L417 167 Q425 167 425 175 L425 177 Q425 185 433 185 L622 185" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path data-from="decision" data-to="fragmentos" d="M266 233 L417 233 Q425 233 425 225 L425 223 Q425 215 433 215 L622 215" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path d="M474 274 L474 323" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path data-from="recuperados" data-to="artefactos" d="M266 420 L362 420" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path data-from="artefactos" data-to="relaciones" d="M572 420 L668 420" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path d="M474 500 L474 549" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path data-from="verificar" data-to="experto" d="M266 646 L362 646" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<path data-from="experto" data-to="registro" d="M572 646 L668 646" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#trazabilidad_informacion-arrow)"></path>
+<g class="node" data-node="documentos" data-x="56" data-y="140" data-w="210" data-h="54"><rect x="56" y="140" width="210" height="54" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="decision" data-x="56" data-y="206" data-w="210" data-h="54"><rect x="56" y="206" width="210" height="54" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
 <g class="node" data-node="fragmentos" data-x="622" data-y="166" data-w="282" data-h="68"><rect x="622" y="166" width="282" height="68" rx="6" fill="#fce9e0" stroke="#eb6c36" stroke-width="1"></rect></g>
-<g class="node" data-node="recuperados" data-x="56" data-y="348" data-w="236" data-h="72"><rect x="56" y="348" width="236" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
-<g class="node" data-node="artefactos" data-x="362" data-y="348" data-w="236" data-h="72"><rect x="362" y="348" width="236" height="72" rx="6" fill="#fce9e0" stroke="#eb6c36" stroke-width="1"></rect></g>
-<g class="node" data-node="relaciones" data-x="668" data-y="348" data-w="236" data-h="72"><rect x="668" y="348" width="236" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
-<g class="node" data-node="verificar" data-x="56" data-y="538" data-w="236" data-h="72"><rect x="56" y="538" width="236" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
-<g class="node" data-node="experto" data-x="362" data-y="538" data-w="236" data-h="72"><rect x="362" y="538" width="236" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
-<g class="node" data-node="registro" data-x="668" data-y="538" data-w="236" data-h="72"><rect x="668" y="538" width="236" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="recuperados" data-x="56" data-y="384" data-w="210" data-h="72"><rect x="56" y="384" width="210" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="artefactos" data-x="362" data-y="384" data-w="210" data-h="72"><rect x="362" y="384" width="210" height="72" rx="6" fill="#fce9e0" stroke="#eb6c36" stroke-width="1"></rect></g>
+<g class="node" data-node="relaciones" data-x="668" data-y="384" data-w="210" data-h="72"><rect x="668" y="384" width="210" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="verificar" data-x="56" data-y="610" data-w="210" data-h="72"><rect x="56" y="610" width="210" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="experto" data-x="362" data-y="610" data-w="210" data-h="72"><rect x="362" y="610" width="210" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
+<g class="node" data-node="registro" data-x="668" data-y="610" data-w="210" data-h="72"><rect x="668" y="610" width="210" height="72" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"></rect></g>
 <g class="node-text" data-for="documentos">
 <text x="69" y="163" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Documentos originales</text>
 <text x="69" y="183" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Archivo o texto · SHA-256</text>
@@ -44,45 +44,45 @@
 <text x="635" y="209" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Fuente · posición · texto</text>
 <text x="635" y="224" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">ID documental o USR-DEF-*</text>
 </g>
-<text x="455" y="154" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">extraer y segmentar</text>
-<text x="461" y="252" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">registrar respuesta</text>
-<text x="489" y="285" font-family="'Geist', sans-serif" font-size="9" font-weight="400" fill="#4f5d75" text-anchor="start">consultar fragmentos</text>
+<rect data-label-mask="extraer y segmentar" x="467.5" y="164" width="120" height="14" fill="#f1f1f1"></rect><text x="527.5" y="171" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="extraer y segmentar">extraer y segmentar</text>
+<rect data-label-mask="registrar respuesta" x="467.5" y="222" width="120" height="14" fill="#f1f1f1"></rect><text x="527.5" y="229" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="registrar respuesta">registrar respuesta</text>
+<rect data-label-mask="consultar fragmentos" x="482" y="292" width="114" height="14" fill="#f5f5f5"></rect><text x="486" y="299" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start" dominant-baseline="middle" data-edge-label="consultar fragmentos">consultar fragmentos</text>
 <g class="node-text" data-for="recuperados">
-<text x="69" y="371" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Evidencia recuperada</text>
-<text x="69" y="391" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Consulta, método y orden</text>
-<text x="69" y="406" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">IDs de fragmentos</text>
+<text x="69" y="407" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Evidencia recuperada</text>
+<text x="69" y="427" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Consulta, método y orden</text>
+<text x="69" y="442" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">IDs de fragmentos</text>
 </g>
 <g class="node-text" data-for="artefactos">
-<text x="375" y="371" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Artefactos RF/RNF/HU</text>
-<text x="375" y="391" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">source_fragments: citas</text>
-<text x="375" y="406" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">a evidencia de origen</text>
+<text x="375" y="407" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Artefactos RF/RNF/HU</text>
+<text x="375" y="427" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">source_fragments: citas</text>
+<text x="375" y="442" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">a evidencia de origen</text>
 </g>
 <g class="node-text" data-for="relaciones">
-<text x="681" y="371" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Relaciones internas</text>
-<text x="681" y="391" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">related_artifacts: enlaces</text>
-<text x="681" y="406" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">entre salidas generadas</text>
+<text x="681" y="407" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Relaciones internas</text>
+<text x="681" y="427" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">related_artifacts: enlaces</text>
+<text x="681" y="442" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">entre salidas generadas</text>
 </g>
-<text x="302" y="338" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">sustentar</text>
-<text x="604" y="338" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">vincular</text>
-<text x="489" y="475" font-family="'Geist', sans-serif" font-size="9" font-weight="400" fill="#4f5d75" text-anchor="start">validar artefactos</text>
+<rect data-label-mask="sustentar" x="283" y="399" width="62" height="14" fill="#f1f1f1"></rect><text x="314" y="406" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="sustentar">sustentar</text>
+<rect data-label-mask="vincular" x="591" y="399" width="58" height="14" fill="#f1f1f1"></rect><text x="620" y="406" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="vincular">vincular</text>
+<rect data-label-mask="validar artefactos" x="482" y="518" width="105" height="14" fill="#f5f5f5"></rect><text x="486" y="525" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start" dominant-baseline="middle" data-edge-label="validar artefactos">validar artefactos</text>
 <g class="node-text" data-for="verificar">
-<text x="69" y="561" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Comprobar enlaces</text>
-<text x="69" y="581" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Existencia y estructura</text>
-<text x="69" y="596" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Citas, tipos y duplicados</text>
+<text x="69" y="633" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Comprobar enlaces</text>
+<text x="69" y="653" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Existencia y estructura</text>
+<text x="69" y="668" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Citas, tipos y duplicados</text>
 </g>
 <g class="node-text" data-for="experto">
-<text x="375" y="561" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Revisión humana</text>
-<text x="375" y="581" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Pertinencia de las citas</text>
-<text x="375" y="596" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Aceptar o rechazar cambios</text>
+<text x="375" y="633" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Revisión humana</text>
+<text x="375" y="653" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Pertinencia de las citas</text>
+<text x="375" y="668" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Aceptar o rechazar cambios</text>
 </g>
 <g class="node-text" data-for="registro">
-<text x="681" y="561" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Historial auditable</text>
-<text x="681" y="581" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Versiones; modelo y parámetros</text>
-<text x="681" y="596" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Telemetría de cada ejecución</text>
+<text x="681" y="633" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Historial auditable</text>
+<text x="681" y="653" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Versiones; modelo y parámetros</text>
+<text x="681" y="668" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Telemetría de cada ejecución</text>
 </g>
-<text x="302" y="528" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">presentar alertas</text>
-<text x="604" y="528" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="start">guardar decisión</text>
-<line x1="40" y1="666" x2="920" y2="666" stroke="#bfc0c0" stroke-width=".8"></line>
-<text x="40" y="688" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">source_fragments apunta a evidencia documental o decisiones confirmadas; related_artifacts apunta a otros artefactos.</text>
-<text x="40" y="706" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">La existencia de una cita puede verificarse automáticamente; su pertinencia semántica la juzga el experto.</text>
+<rect data-label-mask="presentar alertas" x="268" y="625" width="92" height="14" fill="#f1f1f1"></rect><text x="314" y="632" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="presentar alertas">presentar alertas</text>
+<rect data-label-mask="guardar decisión" x="574" y="625" width="92" height="14" fill="#f1f1f1"></rect><text x="620" y="632" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="middle" dominant-baseline="middle" data-edge-label="guardar decisión">guardar decisión</text>
+<line x1="40" y1="738" x2="920" y2="738" stroke="#bfc0c0" stroke-width=".8"></line>
+<text x="40" y="760" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">source_fragments apunta a evidencia documental o decisiones confirmadas; related_artifacts apunta a otros artefactos.</text>
+<text x="40" y="778" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">La existencia de una cita puede verificarse automáticamente; su pertinencia semántica la juzga el experto.</text>
 </svg>

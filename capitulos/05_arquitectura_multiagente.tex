@@ -34,13 +34,15 @@ ReqLab es una aplicación web local de un solo usuario. Recibe archivos PDF, DOC
 
 Quedan fuera del límite actual: OCR, transcripción automática de audio, autenticación, edición colaborativa multiusuario, aprobación automática de requisitos, resolución autónoma de conflictos, entrenamiento de modelos y comparación exhaustiva de arquitecturas o LLM. DeepSeek es el proveedor validado; otros servicios con interfaz semejante pueden requerir adaptación y no se consideran verificados por defecto.
 
-\section{Vista de capas y componentes}
+\section{Vista de componentes y responsabilidades}
+
+La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por responsabilidades. El cliente web concentra la interacción y la decisión humana; el núcleo ReqLab agrupa coordinación, agentes y persistencia; el servicio LLM se ubica fuera de ese núcleo.
 
 \begin{landscape}
 \begin{figure}[p]
   \centering
   \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{arquitectura_componentes.pdf}
-  \caption{Vista de capas, componentes y agentes de ReqLab.}
+  \caption{Arquitectura de componentes de ReqLab: cliente web, núcleo y servicio LLM externo.}
   \label{fig:arquitectura-componentes}
 \end{figure}
 \end{landscape}
