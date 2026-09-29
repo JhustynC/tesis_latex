@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arquitectura de componentes de ReqLab</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap"><style>*{box-sizing:border-box}body{margin:0;background:#f5f5f5}main{max-width:1200px;margin:auto}svg{display:block;width:100%;height:auto}@media print{main{max-width:none}}</style></head><body><main><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 736" role="img" aria-labelledby="arquitectura_componentes-title arquitectura_componentes-desc"><title id="arquitectura_componentes-title">Arquitectura de componentes de ReqLab</title><desc id="arquitectura_componentes-desc">Cinco capas legibles de arriba abajo: interacción y coordinación, preparación de contexto, tres agentes de generación separados, control y revisión, y servicios compartidos. Las flechas muestran el flujo principal de cada capa; DeepSeek se distingue como servicio externo.</desc><defs><marker id="arquitectura_componentes-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker><marker id="arquitectura_componentes-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#eb6c36"/></marker><marker id="arquitectura_componentes-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker></defs><rect width="100%" height="100%" fill="#f5f5f5"/>
+<text x="40" y="48" font-family="'Instrument Serif', serif" font-size="28" font-weight="400" fill="#2d3142" text-anchor="start">Arquitectura de componentes de ReqLab</text>
+<text x="40" y="74" font-family="'Geist', sans-serif" font-size="12" font-weight="400" fill="#4f5d75" text-anchor="start">Lectura: de arriba abajo; dentro de cada capa, de izquierda a derecha</text>
+<rect x="40" y="94" width="880" height="104" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"/>
+<g aria-hidden="true" transform="translate(56 104) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></g>
+<text x="83" y="118" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">01  INTERACCIÓN Y COORDINACIÓN</text>
+<text x="904" y="118" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">aplicación local monousuario</text>
+<rect x="40" y="206" width="880" height="104" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"/>
+<g aria-hidden="true" transform="translate(56 216) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 13v-8a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6"/><path d="M9 13h6"/><path d="M9 17h6"/></g>
+<text x="83" y="230" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">02  PREPARACIÓN DEL CONTEXTO</text>
+<text x="904" y="230" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">servicios locales y agente de definición</text>
+<rect x="40" y="318" width="880" height="104" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"/>
+<g aria-hidden="true" transform="translate(56 328) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4"/><path d="M12 2v2"/><path d="M9 12v9"/><path d="M15 12v9"/><path d="M5 16l4 -2"/><path d="M15 14l4 2"/><path d="M9 18h6"/><path d="M10 8v.01"/><path d="M14 8v.01"/></g>
+<text x="83" y="342" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">03  GENERACIÓN ESPECIALIZADA</text>
+<text x="904" y="342" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">tres agentes; cada uno recupera su evidencia</text>
+<rect x="40" y="430" width="880" height="104" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"/>
+<g aria-hidden="true" transform="translate(56 440) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l2 2v16h-12v-16z"/><path d="M9 11l2 2l4 -4"/><path d="M9 17h6"/></g>
+<text x="83" y="454" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">04  CONTROL, REVISIÓN Y ENTREGA</text>
+<text x="904" y="454" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">la decisión final corresponde al analista</text>
+<rect x="40" y="542" width="880" height="104" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0" stroke-width=".8"/>
+<g aria-hidden="true" transform="translate(56 552) scale(0.7916666666666666)" fill="none" stroke="#4f5d75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c0 -2 3.6 -3 8 -3s8 1 8 3s-3.6 3 -8 3s-8 -1 -8 -3"/><path d="M4 6v12c0 2 3.6 3 8 3s8 -1 8 -3v-12"/><path d="M4 12c0 2 3.6 3 8 3s8 -1 8 -3"/></g>
+<text x="83" y="566" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#2d3142" text-anchor="start">05  SERVICIOS COMPARTIDOS</text>
+<text x="904" y="566" font-family="'Geist', sans-serif" font-size="10" font-weight="400" fill="#4f5d75" text-anchor="end">persistencia local; LLM externo</text>
+<path data-from="analista" data-to="angular" d="M256 158 L272 158" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="angular" data-to="fastapi" d="M472 158 L488 158" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="fastapi" data-to="app" d="M688 158 L704 158" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="ingesta" data-to="definicion" d="M324 270 L346 270" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="definicion" data-to="recuperacion" d="M614 270 L636 270" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="rf" data-to="rnf" d="M324 382 L346 382" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="rnf" data-to="hu" d="M614 382 L636 382" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="consistencia" data-to="revision" d="M324 494 L346 494" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<path data-from="revision" data-to="entrega" d="M614 494 L636 494" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arquitectura_componentes-arrow)"/>
+<g class="node" data-node="analista" data-x="56" data-y="130" data-w="200" data-h="56"><rect x="56" y="130" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="angular" data-x="272" data-y="130" data-w="200" data-h="56"><rect x="272" y="130" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="fastapi" data-x="488" data-y="130" data-w="200" data-h="56"><rect x="488" y="130" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="app" data-x="704" data-y="130" data-w="200" data-h="56"><rect x="704" y="130" width="200" height="56" rx="6" fill="#fce9e0" stroke="#eb6c36" stroke-width="1"/></g>
+<g class="node" data-node="ingesta" data-x="56" data-y="242" data-w="268" data-h="56"><rect x="56" y="242" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="definicion" data-x="346" data-y="242" data-w="268" data-h="56"><rect x="346" y="242" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="recuperacion" data-x="636" data-y="242" data-w="268" data-h="56"><rect x="636" y="242" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="rf" data-x="56" data-y="354" data-w="268" data-h="56"><rect x="56" y="354" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="rnf" data-x="346" data-y="354" data-w="268" data-h="56"><rect x="346" y="354" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="hu" data-x="636" data-y="354" data-w="268" data-h="56"><rect x="636" y="354" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="consistencia" data-x="56" data-y="466" data-w="268" data-h="56"><rect x="56" y="466" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="revision" data-x="346" data-y="466" data-w="268" data-h="56"><rect x="346" y="466" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="entrega" data-x="636" data-y="466" data-w="268" data-h="56"><rect x="636" y="466" width="268" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="sqlite" data-x="56" data-y="578" data-w="200" data-h="56"><rect x="56" y="578" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="chroma" data-x="272" data-y="578" data-w="200" data-h="56"><rect x="272" y="578" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="archivos" data-x="488" data-y="578" data-w="200" data-h="56"><rect x="488" y="578" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/></g>
+<g class="node" data-node="deepseek" data-x="704" data-y="578" data-w="200" data-h="56"><rect x="704" y="578" width="200" height="56" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1" stroke-dasharray="5,4"/></g>
+<g class="node-text" data-for="analista">
+<text x="69" y="153" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Analista</text>
+<text x="69" y="173" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Confirma y revisa</text>
+</g>
+<g class="node-text" data-for="angular">
+<text x="285" y="153" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Interfaz Angular</text>
+<text x="285" y="173" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Presenta el proyecto</text>
+</g>
+<g class="node-text" data-for="fastapi">
+<text x="501" y="153" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">API FastAPI</text>
+<text x="501" y="173" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Expone casos de uso</text>
+</g>
+<g class="node-text" data-for="app">
+<text x="717" y="153" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Servicio de aplicación</text>
+<text x="717" y="173" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Orquesta el flujo</text>
+</g>
+<g class="node-text" data-for="ingesta">
+<text x="69" y="265" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Extracción y fragmentación</text>
+<text x="69" y="285" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">PDF · DOCX · TXT · MD · texto</text>
+</g>
+<g class="node-text" data-for="definicion">
+<text x="359" y="265" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Agente de definición</text>
+<text x="359" y="285" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Corpus completo; decisión humana</text>
+</g>
+<g class="node-text" data-for="recuperacion">
+<text x="649" y="265" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Recuperación híbrida</text>
+<text x="649" y="285" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">TF–IDF + vectores · RRF</text>
+</g>
+<g class="node-text" data-for="rf">
+<text x="69" y="377" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Agente RF</text>
+<text x="69" y="397" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Requisitos funcionales</text>
+</g>
+<g class="node-text" data-for="rnf">
+<text x="359" y="377" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Agente RNF</text>
+<text x="359" y="397" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Requisitos no funcionales</text>
+</g>
+<g class="node-text" data-for="hu">
+<text x="649" y="377" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Agente HU</text>
+<text x="649" y="397" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Historias de usuario</text>
+</g>
+<g class="node-text" data-for="consistencia">
+<text x="69" y="489" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Trazabilidad y consistencia</text>
+<text x="69" y="509" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Reglas sobre citas y relaciones</text>
+</g>
+<g class="node-text" data-for="revision">
+<text x="359" y="489" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Agente de revisión</text>
+<text x="359" y="509" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Propone cambios sustentados</text>
+</g>
+<g class="node-text" data-for="entrega">
+<text x="649" y="489" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Versiones y exportación</text>
+<text x="649" y="509" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Aceptación · JSON / DOCX</text>
+</g>
+<g class="node-text" data-for="sqlite">
+<text x="69" y="601" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">SQLite</text>
+<text x="69" y="621" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Estado, corridas y versiones</text>
+</g>
+<g class="node-text" data-for="chroma">
+<text x="285" y="601" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">ChromaDB</text>
+<text x="285" y="621" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Índice vectorial</text>
+</g>
+<g class="node-text" data-for="archivos">
+<text x="501" y="601" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">Archivos locales</text>
+<text x="501" y="621" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Originales y exportaciones</text>
+</g>
+<g class="node-text" data-for="deepseek">
+<text x="717" y="601" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#2d3142" text-anchor="start">DeepSeek</text>
+<text x="717" y="621" font-family="'Geist', sans-serif" font-size="10.5" font-weight="400" fill="#4f5d75" text-anchor="start">Generación semántica</text>
+</g>
+<line x1="40" y1="660" x2="920" y2="660" stroke="#bfc0c0" stroke-width=".8"/>
+<text x="40" y="682" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">Las flechas indican el orden principal dentro de cada capa; el servicio de aplicación coordina las capas 02–04.</text>
+<text x="40" y="700" font-family="'Geist', sans-serif" font-size="11" font-weight="400" fill="#4f5d75" text-anchor="start">La recuperación se reutiliza en generación y revisión; el cliente LLM valida respuestas tipadas con Pydantic.</text>
+</svg></main></body></html>

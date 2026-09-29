@@ -36,12 +36,14 @@ Quedan fuera del límite actual: OCR, transcripción automática de audio, auten
 
 \section{Vista de capas y componentes}
 
-\begin{figure}[H]
+\begin{landscape}
+\begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{arquitectura_componentes.png}
+  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{arquitectura_componentes.pdf}
   \caption{Vista de capas, componentes y agentes de ReqLab.}
   \label{fig:arquitectura-componentes}
 \end{figure}
+\end{landscape}
 
 \begin{table}[H]
   \centering
@@ -112,12 +114,14 @@ Una fuente duplicada se detecta mediante su huella; una extracción vacía, esqu
 
 \section{Vista de información y trazabilidad}
 
-\begin{figure}[H]
+\begin{landscape}
+\begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{trazabilidad_informacion.png}
+  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{trazabilidad_informacion.pdf}
   \caption{Procedencia documental, relaciones entre artefactos y registro de ejecución.}
   \label{fig:arquitectura-informacion}
 \end{figure}
+\end{landscape}
 
 La procedencia comienza en una fuente original o en una respuesta de definición confirmada. La segmentación produce un fragmento estable; la recuperación registra su posición o puntuación; y el artefacto conserva el identificador en \codigo{source_fragments}. De forma separada, \codigo{related_artifacts} relaciona RF, RNF y HU. La ejecución almacena la configuración y telemetría necesarias para interpretar cómo se obtuvo la salida.
 
