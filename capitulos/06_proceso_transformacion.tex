@@ -19,7 +19,7 @@ El proceso automatiza extracción, segmentación, recuperación, generación y c
 \begin{landscape}
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{proceso_transformacion.pdf}
+  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{proceso_transformacion.png}
   \caption{Flujo operativo de transformación y controles de entrada y salida.}
   \label{fig:proceso-transformacion}
 \end{figure}
@@ -30,6 +30,8 @@ El proceso automatiza extracción, segmentación, recuperación, generación y c
 \subsection{Ingesta y extracción}
 
 La extracción convierte el contenedor en texto y rechaza formatos no admitidos, fuentes duplicadas o contenido no utilizable. La vista previa permite al usuario verificar el contenido interpretado y eliminar una fuente. Cualquier cambio invalida la definición y los resultados dependientes, evitando conservar artefactos como si provinieran del corpus vigente.
+
+Inmediatamente después se ejecutan la segmentación y la indexación descritas como etapa 1. La definición interactiva opera sobre ese catálogo completo de fragmentos; por tanto, nunca precede a la segmentación ni supone que la información relevante se encuentra en los primeros documentos.
 
 \subsection{Definición interactiva}
 
@@ -65,11 +67,11 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Operación.} Se ejecutan recuperación TF--IDF y búsqueda semántica mediante embeddings. Las posiciones se combinan con RRF usando pesos configurables; opcionalmente, un \emph{cross-encoder} reordena los candidatos.
 
-\textbf{Parámetros candidatos después de la calibración técnica.} \(w_l=0.45\), \(w_s=0.55\), \(top\_k=12\), embeddings \codigo{intfloat/multilingual-e5-base} y reranker desactivado. E5 Base se seleccionó por su orientación a recuperación multilingüe y una longitud de entrada compatible con los fragmentos del proyecto. El reranker MMARCO permanece implementado como opción configurable, pero la comparación inicial no mostró una mejora consistente de cobertura frente a la latencia añadida. La configuración utilizada definitivamente se congelará y almacenará en la ejecución experimental.
+\textbf{Parámetros candidatos después de la calibración técnica.} \(w_l=0.45\), \(w_s=0.55\), \(top\_k=12\), embeddings \codigo{intfloat/multilingual-e5-base} y reranker desactivado por defecto. E5 Base se seleccionó por su orientación a recuperación multilingüe y una longitud de entrada compatible con los fragmentos del proyecto. Si se habilita una segunda etapa de ordenamiento, el usuario puede seleccionar el modelo local \codigo{cross-encoder/mmarco-mMiniLMv2-L12-H384-v1} o Jev mediante OpenRouter. La configuración finalmente elegida se congelará y almacenará en la ejecución experimental; no se atribuirá beneficio al reranker sin evaluarlo.
 
 \textbf{Salida.} Lista ordenada de IDs, puntuaciones o posiciones y texto suministrado al agente.
 
-\textbf{Control.} Los IDs recuperados deben pertenecer al proyecto; la colección vectorial se versiona por modelo y prefijos.
+\textbf{Control.} Los IDs recuperados deben pertenecer al proyecto; la colección vectorial se versiona por modelo y prefijos. Cuando se utiliza Jev, se registran para cada candidato su posición RRF, probabilidades devueltas, posición final y selección, además del proveedor, modelo, intentos, latencia, tokens y costo informado. Un fallo se comunica explícitamente y no activa otro reranker de manera silenciosa.
 
 \subsection{Etapa 3: generación estructurada}
 
@@ -83,7 +85,7 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Salida.} Objetos tipados con identificador, tipo, título, enunciado, prioridad y su procedencia, estado, citas, relaciones y campos de verificación. Los RF declaran el patrón EARS y criterios de verificación; los RNF añaden categoría de calidad, métrica, unidad, umbral y método de verificación cuando constan en la evidencia; las HU conservan el patrón rol--objetivo--beneficio y criterios de aceptación.
 
-\textbf{Control.} La respuesta debe satisfacer el esquema Pydantic y citar únicamente fragmentos permitidos. Una prioridad sin procedencia explícita se normaliza como \emph{No definida}; no se completa con un valor medio por defecto. El \emph{prompt} enumera los identificadores de evidencia y relación admitidos mediante ejemplos construidos con datos reales de la recuperación, no con marcadores descriptivos. Si la respuesta supera el presupuesto, el exceso se descarta de forma determinista y el evento queda registrado, sin consumir reintentos para corregir solamente la cantidad. El método, sus entradas, la recomendación y la selección quedan almacenados. Agotados los intentos por JSON inválido o incumplimiento del contrato, la etapa falla de forma explícita y conserva el motivo específico del último rechazo.
+\textbf{Control.} La respuesta debe satisfacer el esquema Pydantic y citar únicamente fragmentos permitidos. Una prioridad sin procedencia explícita se normaliza como \emph{No definida}; no se completa con un valor medio por defecto. El \emph{prompt} enumera los identificadores de evidencia y relación admitidos mediante ejemplos construidos con datos reales de la recuperación, no con marcadores descriptivos. Si la respuesta supera el presupuesto, el exceso se descarta de forma determinista y el evento queda registrado, sin consumir reintentos para corregir solamente la cantidad. El método, sus entradas, la recomendación y la selección quedan almacenados. Al completar RF, RNF o HU se guarda un punto de control con artefactos, recuperación y telemetría. Si la corrida se interrumpe, la reanudación conserva los tipos completados y continúa desde el primer agente pendiente usando los límites y la configuración originales. Agotados los intentos por JSON inválido o incumplimiento del contrato, la etapa falla de forma explícita y conserva el motivo específico del último rechazo.
 
 \subsection{Etapa 4: construcción de trazabilidad}
 
@@ -117,7 +119,11 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 El usuario puede editar manualmente un artefacto, cambiar su clasificación o describir qué desea mejorar. En el segundo caso, el agente de revisión recupera evidencia y crea una propuesta separada. La versión vigente solo cambia si el usuario acepta; el rechazo también queda registrado. Las observaciones automáticas enlazan los elementos afectados con estas acciones, pero nunca realizan correcciones autónomas. Cada modificación genera una versión y actualiza la validación. Una reclasificación asigna un identificador coherente con el nuevo tipo y actualiza de forma versionada las relaciones que utilizaban el identificador anterior.
 
-La exportación produce JSON para análisis y DOCX para lectura o entrega. El DOCX presenta una ficha diferente para RF, RNF y HU, explicita datos pendientes e incluye una matriz artefacto--fragmento con fuente y extracto de evidencia. Ambos formatos conservan procedencia, relaciones y versión; el reporte técnico incorpora la configuración de la ejecución cuando está disponible.
+La interfaz ofrece aprobación masiva con confirmación explícita y un gestor de prioridades que permite modificar varios artefactos o aplicar un mismo valor a todos. Cada cambio conserva la procedencia de decisión humana y no elimina la posibilidad de ajustar la prioridad desde la edición individual. Estas operaciones reducen trabajo repetitivo, pero la responsabilidad de revisar los artefactos permanece en el usuario.
+
+De manera opcional, Jev puede ejecutar una validación semántica separada sobre el respaldo de las citas. Opera exclusivamente en modo \emph{shadow}: clasifica el respaldo y conserva su auditoría, pero no edita, aprueba, rechaza ni reclasifica artefactos. Una modificación posterior del artefacto o de su evidencia marca el informe como obsoleto. Este piloto no sustituye la validación determinista ni el juicio experto del experimento.
+
+La exportación produce JSON para análisis y DOCX para lectura o entrega. En el DOCX, cada RF, RNF y HU se presenta como una tabla de dos columnas adaptada a su tipo; los criterios se muestran como listas dentro de las celdas y los datos no sustentados permanecen explícitamente pendientes. El documento incluye además una matriz tabular artefacto--fragmento con fuente y extracto de evidencia. Ambos formatos conservan procedencia, relaciones y versión; el reporte técnico incorpora la configuración de la ejecución cuando está disponible.
 
 \section{Tratamiento de incidencias}
 
@@ -133,6 +139,7 @@ La exportación produce JSON para análisis y DOCX para lectura o entrega. El DO
     Formato no admitido, extracción vacía o fuente duplicada & Rechazar la fuente e informar la causa. & Convertir, corregir o seleccionar otra fuente. \\
     Cambio de fuente tras definición & Invalidar perfil confirmado y resultados dependientes. & Repetir análisis y confirmación. \\
     Esquema LLM inválido & Reintentar con el error de validación hasta el máximo. & Corregir configuración o revisar proveedor si falla. \\
+    Interrupción tras completar un lote o agente & Conservar el punto de control compatible. & Reanudar sin repetir los resultados ya validados. \\
     Cita o relación inválida & Rechazar durante validación tipada o registrar incidencia. & Regenerar o editar con evidencia válida. \\
     Posible duplicado o clasificación dudosa & Emitir alerta sin modificar. & Revisar y decidir consolidación o clase. \\
     Cambio de modelo vectorial & Usar una colección versionada compatible. & Reindexar en el nuevo espacio. \\
@@ -157,6 +164,8 @@ La exportación produce JSON para análisis y DOCX para lectura o entrega. El DO
     Artefactos y versiones & RF, RNF, HU, citas, relaciones, cambios y origen de revisión. \\
     Validación & Incidencias, duplicados, umbrales y observaciones por artefacto. \\
     Ejecuciones & Fase, agente, estado, configuración, latencia, tokens, intentos y errores. \\
+    Puntos de control & Huella de entrada, lote o tipo completado, resultado reutilizable y ejecución de origen. \\
+    Auditoría Jev & Candidatos, posiciones, probabilidades, modelo, proveedor, intentos, consumo, costo informado y latencia. \\
     Exportaciones & Representación JSON o documento DOCX descargable. \\
     \bottomrule
   \end{tabularx}

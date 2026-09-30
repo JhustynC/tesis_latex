@@ -21,27 +21,28 @@ Las preguntas organizan el análisis y permiten vincular medidas con los objetiv
 
 \section{Caso de estudio sintético}
 
-El caso representa la información disponible para proponer un sistema de gestión de solicitudes de mantenimiento del Conjunto Residencial Altavista. Fue construido sin datos personales reales y reproduce materiales que una organización puede entregar al inicio de un proyecto: correos, entrevista transcrita, conversación informal, notas parciales y política operativa. No contiene RF, RNF ni HU preclasificados.
+El caso definitivo, SIGSAT, representa la información disponible para proponer un sistema de gestión de solicitudes de asistencia técnica y órdenes de trabajo de la organización ficticia ServiTec Mantenimiento. Reproduce materiales que podrían recibirse al iniciar un proyecto real: correos, procedimientos, entrevistas transcritas, conversaciones informales, catálogos, acuerdos de servicio, reportes, minutas, notas técnicas, registros heredados y resultados de un piloto. Las fuentes sintéticas no contienen RF, RNF ni HU preclasificados ni datos personales reales.
 
-El corpus definitivo contiene ocho fuentes y, con la configuración de segmentación vigente durante su control de preparación, produjo 17 fragmentos y 13,775 caracteres extraídos. Estos conteos verifican integridad técnica del corpus, no constituyen resultados de calidad del experimento. Las fuentes incluyen deliberadamente repetición, expresiones informales, información distribuida, decisiones pendientes y contradicciones sobre cancelación, cierre, acceso y autorización de gastos.
+La versión congelada \codigo{SIGSAT-1.0} contiene 16 fuentes: 8 TXT, 3 Markdown, 3 DOCX y 2 PDF. Con \codigo{chunk\_size=1200} y \codigo{overlap=180} se extrajeron 112\,606 caracteres, 16\,819 palabras y 135 fragmentos. Quince fuentes son sintéticas y una corresponde a la Resolución SPDP-SPD-2025-0006-R, documento público de la Superintendencia de Protección de Datos Personales del Ecuador \cite{spdp2025}. La resolución se conserva completa para mantener su autenticidad, pero una guía de control delimita las secciones pertinentes; su inclusión no implica que toda cláusula deba convertirse automáticamente en requisito.
+
+El corpus cubre recepción, clasificación, prioridad, acuerdos de servicio, asignación, agenda, trabajo móvil, evidencias, materiales, proveedores, seguimiento, cierre, reapertura, notificaciones, reportes, auditoría y protección de datos. Incluye deliberadamente repeticiones, diferencias terminológicas, propuestas no aprobadas, información distribuida, contradicciones y decisiones pendientes. Estas condiciones deben detectarse durante la definición o mantenerse como incertidumbre; no pueden resolverse silenciosamente.
 
 \begin{table}[H]
   \centering
-  \caption{Composición del corpus sintético Altavista}
-  \label{tab:corpus-altavista}
+  \caption{Composición del corpus experimental SIGSAT-1.0}
+  \label{tab:corpus-sigsat}
   \small
   \begin{tabularx}{\textwidth}{p{3.0cm}p{3.0cm}YY}
     \toprule
-    Fuente & Forma & Aporte principal & Dificultad intencional \\
+    Fuentes & Forma & Aporte principal & Dificultad intencional \\
     \midrule
-    Correo de administración & TXT, correo copiado & Problema, proceso, alcance y necesidades. & Identidad de arrendatarios sin resolver. \\
-    Entrevista de recepción & TXT, transcripción & Canales, emergencias, datos mínimos y operación. & Expresiones coloquiales y decisiones no confirmadas. \\
-    Conversación de mantenimiento & TXT, mensajes & Trabajo móvil, estados, materiales, auditoría y privacidad. & Contexto distribuido entre mensajes breves. \\
-    Notas del comité & Markdown & Alcance, exclusiones, reportes y decisiones pendientes. & Contradicciones explícitas. \\
-    Normas de atención & PDF textual & Clasificación, tiempos, acceso, privacidad y conservación. & Reglas condicionales. \\
-    Correo de residente & TXT, narrativo & Seguimiento, disponibilidad, autorización y privacidad. & Preferencia de acceso por validar. \\
-    Correo de proveedor & TXT, operativo & Asignación, cotización, cierre y permisos. & Propuestas no aprobadas. \\
-    Mensaje de presidencia & TXT, mensaje reenviado & Alcance inicial, auditoría y emergencias. & Seguridad como participante indirecto. \\
+    SRC-001--SRC-002 & Correo TXT y procedimiento DOCX & Problema, alcance, flujo vigente, participantes y excepciones. & Información distribuida entre dirección y operación. \\
+    SRC-003--SRC-005 & Tres entrevistas TXT & Recepción, trabajo de campo, cliente, agenda, evidencias y permisos. & Lenguaje oral, preferencias y decisiones sin confirmar. \\
+    SRC-006--SRC-008 & Conversación TXT, catálogo DOCX y acuerdo PDF & Práctica cotidiana, prioridades y niveles de servicio. & Terminología variable y reglas condicionales. \\
+    SRC-009--SRC-011 & Informe y minuta Markdown, correos TXT & Reaperturas, proveedores, acuerdos y exclusiones. & Propuestas no aprobadas y contradicciones. \\
+    SRC-012--SRC-014 & Nota DOCX y dos registros TXT & Privacidad, seguridad, legado y perspectiva del cliente. & Datos incompletos, repetición y contenido semiestructurado. \\
+    SRC-015 & Resolución pública PDF & Condiciones sobre transferencia o comunicación de datos personales. & Interpretación normativa dependiente del contexto. \\
+    SRC-016 & Resultados de piloto Markdown & Conectividad, reintentos, rendimiento, accesibilidad y sesión. & Observaciones técnicas todavía sujetas a decisión. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -96,7 +97,7 @@ Los archivos manuales creados previamente con apoyo de IA no se utilizarán como
 \section{Fases de la investigación}
 
 \begin{enumerate}
-  \item \textbf{Preparación:} revisar el corpus Altavista, confirmar que solo contiene fuentes de entrada y calcular sus huellas digitales.
+  \item \textbf{Preparación:} revisar el corpus SIGSAT-1.0, confirmar que solo contiene fuentes de entrada y calcular sus huellas digitales.
   \item \textbf{Diseño:} consolidar las vistas, agentes, contratos, decisiones y correspondencia de la arquitectura.
   \item \textbf{Definición del proceso:} especificar segmentación, recuperación, generación, trazabilidad, validación y consistencia, junto con sus entradas, salidas y controles.
   \item \textbf{Implementación:} completar y verificar el prototipo web, su API, persistencia y despliegue reproducible.
@@ -110,7 +111,7 @@ Los archivos manuales creados previamente con apoyo de IA no se utilizarán como
 
 Antes de producir M0 o T1 se construirá un catálogo común de evidencia. Su propósito es proporcionar a ambos procedimientos las mismas unidades de referencia para la trazabilidad y permitir que los evaluadores localicen el pasaje que sustenta cada artefacto. El catálogo no constituye una interpretación del corpus, no contiene requisitos y no se considera una salida experimental.
 
-La construcción se realizará sobre un proyecto vacío y comprenderá únicamente la ingesta, extracción y segmentación determinista de las ocho fuentes. En esta actividad no intervendrán el LLM, la recuperación contextual, los agentes de generación ni el validador de artefactos. Primero se fijarán el orden de las fuentes, sus nombres, huellas SHA--256 y códigos \codigo{SRC-001}, \codigo{SRC-002}, etc. Luego se aplicará una configuración congelada de extracción, tamaño de fragmento y solapamiento. Cada unidad resultante recibirá un identificador de la forma \codigo{SRC-001-F001}.
+La construcción se realizará sobre un proyecto vacío y comprenderá únicamente la ingesta, extracción y segmentación determinista de las 16 fuentes. En esta actividad no intervendrán el LLM, la recuperación contextual, los agentes de generación ni el validador de artefactos. Primero se fijarán el orden de las fuentes, sus nombres, huellas SHA--256 y códigos \codigo{SRC-001}, \codigo{SRC-002}, etc. Luego se aplicará una configuración congelada de extracción, tamaño de fragmento y solapamiento. Cada unidad resultante recibirá un identificador de la forma \codigo{SRC-001-F001}.
 
 El catálogo se exportará en un formato tabular legible y contendrá, como mínimo:
 
@@ -124,14 +125,14 @@ El catálogo se exportará en un formato tabular legible y contendrá, como mín
 
 Se comprobará que los identificadores sean únicos, que cada fragmento remita a una fuente registrada y que el texto extraído cubra el contenido utilizable de los documentos. El catálogo, las huellas de los archivos y los parámetros de segmentación se almacenarán como una versión del corpus experimental. Una vez iniciada la producción de M0 o T1 no se permitirá regenerar ni modificar estas unidades. Si cambia una fuente o la configuración de segmentación, se deberá crear una nueva versión y reiniciar el procedimiento comparativo.
 
-El responsable de M0 recibirá los ocho documentos originales y el catálogo. Los documentos originales serán el material principal de lectura; el catálogo se utilizará únicamente para localizar y declarar la evidencia. Por ejemplo, un requisito identificado manualmente podrá citar \codigo{SRC-002-F001} sin que el identificador sugiera cómo interpretar o redactar su contenido. ReqLab utilizará internamente los mismos registros e identificadores, de manera que las trazas de M0 y T1 sean verificables sobre unidades equivalentes.
+El responsable de M0 recibirá los 16 documentos originales y el catálogo. Los documentos originales serán el material principal de lectura; el catálogo se utilizará únicamente para localizar y declarar la evidencia. Por ejemplo, un requisito identificado manualmente podrá citar \codigo{SRC-002-F001} sin que el identificador sugiera cómo interpretar o redactar su contenido. ReqLab utilizará internamente los mismos registros e identificadores, de manera que las trazas de M0 y T1 sean verificables sobre unidades equivalentes.
 
 Después de la definición interactiva se añadirá un anexo de decisiones confirmadas. Cada respuesta aceptada conservará su identificador \codigo{USR-DEF-*}, la pregunta que la originó y la decisión registrada. Este anexo se entregará también al responsable de M0 y quedará disponible para T1. Por tanto, el paquete común de entrada estará compuesto por: documentos originales, catálogo congelado de fragmentos, metadatos iniciales del proyecto, perfil confirmado, anexo de decisiones \codigo{USR-DEF-*} y guía común de producción. Ninguna configuración dispondrá de información de negocio adicional.
 
 Los expertos evaluadores recibirán los documentos originales, el catálogo y el anexo de decisiones junto con las dos especificaciones anonimizadas. Esto les permitirá comprobar por separado la existencia de una cita y su pertinencia semántica: que un identificador exista no implica por sí solo que el pasaje respalde el artefacto.
 
 \begin{enumerate}
-  \item Congelar los ocho archivos del corpus, su orden, nombres, huellas y configuración de extracción y segmentación.
+  \item Congelar los 16 archivos del corpus, su orden, nombres, huellas y configuración de extracción y segmentación.
   \item Cargar las fuentes en un proyecto vacío, ejecutar solamente la ingesta y segmentación, y exportar y verificar el catálogo común de fragmentos.
   \item Ejecutar la definición interactiva sobre ese corpus, revisar la interpretación provisional y responder las aclaraciones.
   \item Congelar el perfil confirmado, el anexo de fragmentos \codigo{USR-DEF-*} y el paquete común de entrada para M0 y T1.
@@ -240,7 +241,7 @@ El análisis cualitativo clasificará errores como omisión, invención, fusión
   \end{tabularx}
 \end{table}
 
-El corpus es ficticio y no contiene datos confidenciales. Se conservarán las huellas de las fuentes, respuestas de definición, versión del código, configuración, resultados y rúbricas. El servicio externo procesará únicamente contenido sintético.
+Las quince fuentes construidas para SIGSAT son ficticias y no contienen datos confidenciales. La fuente normativa es un documento público oficial y se utiliza únicamente en el caso experimental. Se conservarán las huellas de las fuentes, respuestas de definición, versión del código, configuración, resultados y rúbricas. Los servicios externos procesarán solo el contenido del corpus experimental.
 
 \section{Diagrama metodológico}
 

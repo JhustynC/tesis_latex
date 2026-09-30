@@ -30,9 +30,9 @@ El diseño se documenta mediante elementos adaptados de ISO/IEC/IEEE 42010:2022 
 
 \section{Contexto y límites}
 
-ReqLab es una aplicación web local de un solo usuario. Recibe archivos PDF, DOCX, TXT o Markdown y texto pegado; conserva los originales; extrae y segmenta su contenido; conduce una definición interactiva; genera artefactos; y permite revisarlos y exportarlos. El servicio LLM externo se utiliza en las tareas semánticas. Los embeddings, la recuperación, la persistencia y los controles deterministas se ejecutan localmente.
+ReqLab es una aplicación web local de un solo usuario. Recibe archivos PDF, DOCX, TXT o Markdown y texto pegado; conserva los originales; extrae y segmenta su contenido; conduce una definición interactiva; genera artefactos; y permite revisarlos y exportarlos. DeepSeek se utiliza para definición, generación y propuestas de revisión. Los embeddings, TF--IDF, RRF, persistencia y controles deterministas se ejecutan localmente. El reranking puede realizarse localmente o, de manera opcional, mediante Jev a través de OpenRouter; la validación semántica con Jev constituye otro servicio opcional e independiente.
 
-Quedan fuera del límite actual: OCR, transcripción automática de audio, autenticación, edición colaborativa multiusuario, aprobación automática de requisitos, resolución autónoma de conflictos, entrenamiento de modelos y comparación exhaustiva de arquitecturas o LLM. DeepSeek es el proveedor validado; otros servicios con interfaz semejante pueden requerir adaptación y no se consideran verificados por defecto.
+Quedan fuera del límite actual: OCR, transcripción automática de audio, autenticación, edición colaborativa multiusuario, aprobación automática de requisitos, resolución autónoma de conflictos, entrenamiento de modelos y comparación exhaustiva de arquitecturas o LLM. DeepSeek es el proveedor generativo validado. Jev se incorpora solo como opción experimental para reranking y validación semántica en modo observacional; no reemplaza los controles deterministas ni el juicio experto.
 
 \section{Vista de componentes y responsabilidades}
 
@@ -41,7 +41,7 @@ La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por respon
 \begin{landscape}
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{arquitectura_componentes.pdf}
+  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{arquitectura_componentes.png}
   \caption{Arquitectura de componentes de ReqLab: cliente web, núcleo y servicio LLM externo.}
   \label{fig:arquitectura-componentes}
 \end{figure}
@@ -58,14 +58,14 @@ La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por respon
     \midrule
     Interfaz Angular & Gestionar proyectos y etapas de fuentes, definición, generación y revisión. & Acciones del usuario y visualización de evidencia. \\
     API FastAPI & Exponer casos de uso y validar solicitudes HTTP. & Contratos de entrada y respuesta. \\
-    Servicio de aplicación & Coordinar transacciones, agentes, progreso, errores y persistencia. & Flujo reproducible por proyecto. \\
+    Servicio de aplicación & Coordinar transacciones, agentes, progreso, errores, puntos de control y persistencia. & Flujo reproducible y reanudable por proyecto. \\
     Extracción y segmentación & Convertir fuentes y producir unidades citables según su tipo. & Catálogo de fragmentos. \\
     Agente de definición & Interpretar todo el corpus por lotes, construir perfil y formular aclaraciones. & Perfil provisional, preguntas y decisiones confirmadas. \\
-    Recuperador híbrido & Combinar TF--IDF, embeddings y RRF; aplicar reranking opcional. & Evidencia ordenada por consulta especializada. \\
+    Recuperador híbrido & Combinar TF--IDF, embeddings y RRF; aplicar reranking local o Jev de forma opcional. & Evidencia ordenada y auditoría de candidatos cuando corresponde. \\
     Agentes RF, RNF y HU & Generar cada tipo conforme a su contrato y contexto previo. & Artefactos estructurados con citas y relaciones. \\
     Agente de trazabilidad y consistencia & Comprobar citas, relaciones, estructura, duplicados y clasificación. & Reporte y alertas por artefacto. \\
     Agente de revisión & Proponer una versión sustentada sin sobrescribir la vigente. & Propuesta aceptable o rechazable por el usuario. \\
-    Persistencia & Guardar estado relacional, originales, vectores y exportaciones. & Historial auditable del proyecto. \\
+    Persistencia & Guardar estado relacional, originales, vectores, puntos de control y exportaciones. & Historial auditable y recuperación ante fallos. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -106,20 +106,20 @@ La interacción principal sigue una secuencia controlada:
   \item las respuestas se convierten en fragmentos \codigo{USR-DEF-*} y se indexan;
   \item el orquestador ejecuta secuencialmente los agentes RF, RNF y HU;
   \item cada agente consulta al recuperador híbrido y recibe los artefactos previos como contexto generado;
-  \item los esquemas tipados validan cada respuesta antes de persistirla;
+  \item los esquemas tipados validan cada respuesta antes de persistirla y, al completar un agente, se guarda un punto de control;
   \item el agente de trazabilidad y consistencia crea alertas y validación por artefacto;
   \item el usuario inspecciona fuentes, edita manualmente o solicita una propuesta de revisión; y
   \item el proyecto se exporta a JSON o DOCX junto con su información de trazabilidad.
 \end{enumerate}
 
-Una fuente duplicada se detecta mediante su huella; una extracción vacía, esquema inválido o error de proveedor se informa explícitamente. Las alertas de contenido no se resuelven silenciosamente y una propuesta de revisión no sustituye al artefacto hasta que el usuario la acepte.
+Una fuente duplicada se detecta mediante su huella; una extracción vacía, esquema inválido o error de proveedor se informa explícitamente. El análisis de definición conserva un punto de control por lote y la generación guarda la salida al terminar cada agente. Ante una interrupción, una nueva ejecución reutiliza únicamente los lotes o tipos completados cuya entrada y configuración siguen siendo compatibles. Las alertas de contenido no se resuelven silenciosamente y una propuesta de revisión no sustituye al artefacto hasta que el usuario la acepte.
 
 \section{Vista de información y trazabilidad}
 
 \begin{landscape}
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{trazabilidad_informacion.pdf}
+  \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{trazabilidad_informacion.png}
   \caption{Procedencia documental, relaciones entre artefactos y registro de ejecución.}
   \label{fig:arquitectura-informacion}
 \end{figure}
@@ -148,6 +148,7 @@ La procedencia comienza en una fuente original o en una respuesta de definición
   Artifact & artifact\_id, type, title, description, priority, priority\_source, source\_fragments, status, verification\_criteria, acceptance\_criteria, related\_artifacts y campos propios del tipo & Tipo, prioridad, procedencia, patrón EARS, criterios, citas y relaciones se validan; los datos ausentes permanecen explícitamente pendientes. \\
   Validation report & incidencias, duplicados, relaciones inválidas, umbrales y evaluación por artefacto & Informa; no aprueba ni corrige automáticamente. \\
   Run & fase, agente, estado, parámetros, métricas, inicio y fin & Conserva una instantánea de la configuración utilizada. \\
+  Checkpoint & ejecución, clave, huella de entrada, resultado y telemetría & Solo se reutiliza cuando la entrada y la configuración siguen siendo compatibles. \\
   \bottomrule
 \end{longtable}
 
@@ -156,7 +157,7 @@ La procedencia comienza en una fuente original o en una respuesta de definición
 La persistencia se distribuye de acuerdo con la naturaleza de la información:
 
 \begin{itemize}
-  \item SQLite conserva proyectos, fuentes, fragmentos, preguntas, perfiles, artefactos, versiones, propuestas, validaciones y ejecuciones;
+  \item SQLite conserva proyectos, fuentes, fragmentos, preguntas, perfiles, artefactos, versiones, propuestas, validaciones, ejecuciones y puntos de control;
   \item ChromaDB conserva los embeddings y el índice semántico separado por proyecto y versión de modelo; y
   \item el sistema de archivos conserva documentos originales, caché local de modelos y exportaciones.
 \end{itemize}
@@ -179,7 +180,7 @@ Esta combinación no introduce lógica de dominio. SQLite proporciona integridad
     Definición antes de generar & Incorpora decisiones humanas que el corpus no permite inferir. & Añade una interacción obligatoria cuando existen vacíos relevantes. \\
     Consolidación determinista en definición & Une únicamente hallazgos textualmente equivalentes de una misma dimensión y acumula sus citas, sin delegar esta operación al LLM. & Puede conservar paráfrasis repetidas, pero evita fusionar por error decisiones o contradicciones diferentes. \\
     Recuperación híbrida & Combina coincidencia terminológica y proximidad semántica. & Requiere modelos locales y parámetros que deben registrarse. \\
-    Reranker opcional & Permite una segunda evaluación de relevancia sin volverla requisito del MVP. & Aumenta latencia y debe evaluarse antes de atribuir beneficio. \\
+    Reranker opcional y seleccionable & Permite comparar el reordenamiento local con Jev sin volverlo requisito del MVP; cuando se usa Jev se conservan candidatos, posiciones, probabilidades, modelo, consumo y latencia. & Aumenta latencia o costo y debe evaluarse antes de atribuir beneficio. \\
     Esquemas tipados y reintentos & Impiden persistir respuestas que violen contratos conocidos. & No garantizan corrección semántica. \\
     Evidencia separada de relaciones & Evita tratar artefactos generados como fuentes documentales. & Requiere dos tipos de enlace explícitos. \\
     Revisión con aprobación humana & Conserva control sobre cambios y versiones. & El flujo no es completamente autónomo. \\
@@ -187,6 +188,8 @@ Esta combinación no introduce lógica de dominio. SQLite proporciona integridad
     \bottomrule
   \end{tabularx}
 \end{table}
+
+Como decisiones complementarias, la validación semántica con Jev se mantiene en modo \emph{shadow} y los puntos de control solo se reutilizan cuando coinciden la huella de entrada, los límites y la configuración de la ejecución original. Ninguno de estos mecanismos modifica o aprueba artefactos por sí mismo.
 
 \section{Correspondencia entre diseño e implementación}
 
@@ -202,9 +205,9 @@ Esta combinación no introduce lógica de dominio. SQLite proporciona integridad
     Interfaz y API & \codigo{frontend/src/app} y \codigo{api/routers}. & Compilación Angular y pruebas de flujo HTTP. \\
     Extracción & \codigo{documents.py}. & Formatos, fuente libre y segmentación por tipo. \\
     Definición & \codigo{agents.py} y \codigo{services.py}. & Cobertura del corpus, preguntas dinámicas y confirmación. \\
-    Recuperación híbrida & \codigo{retrieval.py} y \codigo{vector_store.py}. & Prefijos, fusión, top--k, reranker e indexación incremental. \\
+    Recuperación híbrida & \codigo{retrieval.py}, \codigo{vector_store.py} y \codigo{jev\_reranker.py}. & Prefijos, fusión, top--k, reranker local/Jev e indexación incremental. \\
     Generación especializada & Contratos de \codigo{agents.py}. & RF/RNF/HU, citas, relaciones y esquemas tipados. \\
-    Control y revisión & \codigo{validation.py} y \codigo{RevisionAgent}. & Incidencias, umbrales, propuesta, aceptación y versión. \\
+    Control y revisión & \codigo{validation.py}, \codigo{semantic\_validation.py} y \codigo{RevisionAgent}. & Incidencias, piloto semántico, propuesta, aceptación y versión. \\
     Persistencia y exportación & \codigo{storage.py} y \codigo{exporters.py}. & Integridad, configuración de corrida y archivos JSON/DOCX. \\
     \bottomrule
   \end{tabularx}

@@ -4,7 +4,7 @@
 
 \section{Estado y alcance de la implementación}
 
-ReqLab implementa una aplicación web para organizar múltiples proyectos, incorporar fuentes heterogéneas, definir interactivamente el sistema, generar RF, RNF e historias de usuario, revisar la evidencia y exportar resultados. El núcleo no contiene actores ni reglas de Altavista u otro caso específico: cada proyecto se interpreta desde sus propias fuentes y respuestas.
+ReqLab implementa una aplicación web para organizar múltiples proyectos, incorporar fuentes heterogéneas, definir interactivamente el sistema, generar RF, RNF e historias de usuario, revisar la evidencia y exportar resultados. El núcleo no contiene actores ni reglas de SIGSAT u otro caso específico: cada proyecto se interpreta desde sus propias fuentes y respuestas.
 
 La versión documentada de la API es 0.3.0. El prototipo se encuentra en estado funcional para desarrollo y demostración. No obstante, el cierre académico del objetivo específico 3 requiere ejecutar la matriz formal de aceptación y conservar una corrida integral con la configuración congelada.
 
@@ -24,8 +24,8 @@ La versión documentada de la API es 0.3.0. El prototipo se encuentra en estado 
     Aplicación & Python & Orquestación, agentes, extracción, recuperación y validación. \\
     Persistencia relacional & SQLite & Estado, preguntas, artefactos, versiones, ejecuciones y reportes. \\
     Persistencia vectorial & ChromaDB & Embeddings e índice semántico aislado por proyecto. \\
-    Procesamiento semántico & sentence-transformers & Embeddings locales y reranking opcional. \\
-    Proveedor generativo & DeepSeek & Interpretación, generación y propuestas de revisión. \\
+    Procesamiento semántico local & sentence-transformers & Embeddings locales y reranking opcional. \\
+    Servicios semánticos externos & DeepSeek y Jev vía OpenRouter & Interpretación, generación, revisión y opciones de reranking o validación semántica. \\
     Documentos & pypdf y python-docx & Extracción de PDF/DOCX y exportación DOCX. \\
     Despliegue & Docker Compose y Nginx & Contenedores de API e interfaz con volumen persistente. \\
     \bottomrule
@@ -41,7 +41,7 @@ La clave del proveedor se lee desde variables de entorno y no se incorpora al re
   \caption{Módulos del prototipo}
   \label{tab:modulos-prototipo}
   \small
-  \begin{tabularx}{\textwidth}{p{4.2cm}p{4.1cm}Y}
+  \begin{tabularx}{\textwidth}{p{4.8cm}p{3.5cm}Y}
     \toprule
     Módulo & Elemento principal & Responsabilidad \\
     \midrule
@@ -51,9 +51,11 @@ La clave del proveedor se lee desde variables de entorno y no se incorpora al re
     \codigo{documents.py} & Extracción y segmentación & PDF, DOCX, TXT, Markdown y texto pegado. \\
     \codigo{vector_store.py} & Repositorio y recuperador híbrido & Índice, embeddings, RRF y reranking. \\
     \codigo{retrieval.py} & TfidfRetrievalAgent & Recuperación léxica local. \\
+    \codigo{jev\_reranker.py} & JevReranker & Reordenamiento remoto opcional y auditoría de candidatos. \\
     \codigo{agents.py} & Agentes y contratos & Definición, RF, RNF, HU y revisión. \\
     \codigo{llm.py} y \codigo{llm_schemas.py} & Cliente y esquemas Pydantic & Invocación, validación, reintentos y telemetría. \\
     \codigo{validation.py} & Validador de trazabilidad & Citas, relaciones, estructura y duplicados. \\
+    \codigo{semantic\_validation.py} y \codigo{typesafe\_client.py} & Piloto Jev & Evaluación semántica en modo \emph{shadow} y cliente remoto desacoplado. \\
     \codigo{storage.py} & SQLiteRepository & Persistencia, migraciones e historial. \\
     \codigo{exporters.py} & Exportadores & Salidas JSON y DOCX. \\
     \bottomrule
@@ -74,21 +76,23 @@ Las fuentes pueden cargarse como archivos o registrarse pegando texto con un tí
 
 \section{Etapa de definición}
 
-\codigo{ProjectDefinitionAgent} evita asumir que la información importante se encuentra en los primeros fragmentos. Divide el corpus completo en lotes configurables de 18\,000 caracteres y utiliza hasta tres trabajadores para analizarlos en paralelo. Después consolida localmente las coincidencias textuales por dimensión, reúne sus citas y conserva por separado las formulaciones distintas. Con esa entrada construye un perfil provisional y formula preguntas para dimensiones ausentes o de baja confianza, contradicciones y decisiones relevantes.
+\codigo{ProjectDefinitionAgent} evita asumir que la información importante se encuentra en los primeros fragmentos. Divide el corpus completo en lotes configurables de 18\,000 caracteres y utiliza hasta tres trabajadores para analizarlos en paralelo. Cada lote completado se almacena como punto de control junto con una huella de su contenido. Después consolida localmente las coincidencias textuales por dimensión, reúne sus citas y conserva por separado las formulaciones distintas. Con esa entrada construye un perfil provisional y formula preguntas para dimensiones ausentes o de baja confianza, contradicciones y decisiones relevantes. Si falla la síntesis final, el siguiente intento reutiliza los lotes cuya huella no cambió y repite únicamente la operación pendiente.
 
 El usuario puede revisar la interpretación antes de confirmar. Las respuestas obligatorias resueltas se almacenan en SQLite y se convierten en fragmentos \codigo{USR-DEF-*}, los cuales ingresan al índice. La API admite campos de definición extensos con un límite de seguridad de 20\,000 caracteres, de modo que una interpretación obtenida de un corpus amplio no sea rechazada al confirmarse. Si se modifica una fuente, la confirmación se invalida. Si se reconfirma una definición después de haber generado artefactos, Angular presenta una advertencia explícita: al aceptar, se eliminan los artefactos, versiones, observaciones y ejecuciones de generación anteriores, mientras se conservan fuentes y respuestas. El backend exige el indicador \codigo{reset\_generation} cuando detecta resultados existentes, por lo que esta regla no depende únicamente de la interfaz. Esta implementación conecta la elicitación humana con la generación sin presentar inferencias del LLM como hechos confirmados ni mezclar salidas de definiciones distintas.
 
 \section{Recuperación híbrida}
 
-\codigo{HybridRetrievalAgent} combina una lista léxica TF--IDF con una lista semántica obtenida desde ChromaDB. Los resultados se fusionan mediante RRF y pesos configurables. El soporte de prefijos distintos para consultas y pasajes permite utilizar correctamente familias de embeddings que requieren esa convención. Cuando el reranker está habilitado, un \emph{cross-encoder} multilingüe reordena los candidatos antes de limitar el contexto.
+\codigo{HybridRetrievalAgent} combina una lista léxica TF--IDF con una lista semántica obtenida desde ChromaDB. Los resultados se fusionan mediante RRF y pesos configurables. El soporte de prefijos distintos para consultas y pasajes permite utilizar correctamente familias de embeddings que requieren esa convención. Cuando el reranker está habilitado, la configuración del proyecto selecciona el \emph{cross-encoder} multilingüe local o Jev vía OpenRouter antes de limitar el contexto. La selección se conserva en SQLite y se incluye en la instantánea experimental.
+
+El reranker Jev registra todos los candidatos considerados, su posición y puntuación RRF, las probabilidades de relevancia y evidencia útil, el promedio aplicado, la posición final y la selección. También conserva modelo solicitado y servido, proveedor, intentos, tokens, costo informado y latencia. Los errores 429 y 5xx se reintentan de forma acotada; si el servicio falla no se sustituye silenciosamente por el modelo local.
 
 Cada contrato de generación define una consulta propia para favorecer evidencia funcional, atributos de calidad o actores y valor. El efecto de estas consultas deberá comprobarse en la evaluación; su contenido y el \(top\_k\) quedan registrados como condiciones de la ejecución.
 
 \section{Generación multiagente}
 
-El servicio ejecuta tres instancias de \codigo{SpecializedGenerationAgent} en secuencia: RF, RNF y HU. Cada una recibe un contrato con identificador, tarea, reglas y consulta de recuperación. Los artefactos consolidados en pasos anteriores se añaden como contexto para reducir aislamiento y favorecer relaciones, pero el \emph{prompt} prohíbe convertirlos en \codigo{source_fragments}.
+El servicio ejecuta tres instancias de \codigo{SpecializedGenerationAgent} en secuencia: RF, RNF y HU. Cada una recibe un contrato con identificador, tarea, reglas y consulta de recuperación. Los artefactos consolidados en pasos anteriores se añaden como contexto para reducir aislamiento y favorecer relaciones, pero el \emph{prompt} prohíbe convertirlos en \codigo{source_fragments}. Al completar cada tipo, el servicio persiste sus artefactos, recuperación y telemetría como punto de control. Una ejecución interrumpida puede continuar desde el primer agente pendiente y reutiliza los límites y la configuración de la corrida original.
 
-Antes de esa ejecución, \codigo{generation\_budget.py} recorre todos los fragmentos confirmados y calcula mínimos, sugerencias y máximos independientes. El endpoint \codigo{GET /generation/recommendations} expone el cálculo a Angular. La pantalla de generación muestra tres controles deslizantes ---RF, RNF y HU---, informa el volumen analizado y rotula cada selección como un máximo. \codigo{POST /generation} recibe los tres valores; el campo anterior \codigo{limit\_per\_type} se conserva para compatibilidad con clientes previos. El orquestador aplica el valor correspondiente a cada agente y almacena tanto la recomendación como la selección en los parámetros de la corrida.
+Antes de esa ejecución, \codigo{generation\_budget.py} recorre todos los fragmentos confirmados y calcula mínimos, sugerencias y máximos independientes. El endpoint \codigo{GET /generation/recommendations} expone el cálculo a Angular. La pantalla de generación muestra tres controles deslizantes ---RF, RNF y HU---, informa el volumen analizado y rotula cada selección como un máximo. \codigo{POST /generation} recibe los tres valores; el campo anterior \codigo{limit\_per\_type} se conserva para compatibilidad con clientes previos. El orquestador aplica el valor correspondiente a cada agente y almacena tanto la recomendación como la selección en los parámetros de la corrida. Al finalizar, la interfaz compara el máximo solicitado con la cantidad producida por tipo y explica que una cantidad inferior es válida cuando la evidencia o la validación impiden justificar más artefactos.
 
 La respuesta se valida con modelos Pydantic. Se controlan tipo, prioridad, procedencia de prioridad, estado, criterios, citas y relaciones permitidas. El contrato añade patrón EARS y criterios de verificación para RF y RNF; para RNF incorpora categoría, métrica, unidad, umbral y método de verificación. Los campos no sustentados se conservan vacíos y el estado puede indicar que se requiere aclaración. Una prioridad sin procedencia explícita se transforma en \emph{No definida}, en lugar de asumir un nivel medio. El ejemplo JSON se construye con identificadores realmente autorizados para evitar que el LLM copie marcadores inválidos. Cuando la respuesta incumple el esquema, el cliente puede reintentar hasta el máximo configurado usando el error como retroalimentación. Si todos los intentos fallan, la telemetría y el mensaje de la corrida incluyen una síntesis segura del último error de validación. No existe una llamada posterior que omita la validación.
 
@@ -96,17 +100,23 @@ La respuesta se valida con modelos Pydantic. Se controlan tipo, prioridad, proce
 
 \codigo{TraceabilityConsistencyAgent} verifica citas y relaciones, conformidad EARS de RF, criterios de verificación, completitud de medición de RNF, procedencia de prioridad, conformidad de HU, indicios de clasificación y duplicación. Los posibles duplicados se separan entre pares del mismo tipo y pares cruzados. Cada observación se asocia con los artefactos correspondientes y la interfaz la presenta como alerta, no como corrección automática.
 
-El usuario puede abrir cada observación y localizar directamente el artefacto implicado. Desde el panel de revisión puede modificar redacción, clasificación, prioridad, patrón EARS, criterios de verificación, campos de medición de RNF y criterios de aceptación, cambiar el estado o solicitar a \codigo{RevisionAgent} una propuesta sustentada. La propuesta se conserva aparte y puede aceptarse o rechazarse. Una reclasificación modifica el prefijo legible, actualiza referencias internas y crea versiones tanto para el artefacto como para las relaciones afectadas. Cada cambio recalcula la validación. Finalmente, el proyecto puede exportarse como JSON o DOCX; la salida documental incluye fichas por tipo y una matriz de trazabilidad con extractos de evidencia.
+El usuario puede abrir cada observación y localizar directamente el artefacto implicado. Desde el panel de revisión puede modificar redacción, clasificación, prioridad, patrón EARS, criterios de verificación, campos de medición de RNF y criterios de aceptación, cambiar el estado o solicitar a \codigo{RevisionAgent} una propuesta sustentada. La propuesta se conserva aparte y puede aceptarse o rechazarse. Una reclasificación modifica el prefijo legible, actualiza referencias internas y crea versiones tanto para el artefacto como para las relaciones afectadas. Cada cambio recalcula la validación.
+
+La revisión incluye aprobación masiva con advertencia previa y un gestor de prioridades para preparar varios cambios, aplicar un valor común a todos los artefactos y guardarlos de manera controlada. La prioridad sigue disponible en la edición individual. Las decisiones realizadas desde cualquiera de las dos vías se registran con procedencia humana.
+
+El piloto opcional de validación semántica envía a Jev el artefacto y sus fragmentos citados, y almacena un informe independiente sobre respaldo conjunto y aporte de cada enlace. Funciona solo en modo \emph{shadow}: no cambia contenido, clasificación ni estado, y se marca como obsoleto cuando cambian el artefacto o sus citas.
+
+Finalmente, el proyecto puede exportarse como JSON o DOCX. La salida documental presenta cada artefacto mediante una tabla de dos columnas adaptada a RF, RNF o HU e incluye una matriz de trazabilidad tabular con fragmento, fuente y extracto de evidencia.
 
 \section{Observabilidad y reproducibilidad}
 
-Cada agente y el orquestador registran inicio, fin, estado y error. Las llamadas al LLM capturan latencia, tokens reportados por el proveedor e intentos de validación. La ejecución principal agrega esas medidas y almacena una instantánea del modelo, embeddings, prefijos, reranker, pesos de RRF, \(top\_k\), tamaño de fragmento, solapamiento, umbrales y versión de \emph{prompts}.
+Cada agente y el orquestador registran inicio, fin, estado y error. Las llamadas al LLM capturan latencia, tokens reportados por el proveedor e intentos de validación. La ejecución principal agrega esas medidas y almacena una instantánea del modelo, embeddings, prefijos, proveedor y modelo de reranking, pesos de RRF, \(top\_k\), tamaño de fragmento, solapamiento, umbrales y versión de \emph{prompts}. La interfaz separa el consumo registrado para definición, generación, revisiones, validación semántica y Jev.
 
 La telemetría permite auditar costos y comparar ejecuciones, pero no se interpreta como medida directa de calidad. Si el proveedor no informa tokens, el valor se registra como no disponible y no como cero.
 
 \section{Pruebas implementadas}
 
-En el estado documentado, la suite contiene 63 pruebas automatizadas y finaliza correctamente. Estas pruebas no consumen el proveedor externo; utilizan dobles controlados para comprobar contratos y flujo. Entre ellas se comprueba que una prioridad ausente no se convierta silenciosamente en media y que el validador detecte incumplimientos EARS, criterios de verificación ausentes y campos de medición pendientes.
+El repositorio contiene 65 pruebas automatizadas. Estas pruebas no consumen proveedores externos; utilizan dobles controlados para comprobar contratos y flujo. Entre ellas se comprueba que una prioridad ausente no se convierta silenciosamente en media, que el validador detecte incumplimientos EARS, que la reanudación no repita agentes completados y que la auditoría de Jev conserve candidatos y telemetría. La ejecución completa, incluida la prueba de exportación que depende de \codigo{python-docx}, deberá repetirse sin omisiones en el entorno congelado y conservarse como evidencia de aceptación.
 
 \begin{table}[H]
   \centering
@@ -119,12 +129,12 @@ En el estado documentado, la suite contiene 63 pruebas automatizadas y finaliza 
     \midrule
     Proyectos y fuentes & Creación, archivo, eliminación, vista previa, duplicados e invalidación. \\
     Segmentación & Transmisión del tipo de fuente y conservación de unidades contextuales. \\
-    Recuperación & Prefijos de consulta/pasaje, \(top\_k\), composición del reranker e índice incremental. \\
-    Definición & Cobertura de todos los fragmentos por lotes, consolidación local con conservación de citas, preguntas, respuestas y fragmentos confirmados. \\
-    Generación & Orden de agentes, esquemas, presupuestos independientes, diagnóstico de reintentos, relaciones y ausencia de bypass de validación. \\
-    Telemetría & Latencia, intentos y agregación sin duplicar consumos. \\
-    Validación y revisión & Citas, relaciones, duplicados, reinicio explícito, edición, reclasificación, propuesta y decisión de cambio. \\
-    Flujo web y exportación & Endpoints principales y datos aditivos consumidos por Angular. \\
+    Recuperación & Prefijos de consulta/pasaje, \(top\_k\), reranking local/Jev, auditoría de candidatos e índice incremental. \\
+    Definición & Cobertura de todos los fragmentos por lotes, consolidación local, puntos de control, preguntas, respuestas y fragmentos confirmados. \\
+    Generación & Orden de agentes, esquemas, presupuestos independientes, puntos de control, reanudación, diagnóstico de reintentos y relaciones. \\
+    Telemetría & Latencia, intentos, consumo por fase y agregación sin duplicar ejecuciones reutilizadas. \\
+    Validación y revisión & Citas, relaciones, duplicados, piloto semántico, reinicio explícito, edición, prioridad masiva, aprobación y versiones. \\
+    Flujo web y exportación & Endpoints principales, navegación Angular y exportación tabular JSON/DOCX. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -138,7 +148,7 @@ Para considerar completado el objetivo 3 se deberá:
 \begin{enumerate}
   \item congelar la versión de código y configuración;
   \item ejecutar el despliegue completo mediante Docker;
-  \item aplicar la matriz de aceptación con el corpus Altavista;
+  \item aplicar la matriz de aceptación con el corpus SIGSAT-1.0;
   \item registrar entradas, resultados esperados, observados y evidencia;
   \item conservar una corrida real de definición, generación, revisión y exportación; y
   \item documentar limitaciones e incidentes observados.
