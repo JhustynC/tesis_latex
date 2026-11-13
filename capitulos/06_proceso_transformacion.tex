@@ -41,6 +41,8 @@ Antes de la síntesis global se ejecuta una consolidación local y determinista.
 
 El usuario revisa el perfil y responde las aclaraciones obligatorias. Al confirmar, sus respuestas se persisten e indexan como fragmentos \codigo{USR-DEF-*}.
 
+Si el usuario no puede resolver una contradicción relevante, debe obtener una aclaración del interesado o acordar y registrar que el comportamiento afectado queda fuera del alcance de esta versión; no debe elegir una alternativa arbitrariamente. Si ninguna opción es posible, se pospone la confirmación. Esta es una regla del procedimiento humano: el backend bloquea respuestas obligatorias vacías, pero no determina semánticamente si una respuesta como ``no sé'' resuelve el conflicto y almacena las respuestas confirmadas como decisiones. Por ello, la confirmación exige comprobar su suficiencia antes de generar. Las incertidumbres detectadas después se conservan como observaciones o artefactos que requieren aclaración, sin aprobación automática.
+
 La salida de este control es una interpretación confirmada que se entrega a los agentes de generación. Si cambian las fuentes, debe repetirse la definición. Esta regla evita utilizar respuestas pertenecientes a una versión anterior del corpus.
 
 \section{Etapas del objetivo específico 2}
@@ -65,7 +67,7 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Entrada.} Fragmentos documentales y de definición, metadatos del proyecto y consulta especializada del agente.
 
-\textbf{Operación.} Se ejecutan recuperación TF--IDF y búsqueda semántica mediante embeddings. Las posiciones se combinan con RRF usando pesos configurables; opcionalmente, un \emph{cross-encoder} reordena los candidatos.
+\textbf{Operación.} Se ejecutan recuperación TF--IDF y búsqueda semántica mediante embeddings. Las posiciones se combinan con RRF usando pesos configurables; un \emph{cross-encoder} local o Jev puede reordenar los candidatos cuando se habilita esa opción.
 
 \textbf{Parámetros candidatos después de la calibración técnica.} \(w_l=0.45\), \(w_s=0.55\), \(top\_k=12\), embeddings \codigo{intfloat/multilingual-e5-base} y reranker desactivado por defecto. E5 Base se seleccionó por su orientación a recuperación multilingüe y una longitud de entrada compatible con los fragmentos del proyecto. Si se habilita una segunda etapa de ordenamiento, el usuario puede seleccionar el modelo local \codigo{cross-encoder/mmarco-mMiniLMv2-L12-H384-v1} o Jev mediante OpenRouter. La configuración finalmente elegida se congelará y almacenará en la ejecución experimental; no se atribuirá beneficio al reranker sin evaluarlo.
 
@@ -77,7 +79,7 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Objetivo.} Producir propuestas de RF, RNF y HU respaldadas por evidencia.
 
-\textbf{Entrada.} Definición confirmada, evidencia recuperada, contrato tipado, reglas del \emph{prompt} y artefactos generados previamente.
+\textbf{Entrada.} Metadatos del proyecto, evidencia recuperada, contrato tipado, reglas del \emph{prompt} y artefactos generados previamente. La confirmación de la definición es una precondición; las decisiones del usuario participan como fragmentos citables si se recuperan, no mediante el envío íntegro del perfil a cada agente.
 
 \textbf{Operación.} El orquestador invoca agentes especializados en el orden RF--RNF--HU. Cada agente dispone de una tarea y consulta propia. Los artefactos ya generados se utilizan como contexto de coherencia, pero nunca como citas documentales.
 
@@ -91,29 +93,41 @@ La salida de este control es una interpretación confirmada que se entrega a los
 
 \textbf{Objetivo.} Hacer inspeccionable la procedencia y la correspondencia interna.
 
+\textbf{Entrada.} Artefactos propuestos, catálogo vigente de fragmentos y decisiones confirmadas.
+
 \textbf{Operación.} \codigo{source_fragments} enlaza el artefacto con documentos o decisiones confirmadas; \codigo{related_artifacts} enlaza RF, RNF y HU. Ambos espacios se validan por separado.
 
 \textbf{Regla mínima.} Todo artefacto debe declarar al menos un fragmento existente. Una relación interna debe apuntar a otro artefacto del mismo proyecto. La existencia no prueba pertinencia semántica.
 
 \textbf{Salida.} Evidencia visible por artefacto y relaciones navegables en revisión y exportación.
 
+\textbf{Control.} Se comprueban pertenencia y existencia de los destinos. Las citas documentales y las relaciones entre artefactos no son intercambiables; la pertinencia del enlace requiere revisión humana.
+
 \subsection{Etapa 5: validación estructural}
 
 \textbf{Objetivo.} Comprobar los contratos antes de la evaluación experta.
+
+\textbf{Entrada.} Artefactos, contratos por tipo y catálogo vigente de fragmentos.
 
 \textbf{Operación.} Se identifican citas o relaciones ausentes e inexistentes, valores no permitidos, RF que no cumplen el patrón EARS declarado, RF o RNF sin criterio de verificación, RNF con datos de medición pendientes, prioridades sin procedencia, HU sin estructura mínima y HU sin criterios de aceptación. Parte de estas restricciones se aplica al recibir la salida del LLM y parte se consolida en el reporte del proyecto. Las ausencias producen observaciones para revisión y no provocan que el sistema invente información.
 
 \textbf{Salida.} Resultado general y observaciones asociadas con cada artefacto. El informe no lo modifica automáticamente.
 
+\textbf{Control.} Un incumplimiento del esquema se rechaza o se reintenta al recibir la respuesta; un defecto detectado por el reporte se mantiene como observación identificable para revisión. La conformidad estructural no acredita corrección del contenido.
+
 \subsection{Etapa 6: verificación de consistencia}
 
 \textbf{Objetivo.} Señalar indicios de redundancia o clasificación inconsistente para revisión humana.
+
+\textbf{Entrada.} Conjunto vigente de RF, RNF y HU y umbrales configurados.
 
 \textbf{Operación.} Se calcula similitud de Jaccard entre artefactos del mismo tipo y, con un umbral separado, entre tipos distintos. También se aplican reglas conservadoras para detectar RNF con redacción funcional.
 
 \textbf{Parámetros iniciales.} Umbral de 0.72 para duplicados del mismo tipo y 0.55 para duplicados cruzados. Son heurísticas configurables y no reglas universales de calidad.
 
 \textbf{Salida.} Pares candidatos, puntuación, motivo y observaciones. Ninguna alerta fusiona, reclasifica o descarta un artefacto.
+
+\textbf{Control.} El analista inspecciona los pares y la evidencia antes de decidir un cambio. La ausencia de alertas no garantiza ausencia de contradicciones semánticas, que se examinan en la revisión del conjunto.
 
 \section{Control posterior: revisión y exportación}
 
@@ -138,6 +152,7 @@ La exportación produce JSON para análisis y DOCX para lectura o entrega. En el
     \midrule
     Formato no admitido, extracción vacía o fuente duplicada & Rechazar la fuente e informar la causa. & Convertir, corregir o seleccionar otra fuente. \\
     Cambio de fuente tras definición & Invalidar perfil confirmado y resultados dependientes. & Repetir análisis y confirmación. \\
+    Contradicción sin decisión humana & Bloquear confirmación si falta una respuesta obligatoria; no resolver automáticamente su significado. & Obtener aclaración, confirmar una exclusión explícita del alcance o posponer la confirmación. \\
     Esquema LLM inválido & Reintentar con el error de validación hasta el máximo. & Corregir configuración o revisar proveedor si falla. \\
     Interrupción tras completar un lote o agente & Conservar el punto de control compatible. & Reanudar sin repetir los resultados ya validados. \\
     Cita o relación inválida & Rechazar durante validación tipada o registrar incidencia. & Regenerar o editar con evidencia válida. \\
@@ -184,18 +199,25 @@ La exportación produce JSON para análisis y DOCX para lectura o entrega. En el
   Necesidad & Medida & Criterio del proyecto \\
   \midrule
   \endhead
-  Especificación del proceso & Etapas del OE2 con entrada, operación, salida y control / 6 \(\times 100\) & Debe documentarse el 100\,\% de las etapas. \\
+  Especificación del proceso & Etapas del OE2 con propósito, entrada, operación, salida, control y medida / 6 \(\times 100\) & Meta documental de 100\,\%; no equivale a dictamen favorable. \\
+  Segmentación & Fragmentos con ID único y fuente existente / fragmentos producidos \(\times 100\) & Meta operativa de 100\,\%. \\
+  Recuperación auditable & Llamadas con consulta, configuración y lista de IDs recuperados registrada / llamadas de recuperación \(\times 100\) & Meta de 100\,\% en la corrida experimental. \\
+  Generación conforme & Artefactos aceptados por el esquema tipado / artefactos persistidos \(\times 100\) & Meta estructural de 100\,\%; no demuestra calidad semántica. \\
+  Validación trazable & Artefactos incluidos en el reporte vigente / artefactos del conjunto \(\times 100\) & Meta de 100\,\%; contabilizar por separado los defectos detectados. \\
+  Consistencia inspeccionable & Alertas con IDs de afectados, motivo y puntuación cuando procede / alertas emitidas \(\times 100\) & Meta de 100\,\% si hay alertas; sin alertas, no aplica. \\
   Cobertura del análisis de definición & Fragmentos documentales analizados / fragmentos disponibles \(\times 100\) & Meta de 100\,\% según el registro de cobertura. \\
   Cobertura de trazabilidad & Artefactos con al menos una cita válida / total \(\times 100\) & Meta operativa de 100\,\% antes de evaluación. \\
   Integridad de citas & Artefactos con cita inválida / total \(\times 100\) & Meta de 0\,\%; cualquier caso requiere revisión. \\
   Integridad de relaciones & Relaciones inexistentes / relaciones declaradas \(\times 100\) & Meta de 0\,\%. \\
-  Conformidad de HU & HU sin error de forma ni criterios / total de HU \(\times 100\) & Meta operativa de 100\,\%. \\
-  Reproducibilidad & Campos de configuración presentes / campos requeridos \(\times 100\) & Meta de 100\,\% en la corrida experimental. \\
+  Conformidad de HU & HU con estructura y criterios válidos / total de HU \(\times 100\) & Meta operativa de 100\,\%. \\
+  Registro de configuración & Parámetros funcionales registrados directamente / parámetros enumerados para la auditoría \(\times 100\) & Meta de 100\,\%; distinguir datos directos de los reconstruidos. \\
   \bottomrule
 \end{longtable}
 
 Los porcentajes son criterios de aceptación de esta investigación. Las normas orientan cómo definir y comunicar medidas, pero no establecen esos umbrales de forma universal.
 
+Para concretar el denominador del registro de configuración se definió retrospectivamente una lista de 26 campos: cinco del LLM (modelo, URL, modo de razonamiento, límite de salida y temperatura), tres de embeddings (modelo y dos prefijos), tres de reranking (habilitación, proveedor y modelo), cuatro de recuperación (método, \(top\_k\) y dos pesos), dos de segmentación (tamaño y solapamiento), tres de definición (límite del lote, trabajadores y máximo de preguntas), dos umbrales de consistencia, la versión común de instrucciones y tres presupuestos de generación. Esta medida inspecciona parámetros funcionales seleccionados; no acredita repetición exacta del resultado ni mide rendimiento del equipo. Su valor se reporta en la Tabla~\ref{tab:medidas-oe2-observadas}.
+
 \section{Verificación del objetivo específico 2}
 
-El objetivo 2 se considera documentado cuando sus seis etapas disponen de propósito, entrada, operación, salida, control y tratamiento de errores; la definición previa y revisión posterior tienen límites claros; los contratos permiten seguir la procedencia; y las medidas pueden calcularse a partir de los registros. La especificación actual cubre esos elementos. Los valores obtenidos y hallazgos se incorporarán después de congelar y ejecutar el experimento.
+El objetivo 2 se considera desarrollado cuando sus seis etapas disponen de propósito, entrada, operación, salida, control y medida; se especifica el tratamiento de errores; la definición previa y revisión posterior tienen límites claros; y los contratos permiten seguir la procedencia. La Tabla~\ref{tab:verificacion-oe2} presenta la revisión técnica de suficiencia y continuidad; queda pendiente su comprobación académica. Las medidas de la ejecución conservada ilustran la aplicación del proceso, sin sustituir la revisión de la especificación, la aceptación del prototipo ni la evaluación semántica de OE4. Un denominador vacío se reporta como no aplicable o no calculable, nunca como cumplimiento automático.

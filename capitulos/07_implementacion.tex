@@ -6,7 +6,7 @@
 
 ReqLab implementa una aplicación web para organizar múltiples proyectos, incorporar fuentes heterogéneas, definir interactivamente el sistema, generar RF, RNF e historias de usuario, revisar la evidencia y exportar resultados. El núcleo no contiene actores ni reglas de SIGSAT u otro caso específico: cada proyecto se interpreta desde sus propias fuentes y respuestas.
 
-La versión documentada de la API es 0.3.0. El prototipo se encuentra en estado funcional para desarrollo y demostración. No obstante, el cierre académico del objetivo específico 3 requiere ejecutar la matriz formal de aceptación y conservar una corrida integral con la configuración congelada.
+La versión documentada de la API es 0.3.0. El prototipo completó la aceptación funcional de OE3 con la evidencia que se presenta en el Capítulo~\ref{cap:evaluacion}. La versión corregida para el cierre se distingue de la versión utilizada en T1.
 
 \section{Tecnologías y despliegue}
 
@@ -80,6 +80,8 @@ Las fuentes pueden cargarse como archivos o registrarse pegando texto con un tí
 
 El usuario puede revisar la interpretación antes de confirmar. Las respuestas obligatorias resueltas se almacenan en SQLite y se convierten en fragmentos \codigo{USR-DEF-*}, los cuales ingresan al índice. La API admite campos de definición extensos con un límite de seguridad de 20\,000 caracteres, de modo que una interpretación obtenida de un corpus amplio no sea rechazada al confirmarse. Si se modifica una fuente, la confirmación se invalida. Si se reconfirma una definición después de haber generado artefactos, Angular presenta una advertencia explícita: al aceptar, se eliminan los artefactos, versiones, observaciones y ejecuciones de generación anteriores, mientras se conservan fuentes y respuestas. El backend exige el indicador \codigo{reset\_generation} cuando detecta resultados existentes, por lo que esta regla no depende únicamente de la interfaz. Esta implementación conecta la elicitación humana con la generación sin presentar inferencias del LLM como hechos confirmados ni mezclar salidas de definiciones distintas.
 
+La confirmación verifica que las respuestas obligatorias no estén vacías; no implementa una adjudicación semántica de contradicciones. La suficiencia de cada decisión debe comprobarla el usuario siguiendo el procedimiento del Capítulo~\ref{cap:proceso}. Una respuesta registrada no debe interpretarse como una resolución correcta garantizada por el sistema.
+
 \section{Recuperación híbrida}
 
 \codigo{HybridRetrievalAgent} combina una lista léxica TF--IDF con una lista semántica obtenida desde ChromaDB. Los resultados se fusionan mediante RRF y pesos configurables. El soporte de prefijos distintos para consultas y pasajes permite utilizar correctamente familias de embeddings que requieren esa convención. Cuando el reranker está habilitado, la configuración del proyecto selecciona el \emph{cross-encoder} multilingüe local o Jev vía OpenRouter antes de limitar el contexto. La selección se conserva en SQLite y se incluye en la instantánea experimental.
@@ -97,6 +99,8 @@ Antes de esa ejecución, \codigo{generation\_budget.py} recorre todos los fragme
 La respuesta se valida con modelos Pydantic. Se controlan tipo, prioridad, procedencia de prioridad, estado, criterios, citas y relaciones permitidas. El contrato añade patrón EARS y criterios de verificación para RF y RNF; para RNF incorpora categoría, métrica, unidad, umbral y método de verificación. Los campos no sustentados se conservan vacíos y el estado puede indicar que se requiere aclaración. Una prioridad sin procedencia explícita se transforma en \emph{No definida}, en lugar de asumir un nivel medio. El ejemplo JSON se construye con identificadores realmente autorizados para evitar que el LLM copie marcadores inválidos. Cuando la respuesta incumple el esquema, el cliente puede reintentar hasta el máximo configurado usando el error como retroalimentación. Si todos los intentos fallan, la telemetría y el mensaje de la corrida incluyen una síntesis segura del último error de validación. No existe una llamada posterior que omita la validación.
 
 \section{Validación, revisión y exportación}
+
+La secuencia de generación facilita compartir contexto, pero también puede propagar una interpretación errónea de RF hacia RNF o HU. La separación entre contexto generado y fragmentos citables limita la confusión de procedencia, sin eliminar ese riesgo. Su inspección semántica corresponde a la revisión humana y al análisis de errores del experimento.
 
 \codigo{TraceabilityConsistencyAgent} verifica citas y relaciones, conformidad EARS de RF, criterios de verificación, completitud de medición de RNF, procedencia de prioridad, conformidad de HU, indicios de clasificación y duplicación. Los posibles duplicados se separan entre pares del mismo tipo y pares cruzados. Cada observación se asocia con los artefactos correspondientes y la interfaz la presenta como alerta, no como corrección automática.
 
@@ -116,7 +120,7 @@ La telemetría permite auditar costos y comparar ejecuciones, pero no se interpr
 
 \section{Pruebas implementadas}
 
-El repositorio contiene 65 pruebas automatizadas. Estas pruebas no consumen proveedores externos; utilizan dobles controlados para comprobar contratos y flujo. Entre ellas se comprueba que una prioridad ausente no se convierta silenciosamente en media, que el validador detecte incumplimientos EARS, que la reanudación no repita agentes completados y que la auditoría de Jev conserve candidatos y telemetría. La ejecución completa, incluida la prueba de exportación que depende de \codigo{python-docx}, deberá repetirse sin omisiones en el entorno congelado y conservarse como evidencia de aceptación.
+La suite del repositorio completó 67 de 67 pruebas sin omisiones, incluida la exportación DOCX. Otras 12 pruebas controladas verificaron casos de la matriz, como la igualdad de contenido y procedencia entre exportaciones y el registro de las decisiones de revisión. Estas pruebas no consumen proveedores externos.
 
 \begin{table}[H]
   \centering
@@ -139,19 +143,8 @@ El repositorio contiene 65 pruebas automatizadas. Estas pruebas no consumen prov
   \end{tabularx}
 \end{table}
 
-Además, la compilación de producción de Angular finaliza sin errores. Estas evidencias demuestran comportamiento técnico, pero no sustituyen la prueba de aceptación integral ni el juicio experto.
+La compilación de producción de Angular finalizó con un aviso no bloqueante de tamaño. La prueba de navegador en Docker complementó las pruebas automatizadas de código y la ejecución real de T1.
 
-\section{Criterios pendientes para cerrar el objetivo específico 3}
+\section{Aceptación funcional del prototipo}
 
-Para considerar completado el objetivo 3 se deberá:
-
-\begin{enumerate}
-  \item congelar la versión de código y configuración;
-  \item ejecutar el despliegue completo mediante Docker;
-  \item aplicar la matriz de aceptación con el corpus SIGSAT-1.0;
-  \item registrar entradas, resultados esperados, observados y evidencia;
-  \item conservar una corrida real de definición, generación, revisión y exportación; y
-  \item documentar limitaciones e incidentes observados.
-\end{enumerate}
-
-La implementación constituye un avance sustancial y coherente con la arquitectura actual; el cierre del objetivo depende de reunir esa evidencia formal.
+La aceptación reunió tres fuentes: la ejecución real conservada de T1 con el corpus SIGSAT-1.0, pruebas controladas con almacenamiento temporal y un recorrido de navegador en Docker con un volumen exclusivo de prueba. En este último recorrido se simularon las respuestas del modelo y el índice vectorial para verificar las acciones de interfaz y persistencia sin repetir T1. Se conservaron los resultados de los 24 casos y el registro de la incidencia corregida de revisión asistida.

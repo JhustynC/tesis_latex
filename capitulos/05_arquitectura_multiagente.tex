@@ -22,7 +22,7 @@ El diseño se documenta mediante elementos adaptados de ISO/IEC/IEEE 42010:2022 
     Usuario o analista & Trabajar por proyectos, aportar fuentes reales, aclarar decisiones y revisar salidas. & Interfaz web por etapas, vista previa, definición adaptativa, revisión y exportación. \\
     Experto evaluador & Inspeccionar evidencia y comparar productos de manera consistente. & Esquemas comunes, citas por fragmento, relaciones y reportes de validación. \\
     Investigador & Reproducir una corrida y explicar las condiciones utilizadas. & Huellas de fuentes, versiones, parámetros, telemetría y registros de ejecución. \\
-    Tutora y tribunal & Verificar correspondencia entre objetivos, diseño e implementación. & Vistas arquitectónicas, contratos, decisiones y matriz de verificación. \\
+    Revisor de arquitectura & Comprobar suficiencia de la descripción y correspondencia entre objetivos, diseño e implementación. & Vistas arquitectónicas, contratos, decisiones y matriz de verificación. \\
     Desarrollador & Mantener el núcleo independiente del dominio y sustituir componentes. & Capas separadas, configuración externa e interfaces para LLM, recuperación y persistencia. \\
     \bottomrule
   \end{tabularx}
@@ -37,6 +37,8 @@ Quedan fuera del límite actual: OCR, transcripción automática de audio, auten
 \section{Vista de componentes y responsabilidades}
 
 La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por responsabilidades. El cliente web concentra la interacción y la decisión humana; el núcleo ReqLab agrupa coordinación, agentes y persistencia; el servicio LLM se ubica fuera de ese núcleo.
+
+Las flechas naranjas representan el contexto acumulado que el orquestador entrega de RF a RNF y de RF y RNF a HU; no son llamadas directas entre agentes. La conexión con proveedores externos representa una dependencia coordinada por el núcleo, implementada mediante los clientes de cada servicio. Para identificar el modelo de una corrida se utiliza el identificador de API y la telemetría conservada, no solo la etiqueta descriptiva de la figura.
 
 \begin{landscape}
 \begin{figure}[p]
@@ -60,12 +62,12 @@ La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por respon
     API FastAPI & Exponer casos de uso y validar solicitudes HTTP. & Contratos de entrada y respuesta. \\
     Servicio de aplicación & Coordinar transacciones, agentes, progreso, errores, puntos de control y persistencia. & Flujo reproducible y reanudable por proyecto. \\
     Extracción y segmentación & Convertir fuentes y producir unidades citables según su tipo. & Catálogo de fragmentos. \\
-    Agente de definición & Interpretar todo el corpus por lotes, construir perfil y formular aclaraciones. & Perfil provisional, preguntas y decisiones confirmadas. \\
+    Agente de definición & Interpretar todo el corpus por lotes, construir perfil y formular aclaraciones. & Perfil provisional y preguntas; la confirmación corresponde al usuario. \\
     Recuperador híbrido & Combinar TF--IDF, embeddings y RRF; aplicar reranking local o Jev de forma opcional. & Evidencia ordenada y auditoría de candidatos cuando corresponde. \\
     Agentes RF, RNF y HU & Generar cada tipo conforme a su contrato y contexto previo. & Artefactos estructurados con citas y relaciones. \\
     Agente de trazabilidad y consistencia & Comprobar citas, relaciones, estructura, duplicados y clasificación. & Reporte y alertas por artefacto. \\
     Agente de revisión & Proponer una versión sustentada sin sobrescribir la vigente. & Propuesta aceptable o rechazable por el usuario. \\
-    Persistencia & Guardar estado relacional, originales, vectores, puntos de control y exportaciones. & Historial auditable y recuperación ante fallos. \\
+    Persistencia & Guardar estado relacional, originales, vectores y puntos de control. & Historial auditable y recuperación ante fallos. \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -84,15 +86,34 @@ La figura~\ref{fig:arquitectura-componentes} organiza la arquitectura por respon
   \midrule
   \endhead
   Definición & Metadatos y todos los fragmentos documentales. & Análisis jerárquico por lotes, síntesis y esquema tipado. & Perfil provisional y preguntas trazables. \\
-  Generación RF & Perfil confirmado y evidencia recuperada. & Consulta funcional, contrato RF y LLM. & Capacidades observables. \\
-  Generación RNF & Perfil, evidencia y RF existentes. & Consulta de calidad, contrato RNF y LLM. & Restricciones y atributos verificables. \\
-  Generación HU & Perfil, evidencia y artefactos existentes. & Consulta de actores/valor, contrato HU y LLM. & Historias y criterios de aceptación. \\
+  Generación RF & Metadatos y evidencia recuperada tras confirmar la definición. & Consulta funcional, contrato RF y LLM. & Capacidades observables. \\
+  Generación RNF & Metadatos, evidencia recuperada y RF existentes. & Consulta de calidad, contrato RNF y LLM. & Restricciones y atributos verificables. \\
+  Generación HU & Metadatos, evidencia recuperada, RF y RNF existentes. & Consulta de actores/valor, contrato HU y LLM. & Historias y criterios de aceptación. \\
   Trazabilidad y consistencia & Artefactos y catálogo de fragmentos. & Reglas deterministas y umbrales configurables. & Validación, duplicados y relaciones inválidas. \\
   Revisión & Artefacto vigente, instrucción y evidencia recuperada. & Contrato de revisión y LLM. & Propuesta de nueva versión. \\
   \bottomrule
 \end{longtable}
 
-El recuperador y el servicio de extracción son herramientas compartidas, no agentes generativos adicionales. Esta delimitación evita inflar artificialmente el número de agentes y permite asociar cada intervención del LLM con un rol observable.
+El recuperador y el servicio de extracción son herramientas compartidas, no agentes generativos adicionales. La confirmación del perfil habilita la generación; el agente no recibe el perfil completo como argumento independiente. Las respuestas confirmadas se indexan como fragmentos \codigo{USR-DEF-*} y pueden entrar al contexto cuando son recuperadas. Esta delimitación evita inflar artificialmente el número de agentes y permite asociar cada intervención del LLM con un rol observable.
+
+\begin{table}[H]
+  \centering
+  \caption{Correspondencia de agentes e instrucciones versionadas}
+  \label{tab:agentes-prompts}
+  \small
+  \begin{tabularx}{\textwidth}{p{2.7cm}Yp{4.5cm}}
+    \toprule
+    Rol & Instrucción y ubicación en \codigo{agents.py} & Identificación de la versión \\
+    \midrule
+    Definición & \codigo{ProjectDefinitionAgent}, métodos \codigo{_analyze_batch} y \codigo{_synthesis_prompt}: hallazgos, citas, perfil y preguntas. & Versión común de prompts y revisión Git del código. \\
+    RF, RNF y HU & \codigo{CONTRACTS}: rol, tarea, consulta y reglas; \codigo{SpecializedGenerationAgent}, método \codigo{_prompt}: evidencia, contexto y contrato JSON. & Agentes \codigo{agent.rf}, \codigo{agent.rnf} y \codigo{agent.hu}; versión común y revisión Git. \\
+    Revisión & \codigo{RevisionAgent}, método \codigo{propose}: artefacto vigente, petición, evidencia y restricciones de cambio. & Versión común y revisión Git. \\
+    Trazabilidad y consistencia & Reglas de \codigo{TraceabilityConsistencyAgent} en \codigo{validation.py}; no utiliza prompt generativo. & Revisión Git y umbrales de validación registrados. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+La versión común se obtiene de \codigo{PROMPT_VERSION} y se registra como \codigo{prompt_version} en la configuración experimental; su valor predeterminado es \codigo{reqlab-v2}. Como esa etiqueta no cambia automáticamente al editar una instrucción, la versión de T1 conserva el código de las instrucciones y contratos con sus huellas, además de la revisión Git base. La implementación no mantiene un identificador de versión independiente para cada prompt. Los metadatos y la evidencia recuperada de cada proyecto son entradas variables, no cambios de la plantilla.
 
 \section{Vista de interacción}
 
@@ -159,7 +180,7 @@ La persistencia se distribuye de acuerdo con la naturaleza de la información:
 \begin{itemize}
   \item SQLite conserva proyectos, fuentes, fragmentos, preguntas, perfiles, artefactos, versiones, propuestas, validaciones, ejecuciones y puntos de control;
   \item ChromaDB conserva los embeddings y el índice semántico separado por proyecto y versión de modelo; y
-  \item el sistema de archivos conserva documentos originales, caché local de modelos y exportaciones.
+  \item el sistema de archivos conserva documentos originales y caché local de modelos; las exportaciones se construyen para descarga y no constituyen otro almacén del servidor.
 \end{itemize}
 
 Esta combinación no introduce lógica de dominio. SQLite proporciona integridad transaccional e historial; ChromaDB permite recuperación vectorial; y los originales permanecen disponibles para vista previa y auditoría.
@@ -217,4 +238,4 @@ Como decisiones complementarias, la validación semántica con Jev se mantiene e
 
 El objetivo se verifica mediante una lista de comprobación que confirme interesados, propósito y límites; capas y componentes; agentes y responsabilidades; secuencia e interacción; contratos y flujos de información; persistencia; trazabilidad entre vistas; decisiones y consecuencias; y correspondencia con código y pruebas.
 
-El criterio del proyecto exige que todos los elementos aplicables estén documentados y que no existan contradicciones sin justificar entre las vistas. ISO/IEC/IEEE 42010 no impone un porcentaje universal. Con la especificación actual existe evidencia de diseño para el objetivo 1, sujeta a revisión académica y a mantener sincronizada la correspondencia cuando el prototipo cambie.
+El criterio del proyecto exige que todos los elementos aplicables estén documentados y que no existan contradicciones sin justificar entre las vistas. ISO/IEC/IEEE 42010 no impone un porcentaje universal. La Tabla~\ref{tab:verificacion-oe1} presenta el resultado y la evidencia de la revisión técnica; la comprobación académica de esa matriz permanece pendiente. La tutora puede asumirla; no se exige incorporar otro grupo de expertos ni repetir el experimento de calidad de artefactos del OE4.

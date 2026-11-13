@@ -4,45 +4,135 @@
 
 \section{Estado del capítulo}
 
-Este capítulo contiene la estructura que se utilizará para reportar el objetivo específico 4. No se incorporan todavía hallazgos ni conclusiones sobre la calidad del prototipo, porque las salidas preliminares no han sido evaluadas mediante el protocolo de expertos ni comparadas de manera controlada con M0.
+Este capítulo distingue la revisión técnica de diseño y especificación (OE1 y OE2), las pruebas de aceptación del prototipo (OE3) y la comparación de salidas (OE4). Para OE1 y OE2 se completó el registro de revisión técnica del 10 de noviembre de 2026 (AR-2026-11-10). Se contrastaron el escrito, las vistas arquitectónicas, el código archivado con T1 y los registros preservados, sin repetir la generación. Las matrices documentan los resultados de esta revisión técnica. La comparación experta de M0 y T1 sigue su propio protocolo. Los criterios son instrumentos del estudio: para OE1 se adaptan conceptos de descripción arquitectónica de ISO/IEC/IEEE 42010:2022; para OE2 se emplean ISO/IEC/IEEE 29148:2018 como guía de ingeniería de requisitos e ISO/IEC/IEEE 15939:2017 como guía para definir medidas \cite{iso42010,iso29148,iso15939}.
+
+\section{Resultados de diseño (OE1)}
+
+El resultado de OE1 es una descripción de arquitectura centralizada y secuencial, con agentes especializados, herramientas compartidas, contratos y mecanismos de interacción. La Tabla~\ref{tab:verificacion-oe1} recoge el contraste de su contenido con la implementación, no solo la presencia de documentos. Se considera crítica una contradicción que impida interpretar el flujo, determine responsabilidades incompatibles o rompa la procedencia. Los resultados corresponden al escrito tras aclarar las diferencias documentales detectadas.
+
+\begin{table}[H]
+\centering
+\small
+\setstretch{1.06}
+\setlength{\tabcolsep}{4pt}
+\caption{Matriz de revisión técnica del OE1}
+\label{tab:verificacion-oe1}
+\begin{tabular}{p{0.9cm}>{\RaggedRight\arraybackslash}p{3.7cm}>{\RaggedRight\arraybackslash}p{7.1cm}p{1.8cm}}
+  \toprule
+  ID & Criterio & Evidencia y resultado observado & Resultado \\
+  \midrule
+  A01 & Propósito, contexto y límites. & El Capítulo~\ref{cap:arquitectura} delimita entradas, RF/RNF/HU, ejecución monousuario, proveedores externos y exclusiones. & Cumple \\
+  A02 & Interesados y preocupaciones. & Cinco de cinco interesados tienen una preocupación y respuesta en el diseño (Tabla~\ref{tab:interesados-arquitectura}). & Cumple \\
+  A03 & Componentes y responsabilidades. & Diez de diez grupos tienen responsabilidad y resultado; se distinguen cliente, coordinación, agentes, herramientas, datos y servicios externos. Véanse la Figura~\ref{fig:arquitectura-componentes} y la Tabla~\ref{tab:componentes}. & Cumple \\
+  A04 & Roles, entradas, herramientas y salidas. & Seis de seis roles especificados: cinco generativos y uno determinista. El recuperador y el extractor son herramientas (Tabla~\ref{tab:agentes-arquitectura}). & Cumple \\
+  A05 & Instrucciones localizables y versionadas. & Cinco de cinco roles generativos se localizan en \codigo{agents.py}; la etiqueta \codigo{reqlab-v2} se complementa con las huellas del código (Tabla~\ref{tab:agentes-prompts}). & Cumple \\
+  A06 & Orden, intercambio y decisión humana. & \codigo{services.py} confirma definición y ejecuta RF--RNF--HU. El orquestador entrega artefactos anteriores como contexto; revisión y aprobación no se delegan al LLM. & Cumple \\
+  A07 & Contratos y procedencia. & Nueve de nueve contratos tienen campos y restricciones. Las citas a evidencia y las relaciones entre salidas son distintas y se comprueban en \codigo{llm_schemas.py} (Tabla~\ref{tab:contratos-arquitectura}). & Cumple \\
+  A08 & Persistencia, versiones y reanudación. & \codigo{storage.py} y \codigo{services.py} conservan origen de cambios, estados y puntos de control. Las pruebas verifican reanudación compatible e historial. & Cumple \\
+  A09 & Razones y consecuencias del diseño. & Diez de diez decisiones principales explicitan razón y límite sin atribuir superioridad a un componente no comparado (Tabla~\ref{tab:decisiones-arquitectura}). & Cumple \\
+  A10 & Correspondencia entre vistas y código. & Se localizaron siete de siete grupos de implementación. Coinciden 73/73 archivos con las huellas conservadas y pasaron 67/67 pruebas controladas (Tabla~\ref{tab:correspondencia-codigo}). & Cumple \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+Resultado de revisión técnica: 10 criterios cumplen, 0 no cumplen, 0 no aplican y 0 incidencias críticas abiertas. El cumplimiento es 10/10, equivalente a 100\,\%. Se compararon las huellas SHA-256 de 73 archivos actuales con el archivo de T1, sin diferencias. Se ejecutaron 67 pruebas de código con conexiones de red bloqueadas: 67 correctas, 0 fallos, 0 errores y 0 omisiones. Estas pruebas respaldan la correspondencia de la descripción con la implementación, no sustituyen la prueba de aceptación humana del OE3. La comprobación académica permanece pendiente; el resultado no constituye certificación ISO/IEC/IEEE 42010.
+
+\section{Resultados del proceso (OE2)}
+
+El resultado de OE2 es la especificación del proceso del Capítulo~\ref{cap:proceso}: seis etapas enlazadas, condiciones previas y posteriores, contratos, controles, incidencias y medidas. Se comprobó que las salidas de segmentación alimenten la recuperación, que la evidencia recuperada alimente la generación y que artefactos y catálogo permitan verificar procedencia, estructura y consistencia. La ingesta y la definición preparan el flujo; la revisión y la exportación lo completan. No se consideran etapas adicionales del objetivo.
+
+\begin{table}[H]
+\centering
+\small
+\setstretch{1.06}
+\setlength{\tabcolsep}{4pt}
+\caption{Matriz de revisión técnica del OE2}
+\label{tab:verificacion-oe2}
+\begin{tabular}{>{\RaggedRight\arraybackslash}p{2.4cm}>{\RaggedRight\arraybackslash}p{6.2cm}>{\RaggedRight\arraybackslash}p{3.1cm}p{1.8cm}}
+  \toprule
+  Etapa & Especificación y control comprobados & Evidencia observada & Resultado \\
+  \midrule
+  P01. Segmentación & Unidades naturales, tamaño, solapamiento, fuente y posición. \codigo{documents.py} produce unidades citables. & 135/135 IDs únicos y con fuente existente. & Cumple \\
+  P02. Recuperación & Consulta por tipo, TF--IDF, embeddings, RRF y reranking opcional local o Jev. \codigo{vector_store.py} devuelve evidencia ordenada. & 3/3 recuperaciones auditables. & Cumple \\
+  P03. Generación & Precondición de confirmación, evidencia recuperada, orden RF--RNF--HU, contratos, presupuestos y reanudación. & 63/63 conformes al esquema y tres puntos de control. & Cumple \\
+  P04. Trazabilidad & Se comprueba existencia de destinos; citas y relaciones se registran por separado. La pertinencia requiere revisión humana. & 63/63 con cita existente; 0/56 relaciones inexistentes. & Cumple \\
+  P05. Validación & \codigo{validation.py} registra estructura, campos y observaciones por artefacto; no corrige el contenido automáticamente. & Informe para 63/63 y 20/20 HU con forma y criterios mínimos. & Cumple \\
+  P06. Consistencia & Umbrales, pares candidatos, puntuaciones y revisión humana. No se fusiona ni se reclasifica automáticamente. & 2/2 alertas de duplicación inspeccionables. & Cumple \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+Resultado de revisión técnica: 6 etapas cumplen, 0 no cumplen, 0 no aplican y 0 incidencias críticas abiertas. El cumplimiento de la especificación es 6/6, equivalente a 100\,\%. Se comprobaron 36/36 elementos: propósito, entrada, operación, salida, control y medida por etapa. Las medidas se definen en la Tabla~\ref{tab:medidas-proceso} y las incidencias en la Tabla~\ref{tab:incidencias-proceso}. Queda pendiente la comprobación académica de esta matriz.
+
+\subsection{Medidas observadas en la ejecución conservada}
+
+Como contraste técnico se inspeccionó la ejecución original de T1, con 24 RF, 19 RNF y 20 HU. Se revalidaron los artefactos con las citas recuperadas por su agente y con las relaciones a artefactos previos permitidas por el contrato. Los 135 fragmentos documentales pudieron vincularse a los ocho lotes de definición mediante sus firmas y puntos de control. Las 18 aclaraciones \codigo{USR-DEF-*} se incorporaron después de la confirmación. La Tabla~\ref{tab:medidas-oe2-observadas} separa cobertura de controles de calidad del contenido.
+
+\begin{table}[H]
+\centering
+\small
+\setstretch{1.06}
+\setlength{\tabcolsep}{4pt}
+\caption{Indicadores de especificación y registros del proceso}
+\label{tab:medidas-oe2-observadas}
+\begin{tabular}{>{\RaggedRight\arraybackslash}p{4.8cm}p{2.9cm}>{\RaggedRight\arraybackslash}p{5.9cm}}
+  \toprule
+  Indicador & Valor & Base de comprobación \\
+  \midrule
+  Etapas especificadas & 6/6 (100\,\%) & Seis elementos documentales por etapa, 36/36. \\
+  Segmentación íntegra & 135/135 (100\,\%) & IDs documentales únicos y fuentes registradas. \\
+  Recuperación auditable & 3/3 (100\,\%) & Una recuperación por tipo; consulta especializada, configuración, IDs y puntuaciones. \\
+  Generación conforme & 63/63 (100\,\%) & Revalidación del esquema y contexto permitido. \\
+  Validación trazable & 63/63 (100\,\%) & Cobertura del reporte de validación original. \\
+  Consistencia inspeccionable & 2/2 (100\,\%) & Pares señalados con IDs, motivo y Jaccard. \\
+  Análisis de definición & 135/135 (100\,\%) & Ocho de ocho lotes con firmas comprobadas. \\
+  Cobertura de trazabilidad & 63/63 (100\,\%) & Artefactos con al menos una cita a un ID existente. \\
+  Artefactos con cita inválida & 0/63 (0\,\%) & Ninguno cita un destino fuera del catálogo. \\
+  Relaciones inexistentes & 0/56 (0\,\%) & Todas apuntan a artefactos conservados. \\
+  Conformidad formal de HU & 20/20 (100\,\%) & Patrón mínimo y criterios de aceptación no vacíos. \\
+  Registro directo de configuración & 25/26 (96,15\,\%) & La temperatura de 0,1 se verificó en el código de la versión utilizada en T1. \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+La consulta completa se reconstruye con el nombre y dominio del proyecto, la consulta especializada conservada y la plantilla del código. No se contabilizan las peticiones internas de Jev como recuperaciones adicionales. El informe determinista recalculado coincide con el original. Señaló 14/24 RF por el comprobador EARS, 19/19 RNF con algún campo de medición pendiente, 63/63 prioridades no definidas y dos pares de posible duplicación cruzada. Los 43 RF y RNF conservaron criterios de verificación. Estas observaciones se mantienen en la salida evaluada; la conformidad del esquema no las elimina ni acredita calidad semántica.
+
+De los 26 parámetros de configuración, 25 quedaron registrados directamente. El parámetro restante, la temperatura, se verificó en el código de la versión utilizada en T1: la petición a la API incluyó el valor 0,1, aunque este no se guardó en el registro de ejecución.
+
+Se aclararon en el escrito el reranking seleccionable, la lista de parámetros, la diferencia entre confirmar el perfil y enviar evidencia al agente, y el carácter descargable de las exportaciones. No se modificaron el código, las salidas congeladas, las figuras ni los materiales de los evaluadores.
 
 \section{Preparación del experimento}
 
-Antes de ejecutar el experimento final se registrarán:
-
-\begin{itemize}
-  \item versión y huella del corpus;
-  \item versión del código y pruebas superadas;
-  \item modelo, proveedor, fecha y parámetros;
-  \item procedimiento definitivo de M0;
-  \item rúbrica, evaluadores y reglas de anonimización; y
-  \item directorios de salida que se conservarán sin modificaciones.
-\end{itemize}
+Se conservan las huellas del corpus y del código, la configuración disponible de la ejecución, el procedimiento manual, las salidas M0 y T1, la rúbrica y las reglas de anonimización. Al contrastar los materiales locales preparados para M0 y para los evaluadores con la instantánea de T1, coincidieron las huellas de las 16 fuentes y el contenido de los 135 fragmentos documentales, las 18 aclaraciones y las ocho dimensiones del perfil confirmado. Se verificaron las entradas preparadas; no se infiere de ello qué fuentes leyó efectivamente cada participante. La selección de contexto mediante RAG corresponde al procedimiento de T1, no a un corpus distinto.
 
 \section{Resultados técnicos del prototipo}
 
-\pendiente{incorporar la matriz de pruebas de aceptación del objetivo 3, con resultado esperado, resultado observado y evidencia.}
+La aceptación funcional del OE3 obtuvo 24/24 casos aprobados (100\,\%), sin defectos críticos abiertos dentro del alcance evaluado. Se utilizó la matriz definida para el proyecto. La Tabla~\ref{tab:resultados-pruebas} agrupa sus casos; el registro de aceptación conserva cada resultado y su evidencia.
 
 \begin{table}[H]
   \centering
-  \caption{Plantilla para pruebas de aceptación}
+  \caption{Resultados de aceptación funcional del prototipo}
   \label{tab:resultados-pruebas}
   \small
-  \begin{tabularx}{\textwidth}{p{1.4cm}p{4.0cm}p{3.7cm}p{1.8cm}Y}
+  \begin{tabularx}{\textwidth}{p{4.0cm}p{1.9cm}Y}
     \toprule
-    ID & Capacidad & Resultado esperado & Estado & Evidencia \\
+    Capacidad & Aprobados & Evidencia observada \\
     \midrule
-    PA-01 & Gestión de proyectos & & & \\
-    PA-02 & Ingesta y vista previa de fuentes heterogéneas & & & \\
-    PA-03 & Definición adaptativa y confirmación & & & \\
-    PA-04 & Recuperación híbrida y generación RF/RNF/HU & & & \\
-    PA-05 & Trazabilidad, relaciones y consistencia & & & \\
-    PA-06 & Revisión manual y propuesta asistida & & & \\
-    PA-07 & Exportación JSON/DOCX & & & \\
-    PA-08 & Persistencia y despliegue reproducible & & & \\
+    Gestión de proyectos & 2/2 & Creación, cambio, archivo, restauración y borrado confirmado sin alterar otro proyecto (AT02, AT23). \\
+    Ingesta y vistas previas & 5/5 & Cuatro formatos, texto libre, rechazos e invalidación de resultados al cambiar fuentes (AT03--AT06, AT22). \\
+    Definición interactiva & 3/3 & Cobertura de 135 fragmentos en T1, control de respuestas obligatorias y confirmación explícita de reinicio (AT07--AT09). \\
+    Recuperación y generación & 5/5 & T1 produjo 24 RF, 19 RNF y 20 HU. Se verificaron límites, fallos, reanudación y auditoría de reranking (AT10--AT11, AT20--AT21, AT24). \\
+    Trazabilidad y consistencia & 2/2 & Apertura de fuente y relación desde el navegador; reporte de alertas sin cambios automáticos (AT12--AT13). \\
+    Revisión y decisiones & 4/4 & Edición, reclasificación, propuestas, prioridad y aprobación masiva con historial (AT14--AT17). \\
+    Exportación JSON/DOCX & 1/1 & Se comprobaron artefactos, versiones, referencias y extractos en ambos formatos (AT18). \\
+    Despliegue y persistencia & 2/2 & Tras reiniciar los dos contenedores sin borrar el volumen, se recuperaron fuentes, perfil, artefactos e historial (AT01, AT19). \\
     \bottomrule
   \end{tabularx}
 \end{table}
+
+La revisión asistida presentó una incidencia: la aceptación aplicaba el contenido, pero la propuesta quedaba registrada como reemplazada. En la versión posterior a T1 se corrigió el guardado conjunto de la decisión y la nueva versión del artefacto. La repetición de AT15 confirmó la aceptación, el rechazo sin cambios y la reversión de la decisión si falla la escritura. Pasaron 67 pruebas de la suite y 12 pruebas complementarias, sin omisiones. T1 y sus registros no se modificaron.
+
+En Docker se probaron Angular, la API y el almacenamiento real en una instancia separada, con respuestas del modelo e índice vectorial simulados. La generación con servicios reales se respaldó con T1. El resultado confirma que el prototipo fue operable en los escenarios probados; no mide usabilidad ni calidad semántica de los requisitos.
 
 \section{Resultados automáticos}
 
@@ -84,16 +174,19 @@ Antes de ejecutar el experimento final se registrarán:
     \toprule
     Criterio & M0 & T1 & Acuerdo & Observaciones \\
     \midrule
-    Coherencia & & & & \\
-    Completitud & & & & \\
-    Claridad & & & & \\
-    Verificabilidad & & & & \\
-    Consistencia & & & & \\
-    Pertinencia de la traza & & & & \\
-    Calidad global & & & & \\
+    Coherencia por artefacto & & & & \\
+    Completitud por artefacto & & & & \\
+    Claridad por artefacto & & & & \\
+    Verificabilidad por artefacto & & & & \\
+    Pertinencia de la traza por artefacto & & & & \\
+    Coherencia del conjunto & & & & \\
+    Completitud del conjunto & & & & \\
+    Consistencia del conjunto & & & & \\
     \bottomrule
   \end{tabularx}
 \end{table}
+
+Las puntuaciones por artefacto se resumirán por tipo y configuración, conservando las calificaciones individuales. Las puntuaciones del conjunto se presentarán por evaluador; no se mezclarán con las individuales en un promedio global. Los resultados y las omisiones documentadas se completarán únicamente tras la evaluación, conforme a la Tabla~\ref{tab:rubrica-expertos}.
 
 \section{Análisis comparativo}
 
@@ -110,6 +203,8 @@ Los errores se clasificarán como omisión, invención, fusión incorrecta, sepa
 \pendiente{relacionar los resultados con los antecedentes del Capítulo~\ref{cap:estado-arte}, responder PI1--PI4 y explicar costos, límites y transferibilidad.}
 
 La discusión no deberá afirmar que la arquitectura es la mejor en términos universales. El resultado defendible será determinar cómo se comportó la configuración seleccionada bajo el corpus, parámetros y criterios documentados.
+
+Se analizará la posible propagación de errores entre RF, RNF y HU: un RF equivocado puede condicionar las salidas posteriores aunque no se incorpore como evidencia. Se contrastarán ejemplos con los fragmentos originales y se distinguirá entre error nuevo, arrastre de una interpretación previa y defecto compartido por las fuentes. Las citas existentes y la validación JSON no prueban ausencia de propagación; sin un control experimental adicional tampoco se atribuirá causalmente cada defecto a la secuencia de agentes.
 
 \section{Amenazas observadas}
 

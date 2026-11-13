@@ -4,11 +4,13 @@
 
 \section{Conclusiones}
 
-\pendiente{redactar las conclusiones definitivas después de completar la corrida experimental y el juicio de expertos. Cada conclusión deberá responder a un objetivo y estar respaldada por resultados del Capítulo~\ref{cap:evaluacion}.}
+La revisión técnica de OE1 verificó la cobertura de los diez criterios de arquitectura y no identificó incidencias críticas abiertas en la descripción revisada. Los roles y sus interacciones se especificaron como un flujo secuencial coordinado: RF, RNF y HU utilizan evidencia recuperada y contexto de artefactos previos, con procedencias diferenciadas. La correspondencia con la versión conservada se respalda con 73/73 archivos coincidentes y 67/67 pruebas controladas correctas. Este resultado respalda la coherencia del diseño, sin demostrar superioridad frente a otras arquitecturas. La comprobación académica queda pendiente (Tabla~\ref{tab:verificacion-oe1}).
 
-En el estado actual puede afirmarse que los objetivos aprobados conservan correspondencia con el desarrollo: la arquitectura define agentes, roles, flujos y mecanismos de interacción; el proceso especifica las etapas exigidas; y existe un prototipo web funcional que materializa ambas especificaciones. Todavía no corresponde concluir que los artefactos generados poseen mayor calidad que los manuales, porque esa afirmación depende de M0, T1 y la valoración experta.
+La revisión técnica de OE2 verificó las seis etapas y sus 36 elementos de especificación. La ejecución conservada ofrece respaldo técnico: 135/135 fragmentos documentales cubiertos en definición, 3/3 recuperaciones auditables, 63/63 artefactos aceptados por el esquema y 0/56 relaciones inexistentes. De los 26 parámetros, 25 quedaron registrados directamente y la temperatura solicitada (0,1) se verificó en el código de la versión utilizada en T1. Las observaciones de EARS, medición y duplicación indican qué casos requieren inspección humana; no se interpretan como una aprobación de la calidad de los requisitos. La comprobación académica queda pendiente (Tablas~\ref{tab:verificacion-oe2} y~\ref{tab:medidas-oe2-observadas}).
 
 La evolución desde el prototipo inicial no representa un cambio de problema ni de objetivos. La definición interactiva controla incertidumbres antes de generar; la recuperación híbrida implementa con mayor precisión el mecanismo RAG; y la interfaz, persistencia y revisión convierten el diseño en un prototipo utilizable. Estas decisiones deberán evaluarse como parte de la configuración seleccionada y no presentarse como superioridad universal.
+
+El OE3 se completó técnicamente con 24 de 24 casos de aceptación funcional aprobados. La ejecución de T1 respaldó la generación con el corpus de prueba y el recorrido en Docker comprobó la operación de la interfaz y la persistencia tras reiniciar. Este resultado no establece que los artefactos generados posean mayor calidad que los manuales; esa comparación corresponde a OE4.
 
 \section{Cumplimiento de objetivos}
 
@@ -21,17 +23,19 @@ La evolución desde el prototipo inicial no representa un cambio de problema ni 
     \toprule
     Obj. & Estado & Evidencia disponible & Pendiente para cierre \\
     \midrule
-    OE1 & Diseño actualizado & Vistas, agentes, contratos, decisiones, persistencia y correspondencia con código. & Revisión académica y ajustes solicitados. \\
-    OE2 & Proceso actualizado & Seis etapas del objetivo, controles de entrada/salida, incidencias y medidas. & Mantener consistencia con la versión congelada. \\
-    OE3 & Implementación funcional; cierre pendiente & Aplicación Angular, API, persistencia, RAG híbrido, reanudación, agentes, revisión y exportación. & Suite sin omisiones, matriz de aceptación, Docker y corrida integral conservada. \\
-    OE4 & Protocolo definido; ejecución pendiente & Variables, M0/T1, métricas, rúbrica y plantillas. & Producir M0, ejecutar T1, evaluar y discutir resultados. \\
+    OE1 & Revisión técnica completa & 10/10 criterios; 0 incidencias críticas abiertas; contraste con código archivado y pruebas. & Comprobación académica y atención de observaciones. \\
+    OE2 & Revisión técnica completa & 6/6 etapas; 36/36 elementos; 0 incidencias críticas abiertas; medidas de ejecución registradas. & Comprobación académica y valoración de la limitación de metadatos. \\
+    OE3 & Aceptación funcional completa & 24/24 casos aprobados; 67/67 pruebas de la suite y 12/12 complementarias. & Sin casos técnicos pendientes en la matriz. \\
+    OE4 & Comparación en curso & M0 y T1 conservados, entradas comunes, métricas y rúbrica. & Completar juicio experto, comparación y discusión. \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 \section{Limitaciones}
 
-Las limitaciones previsibles incluyen un único caso principalmente sintético en español, un único proveedor generativo validado, parámetros de recuperación seleccionados sin comparar todas las alternativas, dependencia de embeddings locales, cantidad limitada de expertos y posible participación del tesista en M0. El reranking y la validación semántica con Jev son opciones experimentales y no pueden considerarse mejoras mientras no se evalúen. El prototipo no incorpora OCR, transcripción de audio, autenticación ni colaboración multiusuario. La versión final distinguirá las limitaciones previstas de las observadas durante el experimento.
+Las limitaciones incluyen un único caso principalmente sintético en español, un único proveedor generativo utilizado, parámetros de recuperación seleccionados sin comparar todas las alternativas, dependencia de embeddings locales y cantidad limitada de evaluadores. El reranking y la validación semántica con Jev son opciones experimentales y no pueden considerarse mejoras mientras no se evalúen por separado. El prototipo no incorpora OCR, transcripción de audio, autenticación ni colaboración multiusuario. La versión final distinguirá las limitaciones previstas de las observadas durante el experimento.
+
+La construcción del corpus por el investigador puede favorecer el desempeño del prototipo y limita la independencia del caso. Asimismo, la secuencia RF--RNF--HU permite arrastrar errores de interpretación. Estas amenazas no quedan resueltas por una exportación correcta o una cita existente; deberán discutirse con los datos y la revisión experta.
 
 \section{Trabajo futuro}
 

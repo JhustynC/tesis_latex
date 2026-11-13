@@ -160,12 +160,24 @@ La definición confirmada se mantiene igual para M0 y T1. Esta decisión evita q
   Obj. & Producto evaluado & Procedimiento & Evidencia de cumplimiento \\
   \midrule
   \endhead
-  OE1 & Arquitectura, agentes, roles, flujos, contratos y decisiones. & Lista de comprobación adaptada de ISO/IEC/IEEE 42010:2022 y correspondencia entre diseño, código y pruebas. & Vistas consistentes, responsabilidades cubiertas y revisión académica. \\
-  OE2 & Proceso de segmentación, recuperación, generación, trazabilidad, validación y consistencia. & Lista de comprobación basada en ISO/IEC/IEEE 29148:2018 y medidas definidas con ISO/IEC/IEEE 15939:2017. & Etapas con propósito, entradas, operaciones, salidas, controles y medidas. \\
+  OE1 & Arquitectura, agentes, roles, flujos, contratos y decisiones. & Lista de comprobación del estudio, orientada por ISO/IEC/IEEE 42010:2022. Contraste entre diseño, código y pruebas. & Vistas consistentes, responsabilidades cubiertas y revisión académica. \\
+  OE2 & Proceso de segmentación, recuperación, generación, trazabilidad, validación y consistencia. & Lista de comprobación del estudio, orientada por ISO/IEC/IEEE 29148:2018. Medidas propias del estudio, orientadas por ISO/IEC/IEEE 15939:2017. & Etapas con propósito, entradas, operaciones, salidas, controles y medidas. \\
   OE3 & Prototipo funcional web. & Pruebas de aceptación sobre proyectos, ingesta heterogénea, definición, generación, revisión, trazabilidad y exportación. & Matriz de pruebas, registros reproducibles y corrida integral. \\
   OE4 & Resultados de M0 y T1. & Métricas automáticas, rúbrica experta, comparación descriptiva y análisis de errores. & Tablas, acuerdo, discusión y amenazas a la validez. \\
   \bottomrule
 \end{longtable}
+
+Para OE1 y OE2 se realizó una revisión técnica. Se contrastó cada criterio con el escrito, el código y los registros de ejecución, y se documentaron el resultado y su evidencia. Esta revisión no sustituye el dictamen académico ni el juicio experto que compara M0 y T1.
+
+El instrumento utilizará los estados \emph{Cumple}, \emph{No cumple} y \emph{No aplica}, con justificación de cualquier exclusión. Cada registro identificará objetivo, criterio, evidencia, versión, revisor, fecha y observación. Para cada objetivo se calculará:
+
+\begin{equation}
+  C_{\mathrm{revision}}=
+  \frac{\text{criterios dictaminados como Cumple}}
+       {\text{criterios aplicables}}\times 100.
+\end{equation}
+
+El porcentaje se identifica con el nivel de revisión que lo originó. Cuando la comprobación académica no se ha realizado, su resultado se reporta como \emph{pendiente}, no como cero ni como cien. La aceptación de OE1 y OE2 exige 100\,\% de criterios aplicables cumplidos y cero incidencias críticas abiertas; se considera crítica una contradicción que impida interpretar o ejecutar el flujo, determine responsabilidades incompatibles o rompa la procedencia de la información. Los defectos restantes también deben corregirse o contar con una justificación aceptada. Son reglas de aceptación del proyecto, no umbrales prescritos por las normas. Las matrices del Capítulo~\ref{cap:evaluacion} presentan la revisión técnica y su evidencia.
 
 \section{Métricas automáticas}
 
@@ -210,13 +222,44 @@ Los coeficientes y topes constituyen una heurística de ingeniería versionada c
 
 \section{Juicio de expertos}
 
-Se prevé la participación de dos o más evaluadores con experiencia en ingeniería de requisitos o análisis de software. Siempre que la disponibilidad lo permita, serán personas distintas de quienes produzcan M0 y no conocerán el origen manual o multiagente de las salidas durante la calificación inicial. Cada artefacto se valorará con una rúbrica ordinal sobre coherencia, completitud, claridad, verificabilidad, consistencia y pertinencia de la trazabilidad. Los evaluadores recibirán definiciones, ejemplos, el corpus, el catálogo común y el anexo de decisiones confirmadas; trabajarán primero de forma independiente y conservarán sus calificaciones originales aun cuando luego se discutan discrepancias.
+Se prevé la participación de dos o más evaluadores con experiencia demostrable en ingeniería de requisitos o análisis de software: docencia en estas áreas o participación en proyectos que incluyan elicitación, especificación y validación. Se registrará su experiencia pertinente, sin imponer una acreditación no exigida por la investigación. Siempre que la disponibilidad lo permita, serán personas distintas de quienes produzcan M0 y no conocerán el origen manual o multiagente de las salidas durante la calificación inicial.
 
-Para dos evaluadores se calculará kappa de Cohen o kappa ponderado según la escala. Si participan más evaluadores o existen datos faltantes podrá utilizarse alfa de Krippendorff. Si la disponibilidad permite un solo evaluador, los resultados se reportarán como juicio experto individual y la ausencia de medida de acuerdo se declarará como limitación.
+La evaluación se realizará en dos niveles. En cada artefacto se examinarán coherencia con la necesidad, completitud de su enunciado y campos pertinentes, claridad, verificabilidad y pertinencia de sus citas. En cada conjunto completo se examinarán coherencia con el alcance, completitud de las necesidades documentadas y consistencia entre RF, RNF y HU. Un artefacto completo no demuestra que el conjunto cubra el corpus. Para calificar completitud del conjunto, el experto señalará las omisiones que encuentre con su fuente o decisión confirmada; no comparará la salida con la cantidad solicitada ni tratará M0 como un \emph{gold standard}. La calidad global se describirá mediante estos criterios, sin añadir un promedio compuesto con pesos arbitrarios.
+
+La rúbrica usa una escala ordinal de 1 a 4: 1, insuficiente; 2, requiere cambios sustanciales; 3, adecuado con ajustes menores; y 4, adecuado sin defectos identificados en el criterio. La Tabla~\ref{tab:rubrica-expertos} fija los descriptores. Los atributos se fundamentan en ISO/IEC/IEEE 29148 y, para HU, en el marco QUS \cite{iso29148,lucassen2016}; la escala y sus descriptores son la operacionalización de este estudio, no una escala normativa ni una garantía de calidad. La rúbrica se confirmará antes de calificar las salidas finales.
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{p{0.16\textwidth}p{0.175\textwidth}p{0.175\textwidth}p{0.175\textwidth}p{0.175\textwidth}}
+  \caption{Descriptores de la rúbrica experta}
+  \label{tab:rubrica-expertos}\\
+  \toprule
+  Criterio & 1: insuficiente & 2: cambios sustanciales & 3: ajustes menores & 4: adecuado \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Criterio & 1: insuficiente & 2: cambios sustanciales & 3: ajustes menores & 4: adecuado \\
+  \midrule
+  \endhead
+  Coherencia & Contradice la necesidad o el alcance confirmado. & Mezcla necesidades o introduce contenido relevante no sustentado. & Responde a la necesidad, con una desviación localizada que no altera su sentido. & Responde a la necesidad y al alcance sin desviaciones identificadas. \\
+  Completitud del artefacto & No permite identificar la necesidad o el comportamiento requerido. & Faltan condiciones o campos pertinentes que impiden usarlo sin aclaraciones importantes. & Falta un detalle menor; la necesidad y sus condiciones esenciales se entienden. & Incluye los elementos pertinentes sustentados y hace explícitas las decisiones pendientes. \\
+  Completitud del conjunto & Omite un proceso o necesidad central del alcance. & Presenta varias omisiones relevantes respaldadas por las fuentes. & Presenta omisiones localizadas que no eliminan un proceso central. & No se identifican omisiones pertinentes al contrastar corpus, alcance y decisiones. \\
+  Claridad & Admite interpretaciones incompatibles o carece de sentido preciso. & Contiene ambigüedades importantes o combina varias necesidades sin delimitar. & Se entiende, con una ambigüedad localizada corregible. & Enunciado preciso y comprensible, sin ambigüedades identificadas. \\
+  Verificabilidad & No permite determinar cómo comprobar el cumplimiento. & Criterios vagos o incompatibles; faltan datos decisivos. & Existe una comprobación observable con un ajuste menor pendiente. & Criterios observables y pertinentes; datos necesarios sustentados. \\
+  Consistencia del conjunto & Contiene reglas mutuamente incompatibles sobre un aspecto central. & Hay conflictos o duplicaciones relevantes entre artefactos. & Hay un conflicto o redundancia localizado, sin incompatibilidad central. & No se identifican conflictos ni duplicaciones injustificadas. \\
+  Pertinencia de la traza & No hay evidencia o las citas no respaldan el contenido. & La evidencia respalda solo parte esencial del artefacto. & Respaldo suficiente con una cita demasiado general o un detalle menor no respaldado. & Las citas respaldan la necesidad y las condiciones expresadas. \\
+  \bottomrule
+\end{longtable}
+\endgroup
+
+Los evaluadores recibirán el corpus, catálogo común, decisiones confirmadas y ambas salidas anonimizadas. Antes de la evaluación practicarán con ejemplos ajenos a las salidas finales para aclarar los descriptores. Después calificarán independientemente todos los artefactos y ambos conjuntos, registrando ID, criterio, puntuación y evidencia de cada defecto; se conservarán las calificaciones originales antes de discutir discrepancias. Un campo pertinente ausente o un umbral imprescindible sin definir afecta su criterio, aunque el sistema lo haya señalado correctamente. \emph{No aplica} se reservará para criterios realmente ajenos a la unidad y deberá justificarse; no sustituirá una puntuación baja por ausencia de evidencia.
+
+Para dos evaluadores con datos completos se calculará kappa ponderado por criterio, usando pesos lineales \(w_{ij}=1-|i-j|/3\) para las cuatro categorías ordinales \cite{cohen1968}. Si participan más evaluadores o existen calificaciones faltantes se utilizará alfa de Krippendorff con nivel ordinal \cite{hayes2007}. El acuerdo se calcula entre personas que califican las mismas unidades, no entre artefactos distintos de M0 y T1. Se separarán los resultados por artefacto de los del conjunto: con solo dos conjuntos, su acuerdo tendrá una base demasiado pequeña para una interpretación robusta y se reportarán prioritariamente las calificaciones y discrepancias. Si participa un solo evaluador, se informará como juicio experto individual, sin medida de acuerdo. Estos coeficientes describen reproducibilidad del juicio, no corrección de los artefactos; los valores indefinidos o inestables se declararán sin sustituirlos por un acuerdo perfecto.
 
 \section{Plan de análisis}
 
-Se presentarán resultados por configuración y tipo de artefacto. M0 y T1 se compararán mediante estadísticos descriptivos, distribución de calificaciones, trazabilidad y esfuerzo. No se crearán repeticiones artificiales de M0 si participa un único analista. Cuando existan observaciones pareadas suficientes, podrá utilizarse una prueba no paramétrica o de permutación acompañada por tamaño de efecto; el análisis no dependerá solamente de un valor \(p\).
+Se presentarán resultados por configuración y tipo de artefacto. M0 y T1 se compararán mediante estadísticos descriptivos, distribución de calificaciones, trazabilidad y esfuerzo. No se crearán repeticiones artificiales de M0 si participa un único analista, ni se emparejarán artefactos solo por su posición o identificador. En el estudio de un caso y dos conjuntos, el análisis principal será descriptivo: se informarán frecuencias, medianas, dispersión y diferencias observadas sin atribuir causalidad ni independencia a artefactos relacionados. No se exige una prueba de significación para cumplir el objetivo.
 
 El análisis cualitativo clasificará errores como omisión, invención, fusión incorrecta, separación excesiva, clasificación errónea, historia sin actor o beneficio respaldado, sobreespecificación, enlace demasiado general, contradicción no señalada y duplicación.
 
@@ -237,6 +280,8 @@ El análisis cualitativo clasificará errores como omisión, invención, fusión
     Validez externa & Un solo caso sintético y un solo idioma. & Acotar conclusiones y conservar materiales de replicación. \\
     Dependencia tecnológica & Cambios en el servicio LLM. & Registrar proveedor, modelo, fecha, temperatura, parámetros y respuestas. \\
     Sesgo del investigador & Participación del tesista en M0 o evaluación. & Separar producción y revisión cuando sea posible, anonimizar y declarar solapamientos. \\
+    Diseño del corpus por el investigador & Seleccionar necesidades, contradicciones o vocabulario favorables al prototipo y sobreestimar su cobertura. & Revisar plausibilidad y diversidad antes del experimento, conservar decisiones de construcción y congelar el corpus; declarar que no representa una muestra industrial independiente. \\
+    Propagación entre agentes & Un error de RF puede orientar RNF o HU aunque cada salida conserve citas válidas. & Separar contexto generado de evidencia, revisar respaldo semántico y analizar errores relacionados; no atribuir eliminación de este riesgo a los controles de formato. \\
     \bottomrule
   \end{tabularx}
 \end{table}
